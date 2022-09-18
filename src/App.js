@@ -2,10 +2,12 @@
 import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import DockLayout from 'rc-dock'
+
 import FileExplorer from './components/FileExplorer';
 import TestViewer from './components/TestViewer';
 import UrlInput from './components/UrlInput';
-import DockLayout from 'rc-dock'
+import JsonEditor from "./components/JsonEditor";
 
 
 const defaultLayout = {
@@ -40,7 +42,7 @@ const defaultLayout = {
             size: 1000,
             group: 'locked',
             tabs: [
-              {id: 'body', title: 'JSON', content: <TestViewer/>},
+              {id: 'body', title: 'JSON', content: <JsonEditor/>},
               {id: 'query', title: 'Query', content: <TestViewer/>},
               {id: 'headers', title: 'Headers', content: <TestViewer/>},
             ]
