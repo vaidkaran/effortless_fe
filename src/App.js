@@ -1,9 +1,11 @@
-import FileExplorer from './components/FileExplorer';
-import TestViewer from './components/TestViewer';
-import DockLayout from 'rc-dock'
-
 // import "rc-dock/dist/rc-dock-dark.css"; // dark theme
 import "rc-dock/dist/rc-dock.css"; // light theme
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import FileExplorer from './components/FileExplorer';
+import TestViewer from './components/TestViewer';
+import UrlInput from './components/UrlInput';
+import DockLayout from 'rc-dock'
 
 
 const defaultLayout = {
@@ -16,10 +18,30 @@ const defaultLayout = {
         panelLock: { panelExtra: ()=>{}},
         children: [
           {
-            widthFlex: 200,
             group: 'locked',
             tabs: [
-              {id: 'tab1',maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer/>},
+              {id: 'fileExplorer',maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer/>},
+            ]
+          }
+        ]
+      },
+      {
+        mode: 'vertical',
+        size: 1000,
+        children: [
+          {
+            size: 200,
+            group: 'locked',
+            mode: 'horizontal',
+            tabs: [
+              {id: 'request', size: 10, title: 'Request', content: <UrlInput/>},
+            ]
+          },
+          {
+            size: 1000,
+            group: 'locked',
+            tabs: [
+              {id: 'some', title: 'some', content: <TestViewer/>},
             ]
           }
         ]
@@ -31,7 +53,7 @@ const defaultLayout = {
           {
             group: 'locked',
             tabs: [
-              {id: 'tab1', title: 'Request', content: <TestViewer/>},
+              {id: 'response', title: 'Response', content: <></>},
             ]
           }
         ]
