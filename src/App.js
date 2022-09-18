@@ -15,7 +15,6 @@ const defaultLayout = {
       {
         mode: 'horizontal',
         size: 200,
-        panelLock: { panelExtra: ()=>{}},
         children: [
           {
             group: 'locked',
@@ -41,7 +40,9 @@ const defaultLayout = {
             size: 1000,
             group: 'locked',
             tabs: [
-              {id: 'some', title: 'some', content: <TestViewer/>},
+              {id: 'body', title: 'JSON', content: <TestViewer/>},
+              {id: 'query', title: 'Query', content: <TestViewer/>},
+              {id: 'headers', title: 'Headers', content: <TestViewer/>},
             ]
           }
         ]
