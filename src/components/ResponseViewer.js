@@ -4,7 +4,7 @@ import ReactJson from 'react-json-view';
 import { useState, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 
-export default function TestViewer() {
+export default function ResponseViewer() {
   const props = {};
   const parentPathsRef = useRef({});
   const variablePathsRef = useRef({});
