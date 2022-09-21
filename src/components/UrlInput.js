@@ -1,11 +1,11 @@
 import { Button, Input, Select } from 'antd';
 
 
-export default function UrlInput({reqForm}) {
+export default function UrlInput({reqFormInstance}) {
   const {Option} = Select;
   const onSend = () => {
     console.log('onSend clicked')
-    const result = reqForm.getFieldsValue();
+    const result = reqFormInstance.getFieldsValue();
     console.log('result -> ', result);
   }
 

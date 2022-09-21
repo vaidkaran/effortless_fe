@@ -12,7 +12,7 @@ import JsonEditor from "./components/JsonEditor";
 import KeyValueDynamicForm from "./components/KeyValueDynamicForm";
 
 export default function App() {
-  const [reqForm] = Form.useForm();
+  const [reqFormInstance] = Form.useForm();
 
   const defaultLayout = {
     dockbox: {
@@ -39,16 +39,16 @@ export default function App() {
               group: 'locked',
               mode: 'horizontal',
               tabs: [
-                {id: 'request', size: 10, title: 'Request', content: <UrlInput reqForm={reqForm}/>},
+                {id: 'request', size: 10, title: 'Request', content: <UrlInput reqFormInstance={reqFormInstance}/>},
               ]
             },
             {
               size: 1000,
               group: 'locked',
               tabs: [
-                {id: 'body', title: 'JSON', content: <JsonEditor reqForm={reqForm}/>},
-                {id: 'query', title: 'Query', content: <KeyValueDynamicForm formName={'queryParams'} reqForm={reqForm}/>},
-                {id: 'headers', title: 'Headers', content: <KeyValueDynamicForm formName={'headers'} reqForm={reqForm}/>},
+                {id: 'body', title: 'JSON', content: <JsonEditor reqFormInstance={reqFormInstance}/>},
+                {id: 'query', title: 'Query', content: <KeyValueDynamicForm formName={'queryParams'} reqFormInstance={reqFormInstance}/>},
+                {id: 'headers', title: 'Headers', content: <KeyValueDynamicForm formName={'headers'} reqFormInstance={reqFormInstance}/>},
               ]
             }
           ]
