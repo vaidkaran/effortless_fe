@@ -1,11 +1,10 @@
 import { Input, Form, Space, Button } from 'antd';
 import {MinusCircleOutlined, PlusCircleTwoTone} from '@ant-design/icons';
 
-export default function Headers({ reqForm }) {
-
+export default function KeyValueDynamicForm({ reqForm, formName }) {
   return (
   <Form form={reqForm} style={{padding: 10}} name="dynamic_form_nest_item" autoComplete="off">
-    <Form.List name="headers">
+    <Form.List name={formName}>
       {(fields, { add, remove }) => (
         <>
           {fields.map(({ key, name, ...restField }) => (

@@ -3,16 +3,13 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
+import { Form } from 'antd';
 
 import FileExplorer from './components/FileExplorer';
 import ResponseViewer from "./components/ResponseViewer";
 import UrlInput from './components/UrlInput';
 import JsonEditor from "./components/JsonEditor";
-import Headers from "./components/Headers";
-import { Form } from 'antd';
-
-
-
+import KeyValueDynamicForm from "./components/KeyValueDynamicForm";
 
 export default function App() {
   const [reqForm] = Form.useForm();
@@ -50,8 +47,8 @@ export default function App() {
               group: 'locked',
               tabs: [
                 {id: 'body', title: 'JSON', content: <JsonEditor reqForm={reqForm}/>},
-                {id: 'query', title: 'Query', content: <ResponseViewer reqForm={reqForm}/>},
-                {id: 'headers', title: 'Headers', content: <Headers reqForm={reqForm}/>},
+                {id: 'query', title: 'Query', content: <KeyValueDynamicForm formName={'queryParams'} reqForm={reqForm}/>},
+                {id: 'headers', title: 'Headers', content: <KeyValueDynamicForm formName={'headers'} reqForm={reqForm}/>},
               ]
             }
           ]
