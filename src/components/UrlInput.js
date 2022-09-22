@@ -1,4 +1,4 @@
-import { Button, Input, Select } from 'antd';
+import { Button, Input, Select, Form } from 'antd';
 
 
 export default function UrlInput({reqFormInstance}) {
@@ -10,21 +10,27 @@ export default function UrlInput({reqFormInstance}) {
   }
 
   return (
-    <Input.Group compact style={{padding: 10}}>
-      <Select defaultValue='GET'>
-        <Option>GET</Option>
-        <Option>POST</Option>
-        <Option>PUT</Option>
-        <Option>PATCH</Option>
-        <Option>DELETE</Option>
-        <Option>HEAD</Option>
-      </Select>
-      <Select defaultValue='http://'>
-        <Option>http://</Option>
-        <Option>https://</Option>
-      </Select>
-      <Input placeholder='URL' style={{width: '60%'}} />
-      <Button type='primary' onClick={onSend}>Send</Button>
-    </Input.Group>
+    <Form form={reqFormInstance} initialValues={{method: 'GET', protocol: 'http://'}} autoComplete="off">
+      <Input.Group compact style={{padding: 10}}>
+        <Form.Item name='method'>
+          <Select>
+            <Option key='get'>GET</Option>
+            <Option key='post'>POST</Option>
+            <Option key='put'>PUT</Option>
+            <Option key='patch'>PATCH</Option>
+            <Option key='delete'>DELETE</Option>
+            <Option key='head'>HEAD</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name='protocol'>
+          <Select>
+            <Option key='http'>http://</Option>
+            <Option key='https'>https://</Option>
+          </Select>
+        </Form.Item>
+          <Input placeholder='URL' style={{width: '60%'}} />
+          <Button type='primary' onClick={onSend}>Send</Button>
+      </Input.Group>
+    </Form>
   );
 }

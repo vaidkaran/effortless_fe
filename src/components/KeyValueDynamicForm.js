@@ -45,7 +45,7 @@ export default function KeyValueDynamicForm({ reqFormInstance, formName }) {
             </Space>
           ))}
           <Form.Item>
-            <Button type="dashed" onClick={() => add()} block icon={<PlusCircleTwoTone />}> </Button>
+            <Button type="dashed" onClick={() => add()} block icon={<PlusCircleTwoTone style={{fontSize:'20px'}} />}> </Button>
           </Form.Item>
         </>
       )}
