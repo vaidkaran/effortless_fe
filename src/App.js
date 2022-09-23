@@ -48,7 +48,7 @@ export default function App() {
               tabs: [
                 {id: 'body', title: 'JSON', content: <JsonEditor reqFormInstance={reqFormInstance}/>},
                 {id: 'query', title: 'Query', content: <KeyValueDynamicForm formName={'queryParams'} reqFormInstance={reqFormInstance}/>},
-                {id: 'headers', title: 'Headers', content: <KeyValueDynamicForm formName={'headers'} reqFormInstance={reqFormInstance}/>},
+                {id: 'headers', title: 'Headers', content: <KeyValueDynamicForm defaults={[{name: 'Content-Type', value: 'application/json'}]} formName={'headers'} reqFormInstance={reqFormInstance}/>},
               ]
             }
           ]

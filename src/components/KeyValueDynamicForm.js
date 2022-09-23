@@ -1,12 +1,20 @@
 import { Input, Form, Space, Button } from 'antd';
 import {MinusCircleOutlined, PlusCircleTwoTone} from '@ant-design/icons';
+import {useRef, useEffect} from 'react';
 
-export default function KeyValueDynamicForm({ reqFormInstance, formName }) {
+export default function KeyValueDynamicForm({ reqFormInstance, formName, defaults=[] }) {
+  const addRef = useRef();
+
+  useEffect(() => {
+    defaults.forEach(({name, value}) => addRef.current({name, value}))
+  })
+
   return (
   <Form form={reqFormInstance} style={{padding: 10}} name="dynamic_form_nest_item" autoComplete="off">
     <Form.List name={formName}>
-      {(fields, { add, remove }) => (
-        <>
+      {(fields, { add, remove }) => {
+        addRef.current = add;
+        return <>
           {fields.map(({ key, name, ...restField }) => (
             <Space
               className='d-flex justify-content-center'
@@ -48,7 +56,7 @@ export default function KeyValueDynamicForm({ reqFormInstance, formName }) {
             <Button type="dashed" onClick={() => add()} block icon={<PlusCircleTwoTone style={{fontSize:'20px'}} />}> </Button>
           </Form.Item>
         </>
-      )}
+      }}
     </Form.List>
   </Form>
   );
