@@ -1,10 +1,12 @@
 import '../App.css';
 import _ from 'lodash';
 import ReactJson from 'react-json-view';
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
+import ResContext from '../context/ResContext'
 
 export default function ResponseViewer() {
+  const { resBody } = useContext(ResContext)
   const props = {};
   const parentPathsRef = useRef({});
   const variablePathsRef = useRef({});
@@ -137,53 +139,27 @@ export default function ResponseViewer() {
   }
   props.isVariableVerified = isVariableVerified;
 
-  const json = {
-    a: 1,
-    b: {
-        'z.x.z': {
-          x: 'y'
-        },
-        k: [
-            [
-                [
-                    'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii'
-                ]
-            ]
-        ],
-        1: 'one',
-        c: 3,
-        d: [
-            'x',
-            'y',
-            'z'
-        ],
-        e: [
-            {
-                x: 11
-            },
-            {
-                y: 22
-            },
-            {
-                z: 33
-            },
-        ],
-    },
-  };
-
   return (
-    <div className='scrollable'>
-      <ReactJson 
-        src={json} 
-        {...props} 
-        theme='light' 
-        enableVerifyIcon
-        quotesOnKeys={false}
-        enableClipboard={false}
-        name={'root'}
-      />
-      <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
-      <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
-    </div>
+    <>
+    {
+      resBody !== null ? (
+        <div className='scrollable'>
+          <ReactJson 
+            src={resBody} 
+            {...props} 
+            theme='light' 
+            enableVerifyIcon
+            quotesOnKeys={false}
+            enableClipboard={false}
+            name={'root'}
+          />
+          <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
+          <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
+        </div>
+      ) : (
+        <></>
+      )
+    }
+    </>
   );
 }

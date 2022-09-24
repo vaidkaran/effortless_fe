@@ -2,8 +2,11 @@
 import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import axios from "axios";
 import DockLayout from 'rc-dock'
 import { Form } from 'antd';
+import {useState} from 'react';
+import ResContext from './context/ResContext';
 
 import FileExplorer from './components/FileExplorer';
 import ResponseViewer from "./components/ResponseViewer";
@@ -12,6 +15,29 @@ import JsonEditor from "./components/JsonEditor";
 import KeyValueDynamicForm from "./components/KeyValueDynamicForm";
 
 export default function App() {
+  const [resBody, setResBody] = useState(null);
+
+  const defaults = {
+    headers: [{name: 'Content-Type', value: 'application/json'}],
+  }
+
+  const onRequestSend = async ({url}) => {
+    const {protocol, headers, method} = reqFormInstance.getFieldsValue();
+
+    const headersToFormat = headers || defaults.headers;
+    const mapped = headersToFormat.map(item => ({ [item.name]: item.value }) );
+    const headersParam = Object.assign({}, ...mapped );
+    
+    const reqOpts = {
+      url: `${protocol}${url}`,
+      headers: headersParam,
+      method,
+    };
+
+    const res = await axios.request(reqOpts);
+    console.log('setting data: ', res.data)
+    setResBody(res.data)
+  }
   const [reqFormInstance] = Form.useForm();
 
   const defaultLayout = {
@@ -39,7 +65,7 @@ export default function App() {
               group: 'locked',
               mode: 'horizontal',
               tabs: [
-                {id: 'request', size: 10, title: 'Request', content: <UrlInput reqFormInstance={reqFormInstance}/>},
+                {id: 'request', size: 10, title: 'Request', content: <UrlInput onRequestSend={onRequestSend} reqFormInstance={reqFormInstance}/>},
               ]
             },
             {
@@ -60,7 +86,7 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'response', title: 'Response', content: <></>},
+                {id: 'response', title: 'Response', content: <ResponseViewer resBody={resBody} />},
               ]
             }
           ]
@@ -70,18 +96,20 @@ export default function App() {
   };
 
   return (
-    <div>
-      <DockLayout
-      defaultLayout={defaultLayout}
-      groups={{locked: { floatable: false, tabLocked: true}}}
-      style={{
-        position: "absolute",
-        left: 10,
-        top: 10,
-        right: 10,
-        bottom: 10,
-      }}
-    />
-    </div>
+    <ResContext.Provider value={{resBody}}>
+      <div>
+        <DockLayout
+        defaultLayout={defaultLayout}
+        groups={{locked: { floatable: false, tabLocked: true}}}
+        style={{
+          position: "absolute",
+          left: 10,
+          top: 10,
+          right: 10,
+          bottom: 10,
+        }}
+      />
+      </div>
+    </ResContext.Provider>
   )
 }
