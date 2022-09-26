@@ -3,7 +3,7 @@ import _ from 'lodash';
 import ReactJson from 'react-json-view';
 import { useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
-import ResContext from '../context/ResContext'
+import {ResContext} from '../context/GlobalContext'
 
 export default function ResponseViewer() {
   const { resBody, parentPathsRef, variablePathsRef } = useContext(ResContext)

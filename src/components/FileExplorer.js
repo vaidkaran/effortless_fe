@@ -1,45 +1,14 @@
-import React from 'react';
+import {useContext} from 'react';
 import 'antd/dist/antd.min.css';
 import { Tree } from 'antd';
+import {FileContext} from '../context/GlobalContext'
 
 
 const { DirectoryTree } = Tree;
-const treeData = [
-  {
-    title: 'parent 0',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true,
-      },
-    ],
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true,
-      },
-    ],
-  },
-];
 
 export default function FileExplorer() {
+  const {fileData} = useContext(FileContext)
+
   const onSelect = (keys, info) => {
     console.log('Trigger Select', keys, info);
   };
@@ -56,7 +25,7 @@ export default function FileExplorer() {
         defaultExpandAll
         onSelect={onSelect}
         onExpand={onExpand}
-        treeData={treeData}
+        treeData={fileData}
       />
     </div>
   );

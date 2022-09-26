@@ -3,9 +3,11 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
-import { Form } from 'antd';
+import { Form, Modal, Input } from 'antd';
 import {useState, useRef} from 'react';
-import ResContext from './context/ResContext';
+// import ResContext from './context/ResContext';
+// import FileContext from './context/FileContext';
+import { ResContext, FileContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
 import ResponseViewer from "./components/ResponseViewer";
@@ -14,10 +16,25 @@ import JsonEditor from "./components/JsonEditor";
 import KeyValueDynamicForm from "./components/KeyValueDynamicForm";
 import {sendRequest} from './utils/reqUtils';
 
+import {FileAddTwoTone} from '@ant-design/icons';
+
 export default function App() {
   const [resBody, setResBody] = useState(null);
   const parentPathsRef = useRef({});
   const variablePathsRef = useRef({});
+  const [fileData, setFileData] = useState([]);
+  const [filename, setFilename] = useState('');
+  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+
+  const showModal = () => {
+    setFilename('');
+    setIsFileModalOpen(true);
+  }
+  const fileModalHandleCancel = () => setIsFileModalOpen(false);
+  const fileModalHandleOk = () => {
+    if(filename.trim() !== '') setFileData([...fileData, {title: filename, key: filename, isLeaf: true}])
+    setIsFileModalOpen(false);
+  }
 
   const defaults = {
     headers: [{name: 'Content-Type', value: 'application/json'}],
@@ -30,6 +47,7 @@ export default function App() {
   }
   const [reqFormInstance] = Form.useForm();
 
+
   const defaultLayout = {
     dockbox: {
       mode: 'horizontal',
@@ -41,8 +59,13 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer/>},
-              ]
+                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer fileData={fileData}/>},
+              ],
+              panelLock: {
+                panelExtra: () => (
+                  <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                )
+              }
             }
           ]
         },
@@ -87,19 +110,25 @@ export default function App() {
 
   return (
     <ResContext.Provider value={{resBody, parentPathsRef, variablePathsRef}}>
-      <div>
-        <DockLayout
-        defaultLayout={defaultLayout}
-        groups={{locked: { floatable: false, tabLocked: true}}}
-        style={{
-          position: "absolute",
-          left: 10,
-          top: 10,
-          right: 10,
-          bottom: 10,
-        }}
-      />
-      </div>
+      <FileContext.Provider value={{fileData}}>
+        <div>
+          <Modal title="Basic Modal" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+            <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='URL' style={{width: '60%'}} />
+          </Modal>
+
+          <DockLayout
+          defaultLayout={defaultLayout}
+          groups={{locked: { floatable: false, tabLocked: true}}}
+          style={{
+            position: "absolute",
+            left: 10,
+            top: 10,
+            right: 10,
+            bottom: 10,
+          }}
+        />
+        </div>
+      </FileContext.Provider>
     </ResContext.Provider>
   )
 }
