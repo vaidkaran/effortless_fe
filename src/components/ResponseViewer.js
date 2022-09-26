@@ -6,10 +6,8 @@ import { Button } from 'react-bootstrap';
 import ResContext from '../context/ResContext'
 
 export default function ResponseViewer() {
-  const { resBody } = useContext(ResContext)
+  const { resBody, parentPathsRef, variablePathsRef } = useContext(ResContext)
   const props = {};
-  const parentPathsRef = useRef({});
-  const variablePathsRef = useRef({});
   const [verifiedData, setVerifiedData] = useState({});
 
   const pathSeparator = ',,';
@@ -29,17 +27,18 @@ export default function ResponseViewer() {
   }
   props.initParentPath = initParentPath;
 
-  const initVariablePath = (path, parentPath, setState) => {
+  const initVariablePath = (path, parentPath, variable, setState) => {
     if(!variablePathsRef.current[path]) { // path is not present already
       const newPathOb = {}
-      newPathOb[path] = {verified: false, parentPath, setState}
+      newPathOb[path] = {verified: false, parentPath, variable, setState}
       const newPaths = {...variablePathsRef.current, ...newPathOb};
       variablePathsRef.current = newPaths;
     } else { // remounting - so path already present
       variablePathsRef.current[path].setState = setState; // set the new state to avoid error "can't perform state update on unmounted component"
       // reset the previous state
-      variablePathsRef.current[path].setState({verified: variablePathsRef.current[path].verified});
+      [path].setState({verified: variablePathsRef.current[path].verified});
     }
+
   }
   props.initVariablePath = initVariablePath;
 

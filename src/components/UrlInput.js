@@ -27,7 +27,7 @@ export default function UrlInput({reqFormInstance, onRequestSend}) {
           </Select>
         </Form.Item>
           <Input value={url} onChange={(url) => setUrl(url.target.value)} placeholder='URL' style={{width: '60%'}} />
-          <Button type='primary' onClick={()=>onRequestSend({url})}>Send</Button>
+          <Button type='primary' onClick={()=>onRequestSend({reqFormInstance, url})}>Send</Button>
       </Input.Group>
     </Form>
   );

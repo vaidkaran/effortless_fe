@@ -2,10 +2,9 @@
 import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import axios from "axios";
 import DockLayout from 'rc-dock'
 import { Form } from 'antd';
-import {useState} from 'react';
+import {useState, useRef} from 'react';
 import ResContext from './context/ResContext';
 
 import FileExplorer from './components/FileExplorer';
@@ -13,28 +12,19 @@ import ResponseViewer from "./components/ResponseViewer";
 import UrlInput from './components/UrlInput';
 import JsonEditor from "./components/JsonEditor";
 import KeyValueDynamicForm from "./components/KeyValueDynamicForm";
+import {sendRequest} from './utils/reqUtils';
 
 export default function App() {
   const [resBody, setResBody] = useState(null);
+  const parentPathsRef = useRef({});
+  const variablePathsRef = useRef({});
 
   const defaults = {
     headers: [{name: 'Content-Type', value: 'application/json'}],
   }
 
   const onRequestSend = async ({url}) => {
-    const {protocol, headers, method} = reqFormInstance.getFieldsValue();
-
-    const headersToFormat = headers || defaults.headers;
-    const mapped = headersToFormat.map(item => ({ [item.name]: item.value }) );
-    const headersParam = Object.assign({}, ...mapped );
-    
-    const reqOpts = {
-      url: `${protocol}${url}`,
-      headers: headersParam,
-      method,
-    };
-
-    const res = await axios.request(reqOpts);
+    const res = await sendRequest({reqFormInstance, defaults, url})
     console.log('setting data: ', res.data)
     setResBody(res.data)
   }
@@ -96,7 +86,7 @@ export default function App() {
   };
 
   return (
-    <ResContext.Provider value={{resBody}}>
+    <ResContext.Provider value={{resBody, parentPathsRef, variablePathsRef}}>
       <div>
         <DockLayout
         defaultLayout={defaultLayout}
