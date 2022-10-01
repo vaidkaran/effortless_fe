@@ -1,17 +1,20 @@
 import { Input, Form, Space, Button } from 'antd';
 import {MinusCircleOutlined, PlusCircleTwoTone} from '@ant-design/icons';
-import {useRef, useEffect} from 'react';
+import {useRef, useContext} from 'react';
+import { GlobalContext } from '../context/GlobalContext';
 
-export default function KeyValueDynamicForm({ reqFormInstance, formName, defaults=[] }) {
+export default function QueryParams() {
   const addRef = useRef();
+  const {queryParamsFormInstance, appDataRef, selectedFileId} = useContext(GlobalContext);
 
-  useEffect(() => {
-    defaults.forEach(({name, value}) => addRef.current({name, value}))
-  })
+  const onValuesChange = (changedValues, allValues) => {
+    console.log('onValuesChange queryParams: ', allValues.queryParams)
+    appDataRef.current[selectedFileId].queryParams = allValues.queryParams; 
+  }
 
   return (
-  <Form form={reqFormInstance} style={{padding: 10}} name="dynamic_form_nest_item" autoComplete="off">
-    <Form.List name={formName}>
+  <Form form={queryParamsFormInstance} onValuesChange={onValuesChange} style={{padding: 10}} name="dynamic_form_nest_item" autoComplete="off">
+    <Form.List name='queryParams'>
       {(fields, { add, remove }) => {
         addRef.current = add;
         return <>
