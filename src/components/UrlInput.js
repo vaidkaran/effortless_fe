@@ -1,13 +1,31 @@
+import axios from 'axios';
 import { Button, Input, Select, Form } from 'antd';
-import { useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 
 
-export default function UrlInput({reqFormInstance, onRequestSend}) {
-  const {url, setUrl, protocol, setProtocol, defaultProtocolRef, method, setMethod, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
+export default function UrlInput() {
+  const {url, setUrl, setResBody, protocol, setProtocol, defaultProtocolRef, method, setMethod, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
   const [protocolOpen, setProtocolOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
+
+  useEffect(() => console.log('urlInput rendered'))
+
+  const onRequestSend = async () => {
+    const {headers: {headers}, url, method, protocol} = appDataRef.current[selectedFileId];
+    const formattedHeaders = {};
+    headers.forEach(item => (formattedHeaders[item.name] = item.value) );
+    console.log('formattedheaders: ', formattedHeaders)
+    const reqOpts = {
+      url: `${protocol}${url}`,
+      headers: formattedHeaders,
+      method,
+    };
+    const res = await axios.request(reqOpts);
+    setResBody(res.data);
+    appDataRef.current[selectedFileId].resBody = res.data; // always update the appData
+  }
 
   const updateUrl = (url) => {
     const {value} = url.target;
@@ -57,7 +75,7 @@ export default function UrlInput({reqFormInstance, onRequestSend}) {
           <Option value='https://'>https://</Option>
         </Select>
         <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: '60%'}} />
-        <Button type='primary' onClick={()=>onRequestSend({reqFormInstance, url})}>Send</Button>
+        <Button type='primary' onClick={()=>onRequestSend(selectedFileId)}>Send</Button>
     </Input.Group>
   );
 }

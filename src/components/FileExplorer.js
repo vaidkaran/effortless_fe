@@ -7,12 +7,13 @@ import { GlobalContext } from '../context/GlobalContext';
 const { DirectoryTree } = Tree;
 
 export default function FileExplorer() {
-  const {fileData, setSelectedFileId, updateStateVariablesWithAppData} = useContext(GlobalContext)
+  const {fileData, selectedFileId, setSelectedFileId, updateAppState} = useContext(GlobalContext)
 
   const onSelect = (keys, info) => {
     const fileId = keys[0];
+    console.log('here ', fileId)
     setSelectedFileId(fileId)
-    updateStateVariablesWithAppData(fileId);
+    updateAppState(fileId);
   };
 
   return (
@@ -22,6 +23,7 @@ export default function FileExplorer() {
         defaultExpandAll
         onSelect={onSelect}
         treeData={fileData}
+        selectedKeys={[selectedFileId]}
       />
     </div>
   );

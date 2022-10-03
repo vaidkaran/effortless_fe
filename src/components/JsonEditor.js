@@ -1,8 +1,8 @@
 import Editor from "@monaco-editor/react";
-import {useContext, useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 
-export default function JsonEditor() {
+export default React.memo(function JsonEditor() {
   const {reqBody, setReqBody, appDataRef, selectedFileId} = useContext(GlobalContext);
 
   const onChangeHandler = (value, event) => {
@@ -22,4 +22,4 @@ export default function JsonEditor() {
       value={reqBody}
     />
   );
-}
+})

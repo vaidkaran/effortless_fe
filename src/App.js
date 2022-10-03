@@ -5,9 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DockLayout from 'rc-dock'
 import { Form, Modal, Input } from 'antd';
 import {useState, useRef} from 'react';
-// import ResContext from './context/ResContext';
-// import FileContext from './context/FileContext';
-import { ResContext, FileContext, GlobalContext } from "./context/GlobalContext";
+import { GlobalContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
 import ResponseViewer from "./components/ResponseViewer";
@@ -16,9 +14,8 @@ import JsonEditor from "./components/JsonEditor";
 import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
 
-import {sendRequest} from './utils/reqUtils';
-
 import {FileAddTwoTone} from '@ant-design/icons';
+import updateAppDataAndState from "./utils/updateAppDataAndState";
 
 export default function App() {
   /**
@@ -43,21 +40,16 @@ export default function App() {
 
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
+  const defaultUrlRef = useRef('');
+  const defaultReqBodyRef = useRef('');
+  const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
   const queryParamsInitialValuesRef = useRef([]);
 
-  const updateStateVariablesWithAppData = (fileId) => {
-    console.log('appDataRef: ', appDataRef.current)
-    appDataRef.current[fileId].url ? setUrl(appDataRef.current[fileId].url) : setUrl('')
-    appDataRef.current[fileId].reqBody ? setReqBody(appDataRef.current[fileId].reqBody) : setReqBody('')
-    appDataRef.current[fileId].method ? setMethod(appDataRef.current[fileId].method) : setMethod(defaultMethodRef.current)
-    appDataRef.current[fileId].protocol ? setProtocol(appDataRef.current[fileId].protocol) : setProtocol(defaultProtocolRef.current)
-    appDataRef.current[fileId].headers ? 
-      headersFormInstance.setFieldsValue({headers: appDataRef.current[fileId].headers}) :
-      headersFormInstance.setFieldsValue({headers: headersInitialValuesRef.current});
-    appDataRef.current[fileId].queryParams ? 
-      queryParamsFormInstance.setFieldsValue({queryParams: appDataRef.current[fileId].queryParams}) :
-      queryParamsFormInstance.setFieldsValue({queryParams: queryParamsInitialValuesRef.current});
+  const updateAppState = (fileId) => {
+    updateAppDataAndState({fileId, appDataRef, setUrl, defaultUrlRef, setReqBody, defaultReqBodyRef, setResBody, defaultResBodyRef,
+    setMethod, defaultMethodRef, setProtocol, defaultProtocolRef, headersFormInstance, headersInitialValuesRef,
+    queryParamsFormInstance, queryParamsInitialValuesRef});
   }
 
   const showModal = () => {
@@ -65,21 +57,12 @@ export default function App() {
     setIsFileModalOpen(true);
   }
   const fileModalHandleCancel = () => setIsFileModalOpen(false);
-  const fileModalHandleOk = () => {
+  const fileModalHandleOk = () => { // filename is used as fileId
     if(filename.trim() !== '') setFileData([...fileData, {title: filename, key: filename, isLeaf: true}])
     appDataRef.current[filename] = {}
-    setSelectedFileId(filename);
+    setSelectedFileId(filename); // also called on file onSelect
+    updateAppState(filename); // also called on file onSelect
     setIsFileModalOpen(false);
-  }
-
-  const defaults = {
-    headers: [{name: 'Content-Type', value: 'application/json'}],
-  }
-
-  const onRequestSend = async ({url}) => {
-    const res = await sendRequest({defaults, url})
-    console.log('setting data: ', res.data)
-    setResBody(res.data)
   }
 
 
@@ -113,7 +96,7 @@ export default function App() {
               group: 'locked',
               mode: 'horizontal',
               tabs: [
-                {id: 'request', size: 10, title: 'Request', content: <UrlInput onRequestSend={onRequestSend}/>},
+                {id: 'request', size: 10, title: 'Request', content: <UrlInput/>},
               ]
             },
             {
@@ -146,7 +129,7 @@ export default function App() {
   return (
     <GlobalContext.Provider value={{
       appDataRef,
-      updateStateVariablesWithAppData,
+      updateAppState,
       queryParamsInitialValuesRef,
       headersFormInstance,
       queryParamsFormInstance,
@@ -159,28 +142,26 @@ export default function App() {
       method, setMethod, defaultMethodRef,
       protocol, setProtocol, defaultProtocolRef,
       selectedFileId, setSelectedFileId,
-      }}>
-      <ResContext.Provider value={{resBody, parentPathsRef, variablePathsRef}}>
-        <FileContext.Provider value={{fileData}}>
-          <div>
-            <Modal title="Basic Modal" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-              <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='URL' style={{width: '60%'}} />
-            </Modal>
-
-            <DockLayout
-            defaultLayout={defaultLayout}
-            groups={{locked: { floatable: false, tabLocked: true}}}
-            style={{
-              position: "absolute",
-              left: 10,
-              top: 10,
-              right: 10,
-              bottom: 10,
-            }}
+    }}>
+      <div>
+        {isFileModalOpen ? (
+          <Modal title="Basic Modal" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+            <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='URL' style={{width: '60%'}} />
+          </Modal>
+        ) : (
+          <DockLayout
+          defaultLayout={defaultLayout}
+          groups={{locked: { floatable: false, tabLocked: true}}}
+          style={{
+            position: "absolute",
+            left: 10,
+            top: 10,
+            right: 10,
+            bottom: 10,
+          }}
           />
-          </div>
-        </FileContext.Provider>
-      </ResContext.Provider>
+        )}
+      </div>
     </GlobalContext.Provider>
   )
 }

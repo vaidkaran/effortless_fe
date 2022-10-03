@@ -3,10 +3,10 @@ import _ from 'lodash';
 import ReactJson from 'react-json-view';
 import { useState, useRef, useContext } from 'react';
 import { Button } from 'react-bootstrap';
-import {ResContext} from '../context/GlobalContext'
+import {GlobalContext} from '../context/GlobalContext'
 
 export default function ResponseViewer() {
-  const { resBody, parentPathsRef, variablePathsRef } = useContext(ResContext)
+  const { resBody, parentPathsRef, variablePathsRef } = useContext(GlobalContext)
   const props = {};
   const [verifiedData, setVerifiedData] = useState({});
 
@@ -36,7 +36,7 @@ export default function ResponseViewer() {
     } else { // remounting - so path already present
       variablePathsRef.current[path].setState = setState; // set the new state to avoid error "can't perform state update on unmounted component"
       // reset the previous state
-      [path].setState({verified: variablePathsRef.current[path].verified});
+      variablePathsRef.current[path].setState({verified: variablePathsRef.current[path].verified});
     }
 
   }
@@ -148,9 +148,11 @@ export default function ResponseViewer() {
             {...props} 
             theme='light' 
             enableVerifyIcon
+            collapsed={false}
             quotesOnKeys={false}
             enableClipboard={false}
             name={'root'}
+            groupArraysAfterLength={500}
           />
           <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
           <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
