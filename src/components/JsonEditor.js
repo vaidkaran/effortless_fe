@@ -8,10 +8,10 @@ export default React.memo(function JsonEditor() {
   const onChangeHandler = (value, event) => {
     setReqBody(value)
     appDataRef.current[selectedFileId].reqBody = value;
-    console.log("onChangeHandler ~ appDataRef", appDataRef.current)
+    // console.log("onChangeHandler ~ appDataRef", appDataRef.current)
   }
   useEffect(() => {
-    console.log(`rendered with value: ${reqBody}`)
+    // console.log(`rendered with value: ${reqBody}`)
   })
 
   return (

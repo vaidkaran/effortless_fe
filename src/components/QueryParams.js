@@ -8,7 +8,7 @@ export default function QueryParams() {
   const {queryParamsFormInstance, appDataRef, selectedFileId} = useContext(GlobalContext);
 
   const onValuesChange = (changedValues, allValues) => {
-    console.log('onValuesChange queryParams: ', allValues.queryParams)
+    // console.log('onValuesChange queryParams: ', allValues.queryParams)
     appDataRef.current[selectedFileId].queryParams = allValues.queryParams; 
   }
 

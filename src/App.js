@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
 import { Form, Modal, Input } from 'antd';
-import {useState, useRef} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import { GlobalContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
@@ -40,11 +40,26 @@ export default function App() {
 
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
-  const defaultUrlRef = useRef('');
+  const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
   const defaultReqBodyRef = useRef('');
   const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
   const queryParamsInitialValuesRef = useRef([]);
+
+  const arrayGroupStateInstance = useRef();
+  const attributeStoreInstance = useRef();
+
+  useEffect(() => {
+    if(!selectedFileId) setIsFileModalOpen(true);
+  }, [selectedFileId]);
+
+  const arrayGroupSetState = (setState) => {
+    arrayGroupStateInstance.current = setState
+  }
+  const setAttributeStoreInstance = (storeInstance) => {
+    console.log('setting attr store instance in ref: ', storeInstance)
+    attributeStoreInstance.current = storeInstance;
+  }
 
   const updateAppState = (fileId) => {
     updateAppDataAndState({fileId, appDataRef, setUrl, defaultUrlRef, setReqBody, defaultReqBodyRef, setResBody, defaultResBodyRef,
@@ -130,6 +145,7 @@ export default function App() {
     <GlobalContext.Provider value={{
       appDataRef,
       updateAppState,
+      arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
       queryParamsInitialValuesRef,
       headersFormInstance,
       queryParamsFormInstance,
@@ -145,8 +161,8 @@ export default function App() {
     }}>
       <div>
         {isFileModalOpen ? (
-          <Modal title="Basic Modal" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-            <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='URL' style={{width: '60%'}} />
+          <Modal title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+            <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
           </Modal>
         ) : (
           <DockLayout

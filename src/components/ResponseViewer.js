@@ -1,17 +1,19 @@
 import '../App.css';
 import _ from 'lodash';
 import ReactJson from 'react-json-view';
-import { useState, useRef, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 import {GlobalContext} from '../context/GlobalContext'
 
 export default function ResponseViewer() {
-  const { resBody, parentPathsRef, variablePathsRef } = useContext(GlobalContext)
+  const { setAttributeStoreInstance, arrayGroupSetState, resBody, parentPathsRef, variablePathsRef, selectedFileId } = useContext(GlobalContext)
   const props = {};
   const [verifiedData, setVerifiedData] = useState({});
 
   const pathSeparator = ',,';
   props.pathSeparator = pathSeparator;
+
+  // useEffect(() => console.log('---------------useEffect for response----------------------------------'))
 
   const initParentPath = (path, setState) => {
     if(!parentPathsRef.current[path]) { // path is not present already
@@ -138,21 +140,35 @@ export default function ResponseViewer() {
   }
   props.isVariableVerified = isVariableVerified;
 
+  const shouldCollapse = ({src, namespace, type}) => {
+    if (type==='object' && Object.keys(src).length > 20) {
+      return true
+    }
+
+    if(namespace.length > 3) return true;
+
+    return false
+  }
+
+
   return (
     <>
     {
       resBody !== null ? (
         <div className='scrollable'>
           <ReactJson 
-            src={resBody} 
             {...props} 
+            arrayGroupSetState={arrayGroupSetState}
+            setAttributeStoreInstance={setAttributeStoreInstance}
+            src={resBody} 
             theme='light' 
             enableVerifyIcon
-            collapsed={false}
             quotesOnKeys={false}
             enableClipboard={false}
             name={'root'}
-            groupArraysAfterLength={500}
+            groupArraysAfterLength={50}
+            collapseStringsAfterLength={50}
+            shouldCollapse={shouldCollapse}
           />
           <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
           <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>

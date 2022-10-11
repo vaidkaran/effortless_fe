@@ -8,7 +8,7 @@ setMethod, defaultMethodRef,
 setProtocol, defaultProtocolRef, 
 headersFormInstance, headersInitialValuesRef, 
 queryParamsFormInstance, queryParamsInitialValuesRef}) {
-  console.log('appDataRef: ', appDataRef.current)
+  // console.log('appDataRef: ', appDataRef.current)
   const {url, reqBody, resBody, method, protocol, headers, queryParams} = appDataRef.current[fileId];
 
   const set = (propertyName, setStateFn, valueToSet) => {
@@ -34,7 +34,7 @@ queryParamsFormInstance, queryParamsInitialValuesRef}) {
   // headers
   // const headersSetFieldsFn = headersFormInstance.setFieldsValue.bind(headersFormInstance);
   const headersSetFieldsFn = headersFormInstance.setFieldsValue;
-  if(headers) console.log('------------->', headers)
+  // if(headers) console.log('------------->', headers)
   headers ? set('headers', headersSetFieldsFn, {headers: headers.headers}) : set('headers', headersSetFieldsFn, {headers: headersInitialValuesRef.current});
   // headers ? headersFormInstance.setFieldsValue({headers}) : headersFormInstance.setFieldsValue({headers: headersInitialValuesRef.current});
 

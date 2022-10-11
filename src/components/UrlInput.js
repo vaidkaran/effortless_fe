@@ -10,13 +10,13 @@ export default function UrlInput() {
   const [protocolOpen, setProtocolOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
 
-  useEffect(() => console.log('urlInput rendered'))
+  // useEffect(() => console.log('urlInput rendered'))
 
   const onRequestSend = async () => {
     const {headers: {headers}, url, method, protocol} = appDataRef.current[selectedFileId];
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
-    console.log('formattedheaders: ', formattedHeaders)
+    // console.log('formattedheaders: ', formattedHeaders)
     const reqOpts = {
       url: `${protocol}${url}`,
       headers: formattedHeaders,

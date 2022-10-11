@@ -8,7 +8,7 @@ export default function Headers() {
   const {headersFormInstance, appDataRef, selectedFileId} = useContext(GlobalContext);
 
   const onValuesChange = (changedValues, allValues) => {
-    console.log('onValuesChange headers: ', allValues.headers)
+    // console.log('onValuesChange headers: ', allValues.headers)
     appDataRef.current[selectedFileId].headers = allValues.headers; 
   }
 
