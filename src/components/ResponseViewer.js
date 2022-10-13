@@ -4,6 +4,7 @@ import ReactJson from 'react-json-view';
 import { useState, useEffect, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 import {GlobalContext} from '../context/GlobalContext'
+import { VerifiedIcon, VerifyIcon } from '../icons';
 
 export default function ResponseViewer() {
   const { setAttributeStoreInstance, arrayGroupSetState, resBody, parentPathsRef, variablePathsRef, selectedFileId } = useContext(GlobalContext)
@@ -150,7 +151,6 @@ export default function ResponseViewer() {
     return false
   }
 
-
   return (
     <>
     {
@@ -158,6 +158,8 @@ export default function ResponseViewer() {
         <div className='scrollable'>
           <ReactJson 
             {...props} 
+            VerifyIcon={VerifyIcon}
+            VerifiedIcon={VerifiedIcon}
             arrayGroupSetState={arrayGroupSetState}
             setAttributeStoreInstance={setAttributeStoreInstance}
             src={resBody} 
@@ -169,7 +171,7 @@ export default function ResponseViewer() {
             groupArraysAfterLength={50}
             collapseStringsAfterLength={50}
             shouldCollapse={shouldCollapse}
-          />
+          /> 
           <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
           <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
         </div>
