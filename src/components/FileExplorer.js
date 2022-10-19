@@ -7,14 +7,13 @@ import { GlobalContext } from '../context/GlobalContext';
 const { DirectoryTree } = Tree;
 
 export default function FileExplorer() {
-  const {attributeStoreInstance, arrayGroupStateInstance, fileData, selectedFileId, setSelectedFileId, updateAppState} = useContext(GlobalContext)
+  const {attributeStoreInstance, arrayGroupStateInstance, fileData, selectedFileId, setSelectedFileId, updateAppState, rjvReloader, setRjvReloader} = useContext(GlobalContext)
 
   const onSelect = (keys, info) => {
     const fileId = keys[0];
     setSelectedFileId(fileId)
     updateAppState(fileId);
-    if(arrayGroupStateInstance.current) arrayGroupStateInstance.current({expanded: []});
-    if(attributeStoreInstance.current) attributeStoreInstance.current.resetStore();
+    setRjvReloader(rjvReloader+1);
   };
 
   return (

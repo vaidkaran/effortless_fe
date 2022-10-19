@@ -38,6 +38,8 @@ export default function App() {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState();
 
+  const [rjvReloader, setRjvReloader] = useState(0);
+
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
   const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
@@ -64,7 +66,7 @@ export default function App() {
   const updateAppState = (fileId) => {
     updateAppDataAndState({fileId, appDataRef, setUrl, defaultUrlRef, setReqBody, defaultReqBodyRef, setResBody, defaultResBodyRef,
     setMethod, defaultMethodRef, setProtocol, defaultProtocolRef, headersFormInstance, headersInitialValuesRef,
-    queryParamsFormInstance, queryParamsInitialValuesRef});
+    queryParamsFormInstance, queryParamsInitialValuesRef, parentPathsRef, variablePathsRef});
   }
 
   const showModal = () => {
@@ -144,6 +146,7 @@ export default function App() {
   return (
     <GlobalContext.Provider value={{
       appDataRef,
+      rjvReloader, setRjvReloader,
       updateAppState,
       arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
       queryParamsInitialValuesRef,

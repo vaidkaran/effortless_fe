@@ -7,7 +7,7 @@ import {GlobalContext} from '../context/GlobalContext'
 import { VerifiedIcon, VerifyIcon } from '../icons';
 
 export default function ResponseViewer() {
-  const { setAttributeStoreInstance, arrayGroupSetState, resBody, parentPathsRef, variablePathsRef, selectedFileId } = useContext(GlobalContext)
+  const { appDataRef, setAttributeStoreInstance, arrayGroupSetState, resBody, parentPathsRef, variablePathsRef, selectedFileId, rjvReloader } = useContext(GlobalContext)
   const props = {};
   const [verifiedData, setVerifiedData] = useState({});
 
@@ -16,7 +16,12 @@ export default function ResponseViewer() {
 
   // useEffect(() => console.log('---------------useEffect for response----------------------------------'))
 
+  const updateParentPathsAppData = () => appDataRef.current[selectedFileId].parentPaths = parentPathsRef.current; // always update the appData
+
+  const updateVariablePathsAppData = () => appDataRef.current[selectedFileId].variablePaths = variablePathsRef.current; // always update the appData
+
   const initParentPath = (path, setState) => {
+    console.log('---- initparentpath called --------')
     if(!parentPathsRef.current[path]) { // path is not present already
       const newPathOb = {}
       newPathOb[path] = {verified: false, setState}
@@ -27,6 +32,7 @@ export default function ResponseViewer() {
       // reset the previous state
       parentPathsRef.current[path].setState({verified: parentPathsRef.current[path].verified});
     }
+    updateParentPathsAppData();
   }
   props.initParentPath = initParentPath;
 
@@ -41,7 +47,7 @@ export default function ResponseViewer() {
       // reset the previous state
       variablePathsRef.current[path].setState({verified: variablePathsRef.current[path].verified});
     }
-
+    updateVariablePathsAppData();
   }
   props.initVariablePath = initVariablePath;
 
@@ -79,6 +85,7 @@ export default function ResponseViewer() {
       })
 
       parentPathsRef.current = newParentPaths;
+      updateParentPathsAppData();
   }
   props.addToVerifiedParentPaths = addToVerifiedParentPaths;
 
@@ -89,6 +96,7 @@ export default function ResponseViewer() {
       variablePathsRef.current = newVariablePaths;
 
       if(!isParentVerified(newVariablePaths[path].parentPath)) addToVerifiedParentPaths(newVariablePaths[path].parentPath);
+      updateVariablePathsAppData();
   }
   props.addToVerifiedVariablePaths = addToVerifiedVariablePaths;
 
@@ -102,6 +110,7 @@ export default function ResponseViewer() {
     if(parentPath && parentPathsRef.current[parentPath].verified===true && parentPathsRef.current[parentPath].explicit===false) {
         removeFromVerifiedParentPaths(parentPath);
     }
+    updateParentPathsAppData();
   }
   props.removeFromVerifiedParentPaths = removeFromVerifiedParentPaths;
 
@@ -114,6 +123,7 @@ export default function ResponseViewer() {
       // remove immediate parent from verifiedParentPaths ONLY if it's implicitly verified.
       const {verified, explicit } = parentPathsRef.current[variablePathsRef.current[path].parentPath]
       if(verified && !explicit) removeFromVerifiedParentPaths(newVariablePaths[path].parentPath);
+      updateVariablePathsAppData();
   }
   props.removeFromVerifiedVariablePaths = removeFromVerifiedVariablePaths;
 
@@ -155,7 +165,7 @@ export default function ResponseViewer() {
     <>
     {
       resBody !== null ? (
-        <div className='scrollable'>
+        <div className='scrollable' >
           <ReactJson 
             {...props} 
             VerifyIcon={VerifyIcon}
@@ -171,6 +181,7 @@ export default function ResponseViewer() {
             groupArraysAfterLength={50}
             collapseStringsAfterLength={50}
             shouldCollapse={shouldCollapse}
+            key={rjvReloader}
           /> 
           <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
           <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
