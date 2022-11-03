@@ -3,7 +3,7 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
-import { Form, Modal, Input } from 'antd';
+import { Form, Modal, Input, List } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { GlobalContext } from "./context/GlobalContext";
 
@@ -13,9 +13,12 @@ import UrlInput from './components/UrlInput';
 import JsonEditor from "./components/JsonEditor";
 import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
+import TestExecutionViewer from "./components/TestExecutionViewer";
 
-import {FileAddTwoTone} from '@ant-design/icons';
+import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone} from '@ant-design/icons';
+import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
+import playTest from "./utils/playTest";
 
 export default function App() {
   /**
@@ -30,19 +33,22 @@ export default function App() {
   const variablePathsRef = useRef({});
   const [fileData, setFileData] = useState([]);
   const [filename, setFilename] = useState('');
+  const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
 
   const [url, setUrl] = useState();
   const [method, setMethod] = useState();
   const [protocol, setProtocol] = useState();
 
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+  const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
   const [selectedFileId, setSelectedFileId] = useState();
 
   const [rjvReloader, setRjvReloader] = useState(0);
 
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
-  const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
+  // const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
+  const defaultUrlRef = useRef('localhost:8080');
   const defaultReqBodyRef = useRef('');
   const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
@@ -80,6 +86,26 @@ export default function App() {
     setSelectedFileId(filename); // also called on file onSelect
     updateAppState(filename); // also called on file onSelect
     setIsFileModalOpen(false);
+  }
+
+  const testExecutionModalCancel = () => setIsTestExecutionModalOpen(false);
+  const testExecutionModalOk = () => setIsTestExecutionModalOpen(false);
+
+  const saveTest = () => {
+    const fileDataCopy = fileData.map((file) => {
+      if(file.key === selectedFileId) {
+        file.icon = <VerifiedIcon/>
+      }
+      return file;
+    });
+    appDataRef.current[selectedFileId].test = true;
+    setFileData(fileDataCopy);
+  }
+
+  const playTestAndDisplayResults = async () => {
+    const results = await playTest(appDataRef.current[selectedFileId])
+    setTestResultsToDisplay(results);
+    setIsTestExecutionModalOpen(true);
   }
 
 
@@ -135,7 +161,15 @@ export default function App() {
               group: 'locked',
               tabs: [
                 {id: 'response', title: 'Response', content: <ResponseViewer resBody={resBody} />},
-              ]
+              ],
+              panelLock: {
+                panelExtra: () => (
+                  <>
+                  <PlaySquareTwoTone onClick={playTestAndDisplayResults} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <SaveFilled onClick={saveTest} style={{color: 'green', fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  </>
+                )
+              }
             }
           ]
         }
@@ -163,23 +197,33 @@ export default function App() {
       selectedFileId, setSelectedFileId,
     }}>
       <div>
-        {isFileModalOpen ? (
-          <Modal title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-            <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
-          </Modal>
-        ) : (
-          <DockLayout
-          defaultLayout={defaultLayout}
-          groups={{locked: { floatable: false, tabLocked: true}}}
-          style={{
-            position: "absolute",
-            left: 10,
-            top: 10,
-            right: 10,
-            bottom: 10,
-          }}
-          />
-        )}
+        {(() => {
+          if(isFileModalOpen) {
+            return (
+              <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+                <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
+              </Modal>
+            )
+          } else if(isTestExecutionModalOpen) {
+            return (
+              <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
+                <TestExecutionViewer testResultsToDisplay={testResultsToDisplay}/>
+              </Modal>
+            )
+          } else {
+            return <DockLayout
+            defaultLayout={defaultLayout}
+            groups={{locked: { floatable: false, tabLocked: true}}}
+            style={{
+              position: "absolute",
+              left: 10,
+              top: 10,
+              right: 10,
+              bottom: 10,
+            }}
+            />
+          }
+        })()}
       </div>
     </GlobalContext.Provider>
   )

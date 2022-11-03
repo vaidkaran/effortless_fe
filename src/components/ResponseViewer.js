@@ -21,7 +21,6 @@ export default function ResponseViewer() {
   const updateVariablePathsAppData = () => appDataRef.current[selectedFileId].variablePaths = variablePathsRef.current; // always update the appData
 
   const initParentPath = (path, setState) => {
-    console.log('---- initparentpath called --------')
     if(!parentPathsRef.current[path]) { // path is not present already
       const newPathOb = {}
       newPathOb[path] = {verified: false, setState}
@@ -139,6 +138,10 @@ export default function ResponseViewer() {
     return Object.keys(parentPathsRef.current).filter((path) => parentPathsRef.current[path].verified);
   }
 
+  const getVerifiedVariablePaths = () => {
+    return Object.keys(variablePathsRef.current).filter((path) => variablePathsRef.current[path].verified);
+  }
+
   const isParentVerified = (path) => {
       if(parentPathsRef.current[path] && parentPathsRef.current[path].verified) return true;
       return false;
@@ -183,8 +186,8 @@ export default function ResponseViewer() {
             shouldCollapse={shouldCollapse}
             key={rjvReloader}
           /> 
-          <Button onClick={() => console.log(parentPathsRef.current)}> parentPathsRef</Button>
-          <Button onClick={() => console.log(variablePathsRef.current)}> variablePathsRef</Button>
+          <Button onClick={() => console.log(getVerifiedParentPaths())}> verifiedParentPathsRef</Button>
+          <Button onClick={() => console.log(getVerifiedVariablePaths())}> verifiedVariablePathsRef</Button>
         </div>
       ) : (
         <></>
