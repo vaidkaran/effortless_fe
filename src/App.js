@@ -15,7 +15,7 @@ import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
 import TestExecutionViewer from "./components/TestExecutionViewer";
 
-import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone} from '@ant-design/icons';
+import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone, FileDoneOutlined} from '@ant-design/icons';
 import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
@@ -48,7 +48,7 @@ export default function App() {
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
   // const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
-  const defaultUrlRef = useRef('localhost:8080');
+  const defaultUrlRef = useRef('localhost:8080/users/1');
   const defaultReqBodyRef = useRef('');
   const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
@@ -94,12 +94,13 @@ export default function App() {
   const saveTest = () => {
     const fileDataCopy = fileData.map((file) => {
       if(file.key === selectedFileId) {
-        file.icon = <VerifiedIcon/>
+        file.switcherIcon = <VerifiedIcon/>
       }
       return file;
     });
     appDataRef.current[selectedFileId].test = true;
     setFileData(fileDataCopy);
+    console.log('fileDataCopy', fileDataCopy)
   }
 
   const playTestAndDisplayResults = async () => {

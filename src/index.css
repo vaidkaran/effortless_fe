@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* .ant-tree.ant-tree-directory .ant-tree-treenode .ant-tree-node-content-wrapper.ant-tree-node-selected{
+  color: red !important;
+} */
+/* .ant-tree.ant-tree-directory .ant-tree-treenode-selected:before .ant-tree-node-content-wrapper.ant-tree-node-selected{
+  background: #F1F1F1 !important;
+  color: red !important;
+} */
