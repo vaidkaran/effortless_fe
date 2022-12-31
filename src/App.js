@@ -15,7 +15,7 @@ import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
 import TestExecutionViewer from "./components/TestExecutionViewer";
 
-import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone, FileDoneOutlined} from '@ant-design/icons';
+import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone, CloseCircleFilled, CheckCircleFilled} from '@ant-design/icons';
 import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
@@ -65,7 +65,6 @@ export default function App() {
     arrayGroupStateInstance.current = setState
   }
   const setAttributeStoreInstance = (storeInstance) => {
-    console.log('setting attr store instance in ref: ', storeInstance)
     attributeStoreInstance.current = storeInstance;
   }
 
@@ -99,13 +98,20 @@ export default function App() {
       return file;
     });
     appDataRef.current[selectedFileId].test = true;
+    appDataRef.current[selectedFileId].testname = selectedFileId;
     setFileData(fileDataCopy);
-    console.log('fileDataCopy', fileDataCopy)
   }
 
-  const playTestAndDisplayResults = async () => {
-    const results = await playTest(appDataRef.current[selectedFileId])
-    setTestResultsToDisplay(results);
+  // accepts array of fileIds
+  const playTestsAndDisplayResults = async (testdataArray) => {
+      const executionResults = [];
+      console.log('testDataarray -> ', testdataArray)
+      for(const testdata of testdataArray) {
+        const resultData = await playTest(testdata);
+        executionResults.push(resultData);
+      }
+    console.log('-->', executionResults)
+    setTestResultsToDisplay(executionResults);
     setIsTestExecutionModalOpen(true);
   }
 
@@ -166,7 +172,7 @@ export default function App() {
               panelLock: {
                 panelExtra: () => (
                   <>
-                  <PlaySquareTwoTone onClick={playTestAndDisplayResults} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([appDataRef.current[selectedFileId]])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   <SaveFilled onClick={saveTest} style={{color: 'green', fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   </>
                 )
@@ -183,6 +189,7 @@ export default function App() {
       appDataRef,
       rjvReloader, setRjvReloader,
       updateAppState,
+      playTestsAndDisplayResults,
       arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
       queryParamsInitialValuesRef,
       headersFormInstance,
@@ -208,7 +215,7 @@ export default function App() {
           } else if(isTestExecutionModalOpen) {
             return (
               <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
-                <TestExecutionViewer testResultsToDisplay={testResultsToDisplay}/>
+                <TestExecutionViewer executionResults={testResultsToDisplay}/>
               </Modal>
             )
           } else {

@@ -11,7 +11,7 @@ export default function ResponseViewer() {
   const props = {};
   const [verifiedData, setVerifiedData] = useState({});
 
-  const pathSeparator = ',,';
+  const pathSeparator = '.';
   props.pathSeparator = pathSeparator;
 
   // useEffect(() => console.log('---------------useEffect for response----------------------------------'))
