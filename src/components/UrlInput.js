@@ -3,7 +3,6 @@ import { Button, Input, Select, Form } from 'antd';
 import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { useDispatch } from "react-redux";
-import { addx, addy } from '../store/pathSlice';
 
 
 export default function UrlInput() {
@@ -48,13 +47,6 @@ export default function UrlInput() {
     appDataRef.current[selectedFileId].protocol = protocol; // always update the appData
   }
 
-  const addtox = () => {
-    dispatch(addx(2));
-  }
-  const addtoy = () => {
-    dispatch(addy(3));
-  }
-
   return (
     <Input.Group compact style={{padding: 10}}>
         <Select 
@@ -85,8 +77,6 @@ export default function UrlInput() {
         </Select>
         <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: '60%'}} />
         <Button type='primary' onClick={()=>onRequestSend(selectedFileId)}>Send</Button>
-        <Button type='primary' onClick={addtox}>x</Button>
-        <Button type='primary' onClick={addtoy}>y</Button>
     </Input.Group>
   );
 }

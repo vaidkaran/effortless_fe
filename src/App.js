@@ -21,7 +21,6 @@ import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
 import { useDispatch } from "react-redux";
-import { addx } from './store/pathSlice';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -119,12 +118,6 @@ export default function App() {
     setIsTestExecutionModalOpen(true);
   }
 
-  const addToPath = () => {
-    const randomNum = Math.floor((Math.random()*10) + 1); 
-    dispatch(addx(randomNum));
-  }
-
-
   const defaultLayout = {
     dockbox: {
       mode: 'horizontal',
@@ -142,7 +135,6 @@ export default function App() {
                 panelExtra: () => (
                   <>
                     <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
-                    <CheckCircleFilled onClick={addToPath} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   </>
                 )
               }
