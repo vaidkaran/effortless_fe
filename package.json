@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@monaco-editor/react": "^4.4.5",
+    "@reduxjs/toolkit": "^1.9.1",
     "antd": "^4.23.1",
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
@@ -15,6 +16,7 @@
     "react-bootstrap": "^2.5.0",
     "react-dom": "17.0.0",
     "react-json-view": "file:../react-json-view",
+    "react-redux": "^8.0.5",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },

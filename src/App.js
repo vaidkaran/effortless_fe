@@ -20,7 +20,11 @@ import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
+import { useDispatch } from "react-redux";
+import { addx } from './store/pathSlice';
+
 export default function App() {
+  const dispatch = useDispatch();
   /**
    * IMPORTANT: Always update appData when changing values of fields
    */
@@ -47,8 +51,8 @@ export default function App() {
 
   const defaultMethodRef = useRef('get');
   const defaultProtocolRef = useRef('http://');
-  // const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
-  const defaultUrlRef = useRef('localhost:8080/users/1');
+  const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
+  // const defaultUrlRef = useRef('localhost:8080/users/1');
   const defaultReqBodyRef = useRef('');
   const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
@@ -115,6 +119,11 @@ export default function App() {
     setIsTestExecutionModalOpen(true);
   }
 
+  const addToPath = () => {
+    const randomNum = Math.floor((Math.random()*10) + 1); 
+    dispatch(addx(randomNum));
+  }
+
 
   const defaultLayout = {
     dockbox: {
@@ -131,7 +140,10 @@ export default function App() {
               ],
               panelLock: {
                 panelExtra: () => (
-                  <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <>
+                    <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                    <CheckCircleFilled onClick={addToPath} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  </>
                 )
               }
             }
@@ -185,54 +197,54 @@ export default function App() {
   };
 
   return (
-    <GlobalContext.Provider value={{
-      appDataRef,
-      rjvReloader, setRjvReloader,
-      updateAppState,
-      playTestsAndDisplayResults,
-      arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
-      queryParamsInitialValuesRef,
-      headersFormInstance,
-      queryParamsFormInstance,
-      headersInitialValuesRef,
-      parentPathsRef, variablePathsRef,
-      reqBody, setReqBody,
-      resBody, setResBody,
-      fileData, setFileData,
-      url, setUrl,
-      method, setMethod, defaultMethodRef,
-      protocol, setProtocol, defaultProtocolRef,
-      selectedFileId, setSelectedFileId,
-    }}>
-      <div>
-        {(() => {
-          if(isFileModalOpen) {
-            return (
-              <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-                <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
-              </Modal>
-            )
-          } else if(isTestExecutionModalOpen) {
-            return (
-              <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
-                <TestExecutionViewer executionResults={testResultsToDisplay}/>
-              </Modal>
-            )
-          } else {
-            return <DockLayout
-            defaultLayout={defaultLayout}
-            groups={{locked: { floatable: false, tabLocked: true}}}
-            style={{
-              position: "absolute",
-              left: 10,
-              top: 10,
-              right: 10,
-              bottom: 10,
-            }}
-            />
-          }
-        })()}
-      </div>
-    </GlobalContext.Provider>
+      <GlobalContext.Provider value={{
+        appDataRef,
+        rjvReloader, setRjvReloader,
+        updateAppState,
+        playTestsAndDisplayResults,
+        arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
+        queryParamsInitialValuesRef,
+        headersFormInstance,
+        queryParamsFormInstance,
+        headersInitialValuesRef,
+        parentPathsRef, variablePathsRef,
+        reqBody, setReqBody,
+        resBody, setResBody,
+        fileData, setFileData,
+        url, setUrl,
+        method, setMethod, defaultMethodRef,
+        protocol, setProtocol, defaultProtocolRef,
+        selectedFileId, setSelectedFileId,
+      }}>
+        <div>
+          {(() => {
+            if(isFileModalOpen) {
+              return (
+                <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+                  <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
+                </Modal>
+              )
+            } else if(isTestExecutionModalOpen) {
+              return (
+                <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
+                  <TestExecutionViewer executionResults={testResultsToDisplay}/>
+                </Modal>
+              )
+            } else {
+              return <DockLayout
+                defaultLayout={defaultLayout}
+                groups={{locked: { floatable: false, tabLocked: true}}}
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  top: 10,
+                  right: 10,
+                  bottom: 10,
+                }}
+              />
+            }
+          })()}
+        </div>
+      </GlobalContext.Provider>
   )
 }

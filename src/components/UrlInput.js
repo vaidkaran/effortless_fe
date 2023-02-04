@@ -2,9 +2,12 @@ import axios from 'axios';
 import { Button, Input, Select, Form } from 'antd';
 import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
+import { useDispatch } from "react-redux";
+import { addx, addy } from '../store/pathSlice';
 
 
 export default function UrlInput() {
+  const dispatch = useDispatch();
   const {url, setUrl, setResBody, protocol, setProtocol, defaultProtocolRef, method, setMethod, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
   const [protocolOpen, setProtocolOpen] = useState(false);
@@ -45,6 +48,12 @@ export default function UrlInput() {
     appDataRef.current[selectedFileId].protocol = protocol; // always update the appData
   }
 
+  const addtox = () => {
+    dispatch(addx(2));
+  }
+  const addtoy = () => {
+    dispatch(addy(3));
+  }
 
   return (
     <Input.Group compact style={{padding: 10}}>
@@ -76,6 +85,8 @@ export default function UrlInput() {
         </Select>
         <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: '60%'}} />
         <Button type='primary' onClick={()=>onRequestSend(selectedFileId)}>Send</Button>
+        <Button type='primary' onClick={addtox}>x</Button>
+        <Button type='primary' onClick={addtoy}>y</Button>
     </Input.Group>
   );
 }
