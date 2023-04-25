@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DockLayout from 'rc-dock'
 import { Form, Modal, Input, List } from 'antd';
 import {useEffect, useState, useRef} from 'react';
+import { useDispatch } from "react-redux";
 import { GlobalContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
@@ -20,7 +21,7 @@ import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
-import { useDispatch } from "react-redux";
+import {setSelectedFileIdd, createNewFile} from '../src/store/reqDataSlice';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -85,6 +86,8 @@ export default function App() {
   const fileModalHandleOk = () => { // filename is used as fileId
     if(filename.trim() !== '') setFileData([...fileData, {title: filename, key: filename, isLeaf: true}])
     appDataRef.current[filename] = {}
+    dispatch(createNewFile(filename));
+    // dispatch(setSelectedFileIdd(filename));
     setSelectedFileId(filename); // also called on file onSelect
     updateAppState(filename); // also called on file onSelect
     setIsFileModalOpen(false);

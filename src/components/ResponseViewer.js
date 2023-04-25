@@ -7,7 +7,7 @@ import {GlobalContext} from '../context/GlobalContext'
 import { VerifiedIcon, VerifyIcon } from '../icons';
 import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified } from '../store/pathsSlice';
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified } from '../store/reqDataSlice';
 import { useSelector } from 'react-redux';
 
 export default function ResponseViewer() {
@@ -15,8 +15,8 @@ export default function ResponseViewer() {
   const props = {};
   const [verifiedData, setVerifiedData] = useState({});
 
-  const parentPaths = useSelector(state => state.paths.parentPaths)
-  const variablePaths = useSelector(state => state.paths.variablePaths)
+  const parentPaths = useSelector(state => state.reqData.parentPaths)
+  const variablePaths = useSelector(state => state.reqData.variablePaths)
 
   const pathSeparator = '.';
   props.pathSeparator = pathSeparator;
@@ -62,6 +62,7 @@ export default function ResponseViewer() {
           /> 
           <Button onClick={() => console.log(parentPaths)}> parentPaths</Button>
           <Button onClick={() => console.log(variablePaths)}> variablePaths</Button>
+          <Button onClick={() => console.log(store.getState())}> state</Button>
         </div>
       ) : (
         <></>

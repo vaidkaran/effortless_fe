@@ -5,10 +5,13 @@ import { GlobalContext } from '../context/GlobalContext';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { NavLink } from 'react-bootstrap';
 import playTest from '../utils/playTest';
+import { useDispatch } from "react-redux";
+import {setSelectedFileIdd} from '../store/reqDataSlice';
 
 
 
 export default function FileExplorer() {
+  const dispatch = useDispatch();
   const {appDataRef, fileData, selectedFileId, setSelectedFileId, updateAppState, rjvReloader, setRjvReloader, playTestsAndDisplayResults} = useContext(GlobalContext)
   const [checkable, setCheckable] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
@@ -18,7 +21,8 @@ export default function FileExplorer() {
     const fileId = keys[0];
     if (fileId === undefined) return // when the already selected file is selected again, don't do anything
 
-    setSelectedFileId(fileId)
+    dispatch(setSelectedFileIdd(fileId));
+    setSelectedFileId(fileId);
     updateAppState(fileId);
     setRjvReloader(rjvReloader+1);
   };

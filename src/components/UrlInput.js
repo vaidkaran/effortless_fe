@@ -2,20 +2,22 @@ import axios from 'axios';
 import { Button, Input, Select, Form } from 'antd';
 import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setMethod, getMethod } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
   const dispatch = useDispatch();
-  const {url, setUrl, setResBody, protocol, setProtocol, defaultProtocolRef, method, setMethod, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
+  const {url, setUrl, setResBody, protocol, setProtocol, defaultProtocolRef, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
   const [protocolOpen, setProtocolOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
+  const method = useSelector(getMethod)
 
   // useEffect(() => console.log('urlInput rendered'))
 
   const onRequestSend = async () => {
-    const {headers: {headers}, url, method, protocol} = appDataRef.current[selectedFileId];
+    const {headers: {headers}, url, protocol} = appDataRef.current[selectedFileId];
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
     // console.log('formattedheaders: ', formattedHeaders)
@@ -36,9 +38,9 @@ export default function UrlInput() {
   }
 
   const updateMethod = (method) => {
-    setMethod(method);
+    dispatch(setMethod(method));
     setMethodOpen(false);
-    appDataRef.current[selectedFileId].method = method; // always update the appData
+    // appDataRef.current[selectedFileId].method = method; // always update the appData
   }
 
   const updateProtocol = (protocol) => {
@@ -54,7 +56,8 @@ export default function UrlInput() {
           onDropdownVisibleChange={(visible)=>setMethodOpen(visible)} 
           value={method} 
           onChange={updateMethod} 
-          defaultValue={defaultMethodRef.current}
+          // defaultValue={method} 
+          // defaultValue={defaultMethodRef.current}
           // defaultValue='get'
         >
           <Option value='get'>GET</Option>

@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import pathsReducer from './pathsSlice';
+import reqDataReducer from './reqDataSlice';
 
 const store = configureStore({
   // turn off serializableCheck since we store setState instance in redux
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
   reducer: {
-    paths: pathsReducer,
+    reqData: reqDataReducer,
   }
 })
 
