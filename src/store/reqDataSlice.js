@@ -1,12 +1,13 @@
-import {createSlice, createSelector} from '@reduxjs/toolkit';
-import { getVerifiedParentPaths, getVerifiedVariablePaths, getMethod } from './reqDataSelectors';
+import {createSlice} from '@reduxjs/toolkit';
+import { getVerifiedParentPaths, getVerifiedVariablePaths, 
+  getMethod, getProtocol, getUrl, getQueryParams, getHeaders, getReqBody, getResBody } from './reqDataSelectors';
 const pathSeparator = '.';
 
 const getInitFileData = (opts) => {
   return {
     protocol: 'http://',
     method: 'GET',
-    url: '',
+    url: 'jsonplaceholder.typicode.com/users/1',
     headers: [],
     queryParams: [],
     reqBody: {},
@@ -54,7 +55,7 @@ const reqDataSlice = createSlice({
      * protocol
      */
     setProtocol(state, action) {
-      const {protocol} = action.payload;
+      const protocol = action.payload;
       state[state.selectedFileId].protocol = protocol;
     },
 
@@ -63,17 +64,14 @@ const reqDataSlice = createSlice({
      */
     setMethod(state, action) {
       const method = action.payload;
-      console.log('selectedFileId: ', state.selectedFileId)
-      console.log('method: ', method)
       state[state.selectedFileId].method = method;
-      console.log('udpated state method...')
     },
 
     /*****************************************************************************************************
      * url
      */
     setUrl(state, action) {
-      const {url} = action.payload;
+      const url = action.payload;
       state[state.selectedFileId].url = url;
     },
 
@@ -81,7 +79,7 @@ const reqDataSlice = createSlice({
      * headers
      */
     setHeaders(state, action) {
-      const {headers} = action.payload;
+      const headers = action.payload;
       state[state.selectedFileId].headers = headers;
     },
 
@@ -89,7 +87,7 @@ const reqDataSlice = createSlice({
      * queryParams
      */
     setQueryParams(state, action) {
-      const {queryParams} = action.payload;
+      const queryParams = action.payload;
       state[state.selectedFileId].queryParams = queryParams;
     },
 
@@ -97,7 +95,7 @@ const reqDataSlice = createSlice({
      * reqBody
      */
     setReqBody(state, action) {
-      const {reqBody} = action.payload;
+      const reqBody = action.payload;
       state[state.selectedFileId].reqBody = reqBody;
     },
 
@@ -105,7 +103,7 @@ const reqDataSlice = createSlice({
      * resBody
      */
     setResBody(state, action) {
-      const {resBody} = action.payload;
+      const resBody = action.payload;
       state[state.selectedFileId].resBody = resBody;
     },
 
@@ -196,6 +194,7 @@ export const { createNewFile,
 } = reqDataSlice.actions;
 
 // selectors
-export { getVerifiedParentPaths, getVerifiedVariablePaths, getMethod };
+export { getVerifiedParentPaths, getVerifiedVariablePaths,
+  getMethod, getProtocol, getUrl, getQueryParams, getHeaders, getReqBody, getResBody };
 
 export default reqDataSlice.reducer;

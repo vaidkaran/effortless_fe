@@ -3,23 +3,28 @@ import { Button, Input, Select, Form } from 'antd';
 import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { useDispatch, useSelector } from "react-redux";
-import { setMethod, getMethod } from '../store/reqDataSlice';
+import { setMethod, setProtocol, setUrl, setQueryParams, setHeaders,
+  getMethod, getProtocol, getUrl, getQueryParams, getHeaders } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
   const dispatch = useDispatch();
-  const {url, setUrl, setResBody, protocol, setProtocol, defaultProtocolRef, defaultMethodRef, appDataRef, selectedFileId} = useContext(GlobalContext);
+  const {setResBody, appDataRef, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
   const [protocolOpen, setProtocolOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
-  const method = useSelector(getMethod)
+  const method = useSelector(getMethod);
+  const protocol = useSelector(getProtocol);
+  const url = useSelector(getUrl);
+  const headers = useSelector(getHeaders);
+  const queryParams = useSelector(getQueryParams);
 
   // useEffect(() => console.log('urlInput rendered'))
 
   const onRequestSend = async () => {
-    const {headers: {headers}, url, protocol} = appDataRef.current[selectedFileId];
+    const {headers: headersArr} = headers;
     const formattedHeaders = {};
-    headers.forEach(item => (formattedHeaders[item.name] = item.value) );
+    headersArr.forEach(item => (formattedHeaders[item.name] = item.value) );
     // console.log('formattedheaders: ', formattedHeaders)
     const reqOpts = {
       url: `${protocol}${url}`,
@@ -27,14 +32,16 @@ export default function UrlInput() {
       method,
     };
     const res = await axios.request(reqOpts);
-    setResBody(res.data);
-    appDataRef.current[selectedFileId].resBody = res.data; // always update the appData
+    dispatch(setResBody(res.data));
+    // setResBody(res.data);
+    // appDataRef.current[selectedFileId].resBody = res.data; // always update the appData
   }
 
   const updateUrl = (url) => {
     const {value} = url.target;
-    setUrl(value);
-    appDataRef.current[selectedFileId].url = value; // always update the appData
+    dispatch(setUrl(value));
+    // setUrl(value);
+    // appDataRef.current[selectedFileId].url = value; // always update the appData
   }
 
   const updateMethod = (method) => {
@@ -44,9 +51,9 @@ export default function UrlInput() {
   }
 
   const updateProtocol = (protocol) => {
-    setProtocol(protocol);
+    dispatch(setProtocol(protocol));
     setProtocolOpen(false);
-    appDataRef.current[selectedFileId].protocol = protocol; // always update the appData
+    // appDataRef.current[selectedFileId].protocol = protocol; // always update the appData
   }
 
   return (
@@ -72,7 +79,7 @@ export default function UrlInput() {
           onDropdownVisibleChange={(visible)=>setProtocolOpen(visible)} 
           value={protocol} 
           onSelect={updateProtocol} 
-          defaultValue={defaultProtocolRef.current}
+          // defaultValue={defaultProtocolRef.current}
           // defaultValue='http://'
         >
           <Option value='http://'>http://</Option>
