@@ -8,10 +8,10 @@ import { setHeaders, getHeaders } from '../store/reqDataSlice';
 export default function Headers() {
   const headers = useSelector(getHeaders)
   const [headersFormInstance] = Form.useForm();
-  headersFormInstance.setFieldsValue({headers: headers})
-  console.log('headers--->', headers)
   const dispatch = useDispatch();
   const addRef = useRef();
+
+  headersFormInstance.setFieldsValue({headers: headers})
 
   const onValuesChange = (changedValues, allValues) => {
     dispatch(setHeaders(allValues.headers));

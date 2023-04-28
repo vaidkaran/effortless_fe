@@ -1,15 +1,19 @@
 import { Input, Form, Space, Button } from 'antd';
 import {MinusCircleOutlined, PlusCircleTwoTone} from '@ant-design/icons';
-import {useRef, useContext} from 'react';
-import { GlobalContext } from '../context/GlobalContext';
+import {useRef} from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { setQueryParams, getQueryParams } from '../store/reqDataSlice';
 
 export default function QueryParams() {
+  const dispatch = useDispatch();
   const addRef = useRef();
-  const {queryParamsFormInstance, appDataRef, selectedFileId} = useContext(GlobalContext);
+  const queryParams = useSelector(getQueryParams)
+  const [queryParamsFormInstance] = Form.useForm();
+
+  queryParamsFormInstance.setFieldsValue({queryParams: queryParams})
 
   const onValuesChange = (changedValues, allValues) => {
-    // console.log('onValuesChange queryParams: ', allValues.queryParams)
-    appDataRef.current[selectedFileId].queryParams = allValues.queryParams; 
+    dispatch(setQueryParams(allValues.queryParams));
   }
 
   return (
