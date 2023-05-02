@@ -12,9 +12,9 @@ import { useSelector } from 'react-redux';
 import { getResBody } from '../store/reqDataSlice';
 
 export default function ResponseViewer() {
-  const { setAttributeStoreInstance, arrayGroupSetState, rjvReloader } = useContext(GlobalContext)
   const props = {};
 
+  const rjvReloadCounter = useSelector(state => state.rjvReloader.counter);
   const parentPaths = useSelector(state => state.reqData.parentPaths)
   const variablePaths = useSelector(state => state.reqData.variablePaths)
   const resBody = useSelector(getResBody);
@@ -48,8 +48,6 @@ export default function ResponseViewer() {
             store={store}
             VerifyIcon={VerifyIcon}
             VerifiedIcon={VerifiedIcon}
-            arrayGroupSetState={arrayGroupSetState}
-            setAttributeStoreInstance={setAttributeStoreInstance}
             src={resBody} 
             theme='light' 
             enableVerifyIcon
@@ -59,7 +57,7 @@ export default function ResponseViewer() {
             groupArraysAfterLength={50}
             collapseStringsAfterLength={50}
             shouldCollapse={shouldCollapse}
-            key={rjvReloader}
+            key={rjvReloadCounter}
           /> 
           <Button onClick={() => console.log(parentPaths)}> parentPaths</Button>
           <Button onClick={() => console.log(variablePaths)}> variablePaths</Button>

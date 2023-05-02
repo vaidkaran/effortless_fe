@@ -66,7 +66,7 @@ export default function UrlInput() {
           open={protocolOpen} 
           onDropdownVisibleChange={(visible)=>setProtocolOpen(visible)} 
           value={protocol} 
-          onSelect={updateProtocol} 
+          onSelect={updateProtocol}
           // defaultValue={defaultProtocolRef.current}
           // defaultValue='http://'
         >

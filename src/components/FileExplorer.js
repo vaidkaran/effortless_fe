@@ -7,6 +7,7 @@ import { NavLink } from 'react-bootstrap';
 import playTest from '../utils/playTest';
 import { useDispatch } from "react-redux";
 import {setSelectedFileIdd} from '../store/reqDataSlice';
+import {reloadRjv} from '../store/rjvReloaderSlice';
 
 
 
@@ -21,10 +22,10 @@ export default function FileExplorer() {
     const fileId = keys[0];
     if (fileId === undefined) return // when the already selected file is selected again, don't do anything
 
+    dispatch(reloadRjv());
     dispatch(setSelectedFileIdd(fileId));
     setSelectedFileId(fileId);
     updateAppState(fileId);
-    setRjvReloader(rjvReloader+1);
   };
 
   const onCheck = (keys) => { // keys are test names
