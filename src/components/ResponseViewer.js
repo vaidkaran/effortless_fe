@@ -9,14 +9,15 @@ import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified } from '../store/reqDataSlice';
 import { useSelector } from 'react-redux';
+import { getResBody } from '../store/reqDataSlice';
 
 export default function ResponseViewer() {
-  const { appDataRef, setAttributeStoreInstance, arrayGroupSetState, resBody, parentPathsRef, variablePathsRef, selectedFileId, rjvReloader } = useContext(GlobalContext)
+  const { setAttributeStoreInstance, arrayGroupSetState, rjvReloader } = useContext(GlobalContext)
   const props = {};
-  const [verifiedData, setVerifiedData] = useState({});
 
   const parentPaths = useSelector(state => state.reqData.parentPaths)
   const variablePaths = useSelector(state => state.reqData.variablePaths)
+  const resBody = useSelector(getResBody);
 
   const pathSeparator = '.';
   props.pathSeparator = pathSeparator;

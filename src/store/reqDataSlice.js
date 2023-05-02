@@ -11,7 +11,7 @@ const getInitFileData = (opts) => {
     headers: [{name: 'Content-Type', value: 'application/json'}],
     queryParams: [],
     reqBody: {},
-    resBody: {},
+    resBody: null,
     parentPaths: {},
     variablePaths: {},
   }
