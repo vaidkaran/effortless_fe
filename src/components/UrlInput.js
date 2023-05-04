@@ -3,18 +3,16 @@ import { Button, Input, Select, Form } from 'antd';
 import { useEffect, useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { useDispatch, useSelector } from "react-redux";
-import { setMethod, setProtocol, setUrl, setResBody, setQueryParams, setHeaders,
-  getMethod, getProtocol, getUrl, getQueryParams, getHeaders } from '../store/reqDataSlice';
+import { setMethod, setUrl, setResBody, setQueryParams, setHeaders,
+  getMethod, getUrl, getQueryParams, getHeaders } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
   const dispatch = useDispatch();
   // const {setResBody, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
-  const [protocolOpen, setProtocolOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
   const method = useSelector(getMethod);
-  const protocol = useSelector(getProtocol);
   const url = useSelector(getUrl);
   const headers = useSelector(getHeaders);
   const queryParams = useSelector(getQueryParams);
@@ -23,7 +21,7 @@ export default function UrlInput() {
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
     const reqOpts = {
-      url: `${protocol}${url}`,
+      url,
       headers: formattedHeaders,
       method,
     };
@@ -42,11 +40,6 @@ export default function UrlInput() {
     setMethodOpen(false);
   }
 
-  const updateProtocol = (protocol) => {
-    dispatch(setProtocol(protocol));
-    setProtocolOpen(false);
-  }
-
   return (
     <Input.Group compact style={{padding: 10}}>
         <Select 
@@ -61,17 +54,6 @@ export default function UrlInput() {
           <Option value='patch'>PATCH</Option>
           <Option value='delete'>DELETE</Option>
           <Option value='head'>HEAD</Option>
-        </Select>
-        <Select
-          open={protocolOpen} 
-          onDropdownVisibleChange={(visible)=>setProtocolOpen(visible)} 
-          value={protocol} 
-          onSelect={updateProtocol}
-          // defaultValue={defaultProtocolRef.current}
-          // defaultValue='http://'
-        >
-          <Option value='http://'>http://</Option>
-          <Option value='https://'>https://</Option>
         </Select>
         <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: '60%'}} />
         <Button type='primary' onClick={onRequestSend}>Send</Button>

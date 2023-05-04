@@ -25,7 +25,6 @@ const getCreateSelectorFor = (reqDataField) => {
 };
 
 const getMethod = getCreateSelectorFor('method');
-const getProtocol = getCreateSelectorFor('protocol');
 const getUrl = getCreateSelectorFor('url');
 const getQueryParams = getCreateSelectorFor('queryParams');
 const getHeaders = getCreateSelectorFor('headers');
@@ -35,5 +34,5 @@ const getResBody = getCreateSelectorFor('resBody');
 
 export {
   getVerifiedParentPaths, getVerifiedVariablePaths,
-  getMethod, getProtocol, getUrl, getQueryParams, getHeaders, getReqBody, getResBody
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody
 }

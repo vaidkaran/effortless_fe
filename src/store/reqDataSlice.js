@@ -1,13 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { getVerifiedParentPaths, getVerifiedVariablePaths, 
-  getMethod, getProtocol, getUrl, getQueryParams, getHeaders, getReqBody, getResBody } from './reqDataSelectors';
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody } from './reqDataSelectors';
 const pathSeparator = '.';
 
 const getInitFileData = (opts) => {
   return {
-    protocol: 'http://',
     method: 'GET',
-    url: 'jsonplaceholder.typicode.com/users/1',
+    url: 'https://jsonplaceholder.typicode.com/users/1',
     headers: [{name: 'Content-Type', value: 'application/json'}],
     queryParams: [],
     reqBody: {},
@@ -20,7 +19,6 @@ const getInitFileData = (opts) => {
 const initialState = {
   selectedFileId: 'default',
   default: {
-    protocol: '',
     method: '',
     url: '',
     headers: [],
@@ -49,14 +47,6 @@ const reqDataSlice = createSlice({
       const selectedFileId = action.payload;
       console.log('selectedFileid is: ', selectedFileId)
       state.selectedFileId = selectedFileId;
-    },
-
-    /*****************************************************************************************************
-     * protocol
-     */
-    setProtocol(state, action) {
-      const protocol = action.payload;
-      state[state.selectedFileId].protocol = protocol;
     },
 
     /*****************************************************************************************************
@@ -188,13 +178,13 @@ const reqDataSlice = createSlice({
 
 
 export const { createNewFile,
-  setMethod, setProtocol, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
+  setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileIdd,
 } = reqDataSlice.actions;
 
 // selectors
 export { getVerifiedParentPaths, getVerifiedVariablePaths,
-  getMethod, getProtocol, getUrl, getQueryParams, getHeaders, getReqBody, getResBody };
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody };
 
 export default reqDataSlice.reducer;

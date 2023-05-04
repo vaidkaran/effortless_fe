@@ -5,11 +5,10 @@ setUrl, defaultUrlRef,
 setReqBody, defaultReqBodyRef, 
 setResBody, defaultResBodyRef,
 setMethod, defaultMethodRef,
-setProtocol, defaultProtocolRef, 
 headersFormInstance, headersInitialValuesRef, 
 queryParamsFormInstance, queryParamsInitialValuesRef,
 parentPathsRef, variablePathsRef}) {
-  const {url, reqBody, resBody, method, protocol, headers, queryParams, parentPaths, variablePaths} = appDataRef.current[fileId];
+  const {url, reqBody, resBody, method, headers, queryParams, parentPaths, variablePaths} = appDataRef.current[fileId];
 
   const set = (propertyName, setStateFn, valueToSet) => {
     setStateFn(valueToSet);
@@ -27,9 +26,6 @@ parentPathsRef, variablePathsRef}) {
 
   // method
   method ? set('method', setMethod, method) : set('method', setMethod, defaultMethodRef.current);
-
-  // protocol
-  protocol ? set('protocol', setProtocol, protocol) : set('protocol', setProtocol, defaultProtocolRef.current);
 
   // parentPaths
   parentPathsRef.current = parentPaths ? parentPaths : {};

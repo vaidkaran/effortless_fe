@@ -41,7 +41,6 @@ export default function App() {
 
   const [url, setUrl] = useState();
   const [method, setMethod] = useState();
-  const [protocol, setProtocol] = useState();
 
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
@@ -50,7 +49,6 @@ export default function App() {
   const [rjvReloader, setRjvReloader] = useState(0);
 
   const defaultMethodRef = useRef('get');
-  const defaultProtocolRef = useRef('http://');
   const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
   // const defaultUrlRef = useRef('localhost:8080/users/1');
   const defaultReqBodyRef = useRef('');
@@ -74,7 +72,7 @@ export default function App() {
 
   const updateAppState = (fileId) => {
     updateAppDataAndState({fileId, appDataRef, setUrl, defaultUrlRef, setReqBody, defaultReqBodyRef, setResBody, defaultResBodyRef,
-    setMethod, defaultMethodRef, setProtocol, defaultProtocolRef, headersFormInstance, headersInitialValuesRef,
+    setMethod, defaultMethodRef, headersFormInstance, headersInitialValuesRef,
     queryParamsFormInstance, queryParamsInitialValuesRef, parentPathsRef, variablePathsRef});
   }
 
@@ -208,7 +206,6 @@ export default function App() {
         fileData, setFileData,
         url, setUrl,
         method, setMethod, defaultMethodRef,
-        protocol, setProtocol, defaultProtocolRef,
         selectedFileId, setSelectedFileId,
       }}>
         <div>

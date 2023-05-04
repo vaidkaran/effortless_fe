@@ -61,14 +61,14 @@ export default async function playTest(appData) {
     console.log(':::::WARNING::::: this not marked as a test');
     return;
   }
-  const {testname, url, protocol, reqBody, method, headers: {headers}, queryParams: {queryParams}, parentPaths, variablePaths} = appData;
+  const {testname, url, reqBody, method, headers: {headers}, queryParams: {queryParams}, parentPaths, variablePaths} = appData;
   const testResults = [];
 
   const formattedHeaders = {};
   headers.forEach(item => (formattedHeaders[item.name] = item.value) );
   
   const reqOpts = {
-    url: `${protocol}${url}`,
+    url,
     headers: formattedHeaders,
     method,
   };
