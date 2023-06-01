@@ -3,15 +3,17 @@ import 'antd/dist/antd.min.css';
 import { Tree, Switch } from 'antd';
 import { GlobalContext } from '../context/GlobalContext';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
-import { useDispatch } from "react-redux";
-import {setSelectedFileIdd} from '../store/reqDataSlice';
+import { useDispatch, useSelector } from "react-redux";
+import {setSelectedFileId} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
 
 
 
 export default function FileExplorer() {
+  const selectedFileId = useSelector((state) => state.reqData.selectedFileId);
+  const fileExplorerData = useSelector((state) => state.fileExplorerData);
   const dispatch = useDispatch();
-  const {fileData, selectedFileId, setSelectedFileId, updateAppState, playTestsAndDisplayResults} = useContext(GlobalContext)
+  const {playTestsAndDisplayResults} = useContext(GlobalContext)
   const [checkable, setCheckable] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
   const [checkedTestIds, setCheckedTestIds] = useState([]);
@@ -21,9 +23,7 @@ export default function FileExplorer() {
     if (fileId === undefined) return // when the already selected file is selected again, don't do anything
 
     dispatch(reloadRjv());
-    dispatch(setSelectedFileIdd(fileId));
-    setSelectedFileId(fileId);
-    updateAppState(fileId);
+    dispatch(setSelectedFileId(fileId));
   };
 
   const onCheck = (keys) => { // keys are test names
@@ -49,7 +49,7 @@ export default function FileExplorer() {
         defaultExpandAll
         onCheck={onCheck}
         onSelect={onSelect}
-        treeData={fileData}
+        treeData={fileExplorerData}
         selectedKeys={[selectedFileId]}
         expandAction='doubleClick'
       />

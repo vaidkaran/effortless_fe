@@ -17,19 +17,21 @@ import QueryParams from "./components/QueryParams";
 import TestExecutionViewer from "./components/TestExecutionViewer";
 
 import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone} from '@ant-design/icons';
-import {VerifiedIcon} from './icons';
-import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
 import {setTest, setTestname, createNewFile} from '../src/store/reqDataSlice';
+import {addFileToFileExplorer, showSavedIconOnFile} from '../src/store/fileExplorerDataSlice';
 
 export default function App() {
+  const dispatch = useDispatch();
+
   const reqDataStateCurrentValue = useSelector((state) => state.reqData);
   const reqDataStateRef = useRef();
   useEffect(() => {
     reqDataStateRef.current = reqDataStateCurrentValue;
   }, [reqDataStateCurrentValue]);
-  const dispatch = useDispatch();
+
+
   /**
    * IMPORTANT: Always update appData when changing values of fields
    */
@@ -49,15 +51,10 @@ export default function App() {
 
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
-  const [selectedFileId, setSelectedFileId] = useState();
 
   const [rjvReloader, setRjvReloader] = useState(0);
 
   const defaultMethodRef = useRef('get');
-  const defaultUrlRef = useRef('jsonplaceholder.typicode.com/users/1');
-  // const defaultUrlRef = useRef('localhost:8080/users/1');
-  const defaultReqBodyRef = useRef('');
-  const defaultResBodyRef = useRef(null);
   const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
   const queryParamsInitialValuesRef = useRef([]);
 
@@ -65,8 +62,8 @@ export default function App() {
   const attributeStoreInstance = useRef();
 
   useEffect(() => {
-    if(!selectedFileId) setIsFileModalOpen(true);
-  }, [selectedFileId]);
+    if(reqDataStateRef.current.selectedFileId === 'default') setIsFileModalOpen(true);
+  }, [reqDataStateRef]);
 
   const arrayGroupSetState = (setState) => {
     arrayGroupStateInstance.current = setState
@@ -75,23 +72,14 @@ export default function App() {
     attributeStoreInstance.current = storeInstance;
   }
 
-  const updateAppState = (fileId) => {
-    updateAppDataAndState({fileId, appDataRef, setUrl, defaultUrlRef, setReqBody, defaultReqBodyRef, setResBody, defaultResBodyRef,
-    setMethod, defaultMethodRef, headersFormInstance, headersInitialValuesRef,
-    queryParamsFormInstance, queryParamsInitialValuesRef, parentPathsRef, variablePathsRef});
-  }
-
   const showModal = () => {
     setFilename('');
     setIsFileModalOpen(true);
   }
   const fileModalHandleCancel = () => setIsFileModalOpen(false);
   const fileModalHandleOk = () => { // filename is used as fileId
-    if(filename.trim() !== '') setFileData([...fileData, {title: filename, key: filename, isLeaf: true}])
-    appDataRef.current[filename] = {}
     dispatch(createNewFile(filename));
-    setSelectedFileId(filename); // also called on file onSelect
-    updateAppState(filename); // also called on file onSelect
+    dispatch(addFileToFileExplorer(filename));
     setIsFileModalOpen(false);
   }
 
@@ -99,15 +87,10 @@ export default function App() {
   const testExecutionModalOk = () => setIsTestExecutionModalOpen(false);
 
   const saveTest = () => {
-    const fileDataCopy = fileData.map((file) => {
-      if(file.key === selectedFileId) {
-        file.switcherIcon = <VerifiedIcon/>
-      }
-      return file;
-    });
+    const {selectedFileId} = reqDataStateRef.current;
     dispatch(setTest(true));
     dispatch(setTestname(selectedFileId));
-    setFileData(fileDataCopy);
+    dispatch(showSavedIconOnFile(selectedFileId));
   }
 
   // accepts array of fileIds
@@ -132,7 +115,7 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer fileData={fileData}/>},
+                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer/>},
               ],
               panelLock: {
                 panelExtra: () => (
@@ -179,7 +162,7 @@ export default function App() {
               panelLock: {
                 panelExtra: () => (
                   <>
-                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([reqDataStateRef.current.selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   <SaveFilled onClick={saveTest} style={{color: 'green', fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   </>
                 )
@@ -195,7 +178,6 @@ export default function App() {
       <GlobalContext.Provider value={{
         appDataRef,
         rjvReloader, setRjvReloader,
-        updateAppState,
         playTestsAndDisplayResults,
         arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
         queryParamsInitialValuesRef,
@@ -208,7 +190,6 @@ export default function App() {
         fileData, setFileData,
         url, setUrl,
         method, setMethod, defaultMethodRef,
-        selectedFileId, setSelectedFileId,
       }}>
         <div>
           {(() => {

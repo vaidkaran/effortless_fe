@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import reqDataReducer from './reqDataSlice';
 import rjvReloaderReducer from './rjvReloaderSlice';
+import fileExplorerDataReducer from './fileExplorerDataSlice';
 
 const store = configureStore({
   // turn off serializableCheck since we store setState instance in redux
@@ -8,6 +9,7 @@ const store = configureStore({
   reducer: {
     reqData: reqDataReducer,
     rjvReloader: rjvReloaderReducer,
+    fileExplorerData: fileExplorerDataReducer,
   }
 })
 

@@ -47,7 +47,7 @@ const reqDataSlice = createSlice({
     /*****************************************************************************************************
      * selectedFileId
      */
-    setSelectedFileIdd(state, action) {
+    setSelectedFileId(state, action) {
       const selectedFileId = action.payload;
       state.selectedFileId = selectedFileId;
     },
@@ -200,7 +200,7 @@ const reqDataSlice = createSlice({
 export const { createNewFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileIdd,
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
   setTest, setTestname,
 } = reqDataSlice.actions;
 
