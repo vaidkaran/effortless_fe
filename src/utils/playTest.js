@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { expect } from 'chai';
 import _ from 'lodash';
+import {getVerifiedParentPaths, getVerifiedVariablePathsWithValues} from './paths';
 
 const pathSeparator = '.';
 
@@ -56,12 +57,13 @@ const verifyValues = (res, verifiedVariables, testResults) => {
   return testPassed;
 }
 
-export default async function playTest(appData) {
-  if(!appData.test) {
+export default async function playTest(testdata) {
+  if(!testdata.test) {
+    console.log(':::', testdata)
     console.log(':::::WARNING::::: this not marked as a test');
     return;
   }
-  const {testname, url, reqBody, method, headers: {headers}, queryParams: {queryParams}, parentPaths, variablePaths} = appData;
+  const {testname, url, reqBody, method, headers, queryParams, parentPaths, variablePaths} = testdata;
   const testResults = [];
 
   const formattedHeaders = {};
@@ -75,13 +77,15 @@ export default async function playTest(appData) {
 
   const res = await axios.request(reqOpts);
   // TODO: Also need to verify type of parent and variable
-  const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
-  const verifiedVariables = {};
-  Object.keys(variablePaths).forEach((path) => {
-    if(variablePaths[path].verified) {
-      verifiedVariables[path] = {value: variablePaths[path].variable.value};
-    }
-  })
+  // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
+  const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
+  const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
+  // const verifiedVariables = {};
+  // Object.keys(variablePaths).forEach((path) => {
+  //   if(variablePaths[path].verified) {
+  //     verifiedVariables[path] = {value: variablePaths[path].variable.value};
+  //   }
+  // })
   const verifiedVariablePaths = Object.keys(verifiedVariables);
 
   const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);

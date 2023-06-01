@@ -5,6 +5,8 @@ const pathSeparator = '.';
 
 const getInitFileData = (opts) => {
   return {
+    test:false,
+    testname: '',
     method: 'GET',
     url: 'https://jsonplaceholder.typicode.com/users/1',
     headers: [{name: 'Content-Type', value: 'application/json'}],
@@ -19,6 +21,8 @@ const getInitFileData = (opts) => {
 const initialState = {
   selectedFileId: 'default',
   default: {
+    test:false,
+    testname: '',
     method: '',
     url: '',
     headers: [],
@@ -45,7 +49,6 @@ const reqDataSlice = createSlice({
      */
     setSelectedFileIdd(state, action) {
       const selectedFileId = action.payload;
-      console.log('selectedFileid is: ', selectedFileId)
       state.selectedFileId = selectedFileId;
     },
 
@@ -95,6 +98,23 @@ const reqDataSlice = createSlice({
     setResBody(state, action) {
       const resBody = action.payload;
       state[state.selectedFileId].resBody = resBody;
+    },
+
+
+    /*****************************************************************************************************
+     * test
+     */
+    setTest(state, action) {
+      const testBoolean = action.payload;
+      state[state.selectedFileId].test = testBoolean;
+    },
+
+    /*****************************************************************************************************
+     * testname
+     */
+    setTestname(state, action) {
+      const testname = action.payload;
+      state[state.selectedFileId].testname = testname;
     },
 
     /*****************************************************************************************************
@@ -181,6 +201,7 @@ export const { createNewFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileIdd,
+  setTest, setTestname,
 } = reqDataSlice.actions;
 
 // selectors

@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DockLayout from 'rc-dock'
 import { Form, Modal, Input, List } from 'antd';
 import {useEffect, useState, useRef} from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GlobalContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
@@ -21,9 +21,16 @@ import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
-import {setSelectedFileIdd, createNewFile} from '../src/store/reqDataSlice';
+import {setSelectedFileIdd, setTest, setTestname, createNewFile} from '../src/store/reqDataSlice';
 
 export default function App() {
+  console.log('---------------------------hereree0-0000000000000000000')
+  // const reqDataState = useSelector((state) => state.reqData);
+  const reqDataStateCurrentValue = useSelector((state) => state.reqData);
+  const reqDataStateRef = useRef();
+  useEffect(() => {
+    reqDataStateRef.current = reqDataStateCurrentValue;
+  }, [reqDataStateCurrentValue]);
   const dispatch = useDispatch();
   /**
    * IMPORTANT: Always update appData when changing values of fields
@@ -101,20 +108,25 @@ export default function App() {
       }
       return file;
     });
-    appDataRef.current[selectedFileId].test = true;
-    appDataRef.current[selectedFileId].testname = selectedFileId;
+    dispatch(setTest(true));
+    dispatch(setTestname(selectedFileId));
+    // reqDataState[selectedFileId].test = true;
+    // reqDataState[selectedFileId].testname = selectedFileId;
+    // appDataRef.current[selectedFileId].test = true;
+    // appDataRef.current[selectedFileId].testname = selectedFileId;
     setFileData(fileDataCopy);
   }
 
   // accepts array of fileIds
-  const playTestsAndDisplayResults = async (testdataArray) => {
-      const executionResults = [];
-      console.log('testDataarray -> ', testdataArray)
-      for(const testdata of testdataArray) {
-        const resultData = await playTest(testdata);
-        executionResults.push(resultData);
-      }
-    console.log('-->', executionResults)
+  const playTestsAndDisplayResults = async (testFileIds) => {
+    console.log('--------------', reqDataStateRef.current)
+    const executionResults = [];
+    for(const testFileId of testFileIds) {
+      // console.log('======', testFileId)
+      const resultData = await playTest(reqDataStateRef.current[testFileId]);
+      executionResults.push(resultData);
+    }
+    console.log('executionResults-->', executionResults)
     setTestResultsToDisplay(executionResults);
     setIsTestExecutionModalOpen(true);
   }
@@ -177,7 +189,7 @@ export default function App() {
               panelLock: {
                 panelExtra: () => (
                   <>
-                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([appDataRef.current[selectedFileId]])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   <SaveFilled onClick={saveTest} style={{color: 'green', fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   </>
                 )

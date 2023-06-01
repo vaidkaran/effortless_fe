@@ -26,7 +26,6 @@ export default function UrlInput() {
       method,
     };
     const res = await axios.request(reqOpts);
-    console.log(res.data)
     dispatch(setResBody(res.data));
   }
 
