@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
 import { expect } from 'chai';
 import _ from 'lodash';
 import {getVerifiedParentPaths, getVerifiedVariablePathsWithValues} from './paths';
@@ -59,11 +57,10 @@ const verifyValues = (res, verifiedVariables, testResults) => {
 
 export default async function playTest(testdata) {
   if(!testdata.test) {
-    console.log(':::', testdata)
     console.log(':::::WARNING::::: this not marked as a test');
     return;
   }
-  const {testname, url, reqBody, method, headers, queryParams, parentPaths, variablePaths} = testdata;
+  const {testname, url, method, headers, parentPaths, variablePaths} = testdata;
   const testResults = [];
 
   const formattedHeaders = {};
@@ -80,12 +77,6 @@ export default async function playTest(testdata) {
   // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
   const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
   const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
-  // const verifiedVariables = {};
-  // Object.keys(variablePaths).forEach((path) => {
-  //   if(variablePaths[path].verified) {
-  //     verifiedVariables[path] = {value: variablePaths[path].variable.value};
-  //   }
-  // })
   const verifiedVariablePaths = Object.keys(verifiedVariables);
 
   const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
@@ -94,9 +85,4 @@ export default async function playTest(testdata) {
   const status3 = verifyValues(res, verifiedVariables, testResults)
   const testStatus = status1 && status2 && status3;
   return {testname, testStatus, testResults}
-  // return testResults;
-
-  // console.log('verifiedVariablePaths ', verifiedVariablePaths)
-  // console.log('variablePaths ', variablePaths)
-  // setIsTestExecutionModalOpen(true);
 }

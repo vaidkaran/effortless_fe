@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { Button, Input, Select, Form } from 'antd';
-import { useEffect, useContext, useState } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
+import { Button, Input, Select} from 'antd';
+import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setMethod, setUrl, setResBody, setQueryParams, setHeaders,
-  getMethod, getUrl, getQueryParams, getHeaders } from '../store/reqDataSlice';
+import { setMethod, setUrl, setResBody,
+  getMethod, getUrl, getHeaders } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
@@ -15,7 +14,6 @@ export default function UrlInput() {
   const method = useSelector(getMethod);
   const url = useSelector(getUrl);
   const headers = useSelector(getHeaders);
-  const queryParams = useSelector(getQueryParams);
 
   const onRequestSend = async () => {
     const formattedHeaders = {};

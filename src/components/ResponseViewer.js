@@ -1,9 +1,6 @@
 import '../App.css';
-import _ from 'lodash';
 import ReactJson from 'react-json-view';
-import { useState, useEffect, useContext } from 'react';
 import { Button } from 'react-bootstrap';
-import {GlobalContext} from '../context/GlobalContext'
 import { VerifiedIcon, VerifyIcon } from '../icons';
 import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,

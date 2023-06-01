@@ -16,16 +16,14 @@ import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
 import TestExecutionViewer from "./components/TestExecutionViewer";
 
-import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone, CloseCircleFilled, CheckCircleFilled} from '@ant-design/icons';
+import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone} from '@ant-design/icons';
 import {VerifiedIcon} from './icons';
 import updateAppDataAndState from "./utils/updateAppDataAndState";
 import playTest from "./utils/playTest";
 
-import {setSelectedFileIdd, setTest, setTestname, createNewFile} from '../src/store/reqDataSlice';
+import {setTest, setTestname, createNewFile} from '../src/store/reqDataSlice';
 
 export default function App() {
-  console.log('---------------------------hereree0-0000000000000000000')
-  // const reqDataState = useSelector((state) => state.reqData);
   const reqDataStateCurrentValue = useSelector((state) => state.reqData);
   const reqDataStateRef = useRef();
   useEffect(() => {
@@ -92,7 +90,6 @@ export default function App() {
     if(filename.trim() !== '') setFileData([...fileData, {title: filename, key: filename, isLeaf: true}])
     appDataRef.current[filename] = {}
     dispatch(createNewFile(filename));
-    // dispatch(setSelectedFileIdd(filename));
     setSelectedFileId(filename); // also called on file onSelect
     updateAppState(filename); // also called on file onSelect
     setIsFileModalOpen(false);
@@ -110,23 +107,16 @@ export default function App() {
     });
     dispatch(setTest(true));
     dispatch(setTestname(selectedFileId));
-    // reqDataState[selectedFileId].test = true;
-    // reqDataState[selectedFileId].testname = selectedFileId;
-    // appDataRef.current[selectedFileId].test = true;
-    // appDataRef.current[selectedFileId].testname = selectedFileId;
     setFileData(fileDataCopy);
   }
 
   // accepts array of fileIds
   const playTestsAndDisplayResults = async (testFileIds) => {
-    console.log('--------------', reqDataStateRef.current)
     const executionResults = [];
     for(const testFileId of testFileIds) {
-      // console.log('======', testFileId)
       const resultData = await playTest(reqDataStateRef.current[testFileId]);
       executionResults.push(resultData);
     }
-    console.log('executionResults-->', executionResults)
     setTestResultsToDisplay(executionResults);
     setIsTestExecutionModalOpen(true);
   }

@@ -3,9 +3,7 @@ import 'antd/dist/antd.min.css';
 import { Tree, Switch } from 'antd';
 import { GlobalContext } from '../context/GlobalContext';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
-import { NavLink } from 'react-bootstrap';
-import playTest from '../utils/playTest';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {setSelectedFileIdd} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
 
@@ -13,8 +11,7 @@ import {reloadRjv} from '../store/rjvReloaderSlice';
 
 export default function FileExplorer() {
   const dispatch = useDispatch();
-  const reqData = useSelector((state) => state.reqData);
-  const {appDataRef, fileData, selectedFileId, setSelectedFileId, updateAppState, rjvReloader, setRjvReloader, playTestsAndDisplayResults} = useContext(GlobalContext)
+  const {fileData, selectedFileId, setSelectedFileId, updateAppState, playTestsAndDisplayResults} = useContext(GlobalContext)
   const [checkable, setCheckable] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
   const [checkedTestIds, setCheckedTestIds] = useState([]);
@@ -36,10 +33,6 @@ export default function FileExplorer() {
   }
 
   const playMultipleTests = () => {
-    const testDataArray = []
-    // for(const fileId of checkedTests) {
-    //   testDataArray.push(reqData[fileId])
-    // }
     playTestsAndDisplayResults(checkedTestIds)
   }
 
