@@ -9,11 +9,11 @@ import {reloadRjv} from '../store/rjvReloaderSlice';
 
 
 
-export default function FileExplorer() {
+export default function FileExplorer(props) {
   const selectedFileId = useSelector((state) => state.reqData.selectedFileId);
   const fileExplorerData = useSelector((state) => state.fileExplorerData);
   const dispatch = useDispatch();
-  const {playTestsAndDisplayResults} = useContext(GlobalContext)
+  // const {playTestsAndDisplayResults} = useContext(GlobalContext)
   const [checkable, setCheckable] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
   const [checkedTestIds, setCheckedTestIds] = useState([]);
@@ -33,7 +33,7 @@ export default function FileExplorer() {
   }
 
   const playMultipleTests = () => {
-    playTestsAndDisplayResults(checkedTestIds)
+    props.playTestsAndDisplayResults(checkedTestIds)
   }
 
   return (

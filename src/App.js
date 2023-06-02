@@ -3,10 +3,9 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
-import { Form, Modal, Input, List } from 'antd';
+import { Modal, Input } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalContext } from "./context/GlobalContext";
 
 import FileExplorer from './components/FileExplorer';
 import ResponseViewer from "./components/ResponseViewer";
@@ -27,50 +26,24 @@ export default function App() {
 
   const reqDataStateCurrentValue = useSelector((state) => state.reqData);
   const reqDataStateRef = useRef();
+
   useEffect(() => {
     reqDataStateRef.current = reqDataStateCurrentValue;
   }, [reqDataStateCurrentValue]);
-
-
-  /**
-   * IMPORTANT: Always update appData when changing values of fields
-   */
-  const appDataRef = useRef({});
-  const [queryParamsFormInstance] = Form.useForm();
-  const [headersFormInstance] = Form.useForm();
-  const [resBody, setResBody] = useState(null);
-  const [reqBody, setReqBody] = useState('');
-  const parentPathsRef = useRef({});
-  const variablePathsRef = useRef({});
-  const [fileData, setFileData] = useState([]);
-  const [filename, setFilename] = useState('');
-  const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
-
-  const [url, setUrl] = useState();
-  const [method, setMethod] = useState();
-
-  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
-  const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
-
-  const [rjvReloader, setRjvReloader] = useState(0);
-
-  const defaultMethodRef = useRef('get');
-  const headersInitialValuesRef = useRef([{name: 'Content-Type', value: 'application/json'}]);
-  const queryParamsInitialValuesRef = useRef([]);
-
-  const arrayGroupStateInstance = useRef();
-  const attributeStoreInstance = useRef();
 
   useEffect(() => {
     if(reqDataStateRef.current.selectedFileId === 'default') setIsFileModalOpen(true);
   }, [reqDataStateRef]);
 
-  const arrayGroupSetState = (setState) => {
-    arrayGroupStateInstance.current = setState
-  }
-  const setAttributeStoreInstance = (storeInstance) => {
-    attributeStoreInstance.current = storeInstance;
-  }
+
+  /**
+   * IMPORTANT: Always update appData when changing values of fields
+   */
+  const [filename, setFilename] = useState('');
+  const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
+
+  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+  const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
 
   const showModal = () => {
     setFilename('');
@@ -115,7 +88,7 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer/>},
+                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer playTestsAndDisplayResults={playTestsAndDisplayResults}/>},
               ],
               panelLock: {
                 panelExtra: () => (
@@ -157,7 +130,7 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'response', title: 'Response', content: <ResponseViewer resBody={resBody} />},
+                {id: 'response', title: 'Response', content: <ResponseViewer/>},
               ],
               panelLock: {
                 panelExtra: () => (
@@ -175,51 +148,34 @@ export default function App() {
   };
 
   return (
-      <GlobalContext.Provider value={{
-        appDataRef,
-        rjvReloader, setRjvReloader,
-        playTestsAndDisplayResults,
-        arrayGroupSetState, arrayGroupStateInstance, setAttributeStoreInstance, attributeStoreInstance,
-        queryParamsInitialValuesRef,
-        headersFormInstance,
-        queryParamsFormInstance,
-        headersInitialValuesRef,
-        parentPathsRef, variablePathsRef,
-        reqBody, setReqBody,
-        resBody, setResBody,
-        fileData, setFileData,
-        url, setUrl,
-        method, setMethod, defaultMethodRef,
-      }}>
-        <div>
-          {(() => {
-            if(isFileModalOpen) {
-              return (
-                <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-                  <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
-                </Modal>
-              )
-            } else if(isTestExecutionModalOpen) {
-              return (
-                <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
-                  <TestExecutionViewer executionResults={testResultsToDisplay}/>
-                </Modal>
-              )
-            } else {
-              return <DockLayout
-                defaultLayout={defaultLayout}
-                groups={{locked: { floatable: false, tabLocked: true}}}
-                style={{
-                  position: "absolute",
-                  left: 10,
-                  top: 10,
-                  right: 10,
-                  bottom: 10,
-                }}
-              />
-            }
-          })()}
-        </div>
-      </GlobalContext.Provider>
+    <div>
+      {(() => {
+        if(isFileModalOpen) {
+          return (
+            <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+              <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
+            </Modal>
+          )
+        } else if(isTestExecutionModalOpen) {
+          return (
+            <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
+              <TestExecutionViewer executionResults={testResultsToDisplay}/>
+            </Modal>
+          )
+        } else {
+          return <DockLayout
+            defaultLayout={defaultLayout}
+            groups={{locked: { floatable: false, tabLocked: true}}}
+            style={{
+              position: "absolute",
+              left: 10,
+              top: 10,
+              right: 10,
+              bottom: 10,
+            }}
+          />
+        }
+      })()}
+    </div>
   )
 }

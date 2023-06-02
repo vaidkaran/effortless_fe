@@ -1,13 +1,14 @@
 import Editor from "@monaco-editor/react";
-import React, {useContext} from 'react';
-import { GlobalContext } from '../context/GlobalContext';
+import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import {setReqBody} from '../store/reqDataSlice';
 
 export default React.memo(function JsonEditor() {
-  const {reqBody, setReqBody, appDataRef, selectedFileId} = useContext(GlobalContext);
+  const reqData = useSelector((state) => state.reqData);
+  const dispatch = useDispatch();
 
   const onChangeHandler = (value, event) => {
-    setReqBody(value)
-    appDataRef.current[selectedFileId].reqBody = value;
+    dispatch(setReqBody(value));
   }
 
   return (
@@ -15,7 +16,7 @@ export default React.memo(function JsonEditor() {
       options={{suggestOnTriggerCharacters: false}}
       defaultLanguage="json"
       onChange={onChangeHandler}
-      value={reqBody}
+      value={reqData[reqData.selectedFileId].reqBody}
     />
   );
 })
