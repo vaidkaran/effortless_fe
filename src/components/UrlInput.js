@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Button, Input, Select} from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setMethod, setUrl, setResBody,
+import { setMethod, setUrl, setResBody, resetResAndPaths,
   getMethod, getUrl, getHeaders } from '../store/reqDataSlice';
 
 
@@ -30,6 +30,7 @@ export default function UrlInput() {
   const updateUrl = (url) => {
     const {value} = url.target;
     dispatch(setUrl(value));
+    dispatch(resetResAndPaths());
   }
 
   const updateMethod = (method) => {

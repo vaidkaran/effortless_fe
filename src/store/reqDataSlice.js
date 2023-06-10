@@ -28,7 +28,7 @@ const initialState = {
     headers: [],
     queryParams: [],
     reqBody: '',
-    resBody: {},
+    resBody: null,
     parentPaths: {},
     variablePaths: {},
   }
@@ -192,8 +192,13 @@ const reqDataSlice = createSlice({
       // remove immediate parent from verifiedParentPaths ONLY if it's implicitly verified.
       const {verified, explicit } = state[selectedFileId].parentPaths[state[selectedFileId].variablePaths[path].parentPath]
       if(verified && !explicit) reqDataSlice.caseReducers.setParentAsUnverified(state, {payload: { path: state[selectedFileId].variablePaths[path].parentPath}});
+    },
+    resetResAndPaths(state, action) {
+      state[state.selectedFileId].resBody = initialState.default.resBody;
+      state[state.selectedFileId].parentPaths = initialState.default.parentPaths;
+      state[state.selectedFileId].variablePaths = initialState.default.variablePaths;
     }
-  }
+  },
 })
 
 
@@ -201,6 +206,7 @@ export const { createNewFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
+  resetResAndPaths,
   setTest, setTestname,
 } = reqDataSlice.actions;
 
