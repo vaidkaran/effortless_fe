@@ -68,10 +68,16 @@ export default function App() {
     const executionResults = [];
     for(const testFileId of testFileIds) {
       const resultData = await playTest(reqDataStateRef.current[testFileId]);
-      executionResults.push(resultData);
+      if(resultData) {
+        executionResults.push(resultData);
+      } else {
+        alert(`Can't run ${testFileId}. Not marked as test`)
+      }
     }
-    setTestResultsToDisplay(executionResults);
-    setIsTestExecutionModalOpen(true);
+    if(executionResults.length > 0) {
+      setTestResultsToDisplay(executionResults);
+      setIsTestExecutionModalOpen(true);
+    }
   }
 
   const defaultLayout = {
@@ -133,7 +139,6 @@ export default function App() {
                 panelExtra: () => (
                   <>
                   <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([reqDataStateRef.current.selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
-                  <SaveFilled onClick={saveTest} style={{color: 'green', fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
                   </>
                 )
               }
