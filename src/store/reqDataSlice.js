@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { getVerifiedParentPaths, getVerifiedVariablePaths, 
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody } from './reqDataSelectors';
+import * as pathUtils from '../utils/paths';
 const pathSeparator = '.';
 
 const getInitFileData = (opts) => {
@@ -109,6 +110,19 @@ const reqDataSlice = createSlice({
       state[state.selectedFileId].test = testBoolean;
     },
 
+    setUnsetAsTest(state, action) {
+      const {selectedFileId} = state;
+      const verifiedParentPaths = pathUtils.getVerifiedParentPaths(state[selectedFileId].parentPaths);
+
+      if(verifiedParentPaths.includes('root')) {
+        reqDataSlice.caseReducers.setTest(state, {payload: true})
+        reqDataSlice.caseReducers.setTestname(state, {payload: selectedFileId})
+      } else {
+        reqDataSlice.caseReducers.setTest(state, {payload: false})
+        reqDataSlice.caseReducers.setTestname(state, {payload: ''})
+      }
+    },
+
     /*****************************************************************************************************
      * testname
      */
@@ -171,8 +185,17 @@ const reqDataSlice = createSlice({
       }
     },
     setParentAsUnverified(state, action) {
-      const {selectedFileId} = state;
       const {path} = action.payload;
+      const {selectedFileId} = state;
+
+      const parentPaths = state[selectedFileId].parentPaths;
+      const variablePaths = state[selectedFileId].variablePaths;
+      const canBeSetAsUnverified = pathUtils.canBeRemovedFromVerifiedParentPaths({path, parentPaths, variablePaths});
+      if(!canBeSetAsUnverified) {
+        console.log(`Parent: ${path} cannot be set as unverified since a child is already selected`);
+        return;
+      }
+
       state[selectedFileId].parentPaths[path].verified = false;
       state[selectedFileId].parentPaths[path].explicit = false;
       state[selectedFileId].parentPaths[path].setState({ verified: false })
@@ -199,6 +222,9 @@ const reqDataSlice = createSlice({
       state[state.selectedFileId].variablePaths = initialState.default.variablePaths;
     }
   },
+  // extraReducers: {
+  //   'reqData/'
+  // }
 })
 
 
@@ -207,7 +233,7 @@ export const { createNewFile,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
   resetResAndPaths,
-  setTest, setTestname,
+  setTest, setTestname, setUnsetAsTest,
 } = reqDataSlice.actions;
 
 // selectors

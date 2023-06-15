@@ -36,9 +36,6 @@ export default function App() {
   }, [reqDataStateRef]);
 
 
-  /**
-   * IMPORTANT: Always update appData when changing values of fields
-   */
   const [filename, setFilename] = useState('');
   const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
 

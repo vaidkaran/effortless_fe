@@ -1,4 +1,4 @@
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
 import { Tree, Switch } from 'antd';
 import { GlobalContext } from '../context/GlobalContext';
@@ -6,17 +6,28 @@ import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import {setSelectedFileId} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
+import {showSavedIconOnFile, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
+import {getTestBool} from '../store/reqDataSelectors';
 
 
 
 export default function FileExplorer(props) {
   const selectedFileId = useSelector((state) => state.reqData.selectedFileId);
   const fileExplorerData = useSelector((state) => state.fileExplorerData);
+  const isTest = useSelector(getTestBool);
   const dispatch = useDispatch();
   // const {playTestsAndDisplayResults} = useContext(GlobalContext)
   const [checkable, setCheckable] = useState(false);
   const [showActionIcons, setShowActionIcons] = useState(false);
   const [checkedTestIds, setCheckedTestIds] = useState([]);
+
+  useEffect(() => {
+    if (isTest) {
+      dispatch(showSavedIconOnFile(selectedFileId));
+    } else {
+      dispatch(showUnsavedIconOnFile(selectedFileId));
+    }
+  }, [isTest, dispatch, selectedFileId]);
 
   const onSelect = (keys, info) => {
     const fileId = keys[0];

@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import { VerifiedIcon, VerifyIcon } from '../icons';
 import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified } from '../store/reqDataSlice';
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest } from '../store/reqDataSlice';
 import { useSelector } from 'react-redux';
 import { getResBody } from '../store/reqDataSlice';
 
@@ -12,8 +12,6 @@ export default function ResponseViewer() {
   const props = {};
 
   const rjvReloadCounter = useSelector(state => state.rjvReloader.counter);
-  const parentPaths = useSelector(state => state.reqData.parentPaths)
-  const variablePaths = useSelector(state => state.reqData.variablePaths)
   const resBody = useSelector(getResBody);
 
   const pathSeparator = '.';
@@ -26,6 +24,7 @@ export default function ResponseViewer() {
   props.initVariablePaths = initVariablePaths;
   props.setVariableAsVerified = setVariableAsVerified;
   props.setVariableAsUnverified = setVariableAsUnverified;
+  props.setUnsetAsTest = setUnsetAsTest;
 
   const shouldCollapse = ({src, namespace, type}) => {
     if (type==='object' && Object.keys(src).length > 20) {
@@ -56,9 +55,6 @@ export default function ResponseViewer() {
             shouldCollapse={shouldCollapse}
             key={rjvReloadCounter}
           /> 
-          <Button onClick={() => console.log(parentPaths)}> parentPaths</Button>
-          <Button onClick={() => console.log(variablePaths)}> variablePaths</Button>
-          <Button onClick={() => console.log(store.getState())}> state</Button>
         </div>
       ) : (
         <></>

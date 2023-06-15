@@ -30,9 +30,10 @@ const getQueryParams = getCreateSelectorFor('queryParams');
 const getHeaders = getCreateSelectorFor('headers');
 const getReqBody = getCreateSelectorFor('reqBody');
 const getResBody = getCreateSelectorFor('resBody');
+const getTestBool = getCreateSelectorFor('test');
 
 
 export {
   getVerifiedParentPaths, getVerifiedVariablePaths,
-  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getTestBool
 }
