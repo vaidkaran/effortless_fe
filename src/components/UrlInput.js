@@ -3,7 +3,7 @@ import { Button, Input, Select} from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, resetResAndPaths,
-  getMethod, getUrl, getHeaders } from '../store/reqDataSlice';
+  getMethod, getUrl, getHeaders, getReqBody } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
@@ -14,6 +14,7 @@ export default function UrlInput() {
   const method = useSelector(getMethod);
   const url = useSelector(getUrl);
   const headers = useSelector(getHeaders);
+  const reqBody = useSelector(getReqBody);
 
   const onRequestSend = async () => {
     const formattedHeaders = {};
@@ -22,6 +23,7 @@ export default function UrlInput() {
       url,
       headers: formattedHeaders,
       method,
+      data: reqBody,
     };
     const res = await axios.request(reqOpts);
     dispatch(setResBody(res.data));
