@@ -24,6 +24,7 @@ import {addFileToFileExplorer, showSavedIconOnFile} from '../src/store/fileExplo
 export default function App() {
   const dispatch = useDispatch();
 
+  const fileExplorerData = useSelector((state) => state.fileExplorerData);
   const reqDataStateCurrentValue = useSelector((state) => state.reqData);
   const reqDataStateRef = useRef();
 
@@ -32,8 +33,12 @@ export default function App() {
   }, [reqDataStateCurrentValue]);
 
   useEffect(() => {
-    if(reqDataStateRef.current.selectedFileId === 'default') setIsFileModalOpen(true);
-  }, [reqDataStateRef]);
+    const defaultExists = fileExplorerData.some((data) => data.title === 'default');
+    if(!defaultExists) {
+      dispatch(createNewFile(reqDataStateRef.current.selectedFileId));
+      dispatch(addFileToFileExplorer(reqDataStateRef.current.selectedFileId));
+    }
+  }, [reqDataStateRef,fileExplorerData, dispatch]);
 
 
   const [filename, setFilename] = useState('');
