@@ -119,7 +119,7 @@ export default function ResponseViewer() {
 
 
   return (
-    <div className='scrollable' >
+    <div className='scrollable' style={{paddingLeft: 10, paddingRight: 10}} >
       <Tabs
         onChange={onChange}
         items={tabItems}
