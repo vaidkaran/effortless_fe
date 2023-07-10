@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { Button, Input, Select} from 'antd';
+import { Button, Input, Select, Space} from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setMethod, setUrl, setResBody, resetResAndPaths,
-  getMethod, getUrl, getHeaders, getReqBody } from '../store/reqDataSlice';
+import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
+  getMethod, getUrl, getHeaders, getReqBody, setResHeaders } from '../store/reqDataSlice';
 
 
 export default function UrlInput() {
@@ -24,9 +24,13 @@ export default function UrlInput() {
       headers: formattedHeaders,
       method,
       data: reqBody,
+      validateStatus: (status) => true,
     };
     const res = await axios.request(reqOpts);
+    console.log(res)
     dispatch(setResBody(res.data));
+    dispatch(setResCode(res.status));
+    dispatch(setResHeaders(res.headers));
   }
 
   const updateUrl = (url) => {
@@ -41,7 +45,7 @@ export default function UrlInput() {
   }
 
   return (
-    <Input.Group compact style={{padding: 10}}>
+    <Space direction='horizontal' style={{padding: 10}}>
         <Select 
           open={methodOpen} 
           onDropdownVisibleChange={(visible)=>setMethodOpen(visible)} 
@@ -55,8 +59,8 @@ export default function UrlInput() {
           <Option value='delete'>DELETE</Option>
           <Option value='head'>HEAD</Option>
         </Select>
-        <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: '60%'}} />
+        <Input value={url} onChange={updateUrl} placeholder='URL' style={{width: 500}} />
         <Button type='primary' onClick={onRequestSend}>Send</Button>
-    </Input.Group>
+    </Space>
   );
 }

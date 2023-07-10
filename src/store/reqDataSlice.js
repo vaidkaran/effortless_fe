@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { getVerifiedParentPaths, getVerifiedVariablePaths, 
-  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody } from './reqDataSelectors';
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResCode } from './reqDataSelectors';
 import * as pathUtils from '../utils/paths';
 const pathSeparator = '.';
 
@@ -14,6 +14,8 @@ const getInitFileData = (opts) => {
     queryParams: [],
     reqBody: '',
     resBody: null,
+    resCode: null,
+    resHeaders: [],
     parentPaths: {},
     variablePaths: {},
   }
@@ -30,6 +32,8 @@ const initialState = {
     queryParams: [],
     reqBody: '',
     resBody: null,
+    resCode: null,
+    resHeaders: [],
     parentPaths: {},
     variablePaths: {},
   }
@@ -99,6 +103,22 @@ const reqDataSlice = createSlice({
     setResBody(state, action) {
       const resBody = action.payload;
       state[state.selectedFileId].resBody = resBody;
+    },
+
+    /*****************************************************************************************************
+     * resCode
+     */
+    setResCode(state, action) {
+      const resCode = action.payload;
+      state[state.selectedFileId].resCode = resCode;
+    },
+
+    /*****************************************************************************************************
+     * resHeaders
+     */
+    setResHeaders(state, action) {
+      const resHeaders = action.payload;
+      state[state.selectedFileId].resHeaders = resHeaders;
     },
 
 
@@ -229,7 +249,7 @@ const reqDataSlice = createSlice({
 
 
 export const { createNewFile,
-  setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody,
+  setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody, setResCode, setResHeaders,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
   resetResAndPaths,
@@ -238,6 +258,6 @@ export const { createNewFile,
 
 // selectors
 export { getVerifiedParentPaths, getVerifiedVariablePaths,
-  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody };
+  getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResCode };
 
 export default reqDataSlice.reducer;

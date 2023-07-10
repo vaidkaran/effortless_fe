@@ -13,6 +13,7 @@ import UrlInput from './components/UrlInput';
 import JsonEditor from "./components/JsonEditor";
 import Headers from "./components/Headers";
 import QueryParams from "./components/QueryParams";
+import ResponseTitle from "./components/ResponseTitle";
 import TestExecutionViewer from "./components/TestExecutionViewer";
 
 import {FileAddTwoTone, SaveFilled, PlaySquareTwoTone} from '@ant-design/icons';
@@ -138,7 +139,7 @@ export default function App() {
             {
               group: 'locked',
               tabs: [
-                {id: 'response', title: 'Response', content: <ResponseViewer/>},
+                {id: 'response', title: <ResponseTitle/>, content: <ResponseViewer/>},
               ],
               panelLock: {
                 panelExtra: () => (
