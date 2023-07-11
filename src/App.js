@@ -54,8 +54,10 @@ export default function App() {
   }
   const fileModalHandleCancel = () => setIsFileModalOpen(false);
   const fileModalHandleOk = () => { // filename is used as fileId
-    dispatch(createNewFile(filename));
-    dispatch(addFileToFileExplorer(filename));
+    if(filename.trim().length !== 0) {
+      dispatch(createNewFile(filename));
+      dispatch(addFileToFileExplorer(filename));
+    }
     setIsFileModalOpen(false);
   }
 
@@ -160,8 +162,8 @@ export default function App() {
       {(() => {
         if(isFileModalOpen) {
           return (
-            <Modal maskClosable={false} title="New File" open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
-              <Input value={filename} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name' style={{width: '60%'}} />
+            <Modal maskClosable={false} keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
+              <Input value={filename} onPressEnter={fileModalHandleOk} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name filename' style={{width: '60%'}} />
             </Modal>
           )
         } else if(isTestExecutionModalOpen) {
