@@ -3,9 +3,9 @@ import 'antd/dist/antd.min.css';
 import { Modal, Input, Tree, Switch } from 'antd';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
-import {setSelectedFileId} from '../store/reqDataSlice';
+import {setSelectedFileId, renameFile} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
-import {showSavedIconOnFile, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
+import {showSavedIconOnFile, renameFileInExplorer, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
 import {getTestBool} from '../store/reqDataSelectors';
 import { Menu, Item, useContextMenu} from 'react-contexify';
 import 'react-contexify/ReactContexify.css';
@@ -54,8 +54,8 @@ export default function FileExplorer(props) {
   }
 
   const modalOkHandler = () => {
-    console.log('New filename: ', newFilename);
-    console.log('fileId: ', fileChangeId);
+    dispatch(renameFileInExplorer({key: fileChangeId, newFilename}))
+    dispatch(renameFile({oldFileId: fileChangeId, newFileId: newFilename}))
     setIsModalOpen(false);
     setNewFilename();
     setFileChangeId();

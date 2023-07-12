@@ -1,6 +1,15 @@
 import {createSlice, current} from '@reduxjs/toolkit';
 import {setUnsetAsTest} from './reqDataSlice';
 import {VerifiedIcon} from '../icons';
+import { KeyOutlined } from '@ant-design/icons';
+
+const getFileIndex = (state, key) => {
+  for (let i=0; i<state.length; i+=1) {
+    if (state[i].key === key) {
+      return i;
+    }
+  }
+}
 
 const fileExplorerDataSlice = createSlice({
   name: 'fileExplorerData',
@@ -9,6 +18,22 @@ const fileExplorerDataSlice = createSlice({
     addFileToFileExplorer(state, action) {
       const filename = action.payload;
       state.push({title: filename, key: filename, isLeaf: true});
+    },
+    renameFileInExplorer(state, action) {
+      const {key, newFilename} = action.payload
+
+      const index = getFileIndex(state, newFilename);
+      if(index !== undefined) {
+        console.log('New filename already exists');
+        return;
+      }
+
+      const i = getFileIndex(state, key);
+      state[i].key = newFilename;
+      state[i].title = newFilename;
+    },
+    deleteFile() {
+      // TODO: don't remove the last file
     },
     showSavedIconOnFile(state, action) {
       const selectedFileId = action.payload;
@@ -44,6 +69,6 @@ const fileExplorerDataSlice = createSlice({
 })
 
 
-export const { addFileToFileExplorer, showSavedIconOnFile, showUnsavedIconOnFile } = fileExplorerDataSlice.actions;
+export const { addFileToFileExplorer, renameFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile } = fileExplorerDataSlice.actions;
 
 export default fileExplorerDataSlice.reducer;

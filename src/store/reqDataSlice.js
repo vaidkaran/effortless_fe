@@ -49,6 +49,15 @@ const reqDataSlice = createSlice({
       state['selectedFileId'] = fileId;
     },
 
+    renameFile(state, action) {
+      const {oldFileId, newFileId} = action.payload;
+      const fileData = state[oldFileId];
+      delete state[oldFileId];
+
+      state[newFileId] = fileData;
+      state['selectedFileId'] = newFileId;
+    },
+
     /*****************************************************************************************************
      * selectedFileId
      */
@@ -248,7 +257,7 @@ const reqDataSlice = createSlice({
 })
 
 
-export const { createNewFile,
+export const { createNewFile, renameFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody, setResCode, setResHeaders,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,

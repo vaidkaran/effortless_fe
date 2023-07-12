@@ -34,10 +34,9 @@ export default function App() {
   }, [reqDataStateCurrentValue]);
 
   useEffect(() => {
-    const defaultExists = fileExplorerData.some((data) => data.title === 'default');
-    if(!defaultExists) {
-      dispatch(createNewFile(reqDataStateRef.current.selectedFileId));
-      dispatch(addFileToFileExplorer(reqDataStateRef.current.selectedFileId));
+    if(fileExplorerData.length < 1) {
+      dispatch(createNewFile('default'));
+      dispatch(addFileToFileExplorer('default'));
     }
   }, [reqDataStateRef,fileExplorerData, dispatch]);
 
