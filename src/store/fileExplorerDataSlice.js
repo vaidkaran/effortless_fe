@@ -32,8 +32,10 @@ const fileExplorerDataSlice = createSlice({
       state[i].key = newFilename;
       state[i].title = newFilename;
     },
-    deleteFile() {
-      // TODO: don't remove the last file
+    deleteFileInExplorer(state, action) {
+      const key = action.payload;
+      const i = getFileIndex(state, key);
+      state.splice(i, 1);
     },
     showSavedIconOnFile(state, action) {
       const selectedFileId = action.payload;
@@ -69,6 +71,6 @@ const fileExplorerDataSlice = createSlice({
 })
 
 
-export const { addFileToFileExplorer, renameFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile } = fileExplorerDataSlice.actions;
+export const { addFileToFileExplorer, renameFileInExplorer, deleteFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile } = fileExplorerDataSlice.actions;
 
 export default fileExplorerDataSlice.reducer;

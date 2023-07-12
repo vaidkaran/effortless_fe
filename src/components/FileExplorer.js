@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
-import { Modal, Input, Tree, Switch } from 'antd';
+import { Popconfirm, message, Modal, Input, Tree, Switch } from 'antd';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
-import {setSelectedFileId, renameFile} from '../store/reqDataSlice';
+import {setSelectedFileId, renameFile, deleteFile} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
-import {showSavedIconOnFile, renameFileInExplorer, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
+import {showSavedIconOnFile, renameFileInExplorer, deleteFileInExplorer, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
 import {getTestBool} from '../store/reqDataSelectors';
 import { Menu, Item, useContextMenu} from 'react-contexify';
 import 'react-contexify/ReactContexify.css';
@@ -23,7 +23,7 @@ export default function FileExplorer(props) {
   const [checkedTestIds, setCheckedTestIds] = useState([]);
 
   const { show } = useContextMenu({id: contextMenuId});
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [newFilename, setNewFilename] = useState();
   const [fileChangeId, setFileChangeId] = useState();
 
@@ -56,13 +56,13 @@ export default function FileExplorer(props) {
   const modalOkHandler = () => {
     dispatch(renameFileInExplorer({key: fileChangeId, newFilename}))
     dispatch(renameFile({oldFileId: fileChangeId, newFileId: newFilename}))
-    setIsModalOpen(false);
+    setIsRenameModalOpen(false);
     setNewFilename();
     setFileChangeId();
   }
 
   const modalCancelHandler = () => {
-    setIsModalOpen(false);
+    setIsRenameModalOpen(false);
     setNewFilename();
     setFileChangeId();
   }
@@ -72,10 +72,25 @@ export default function FileExplorer(props) {
     show({event})
   }
 
+  const confirmDeleteHandler = (e) => {
+    if(fileExplorerData.length === 1) {
+      message.error('There must be 1 file atleast. You could rename it or create a new one before deleting it')
+      return;
+    }
+    dispatch(deleteFileInExplorer(fileChangeId));
+    dispatch(deleteFile(fileChangeId))
+    setFileChangeId();
+    message.success('Deleted successfully')
+  }
+
+  const cancelDeletehandler = () => {
+    setFileChangeId();
+  }
+
   return (
     <>
-      {isModalOpen ? (
-        <Modal maskClosable={false} open={isModalOpen} onOk={modalOkHandler} onCancel={modalCancelHandler} cancelButtonProps={{style: {display: 'none'}}} keyboard={true}>
+      {isRenameModalOpen ? (
+        <Modal maskClosable={false} open={isRenameModalOpen} onOk={modalOkHandler} onCancel={modalCancelHandler} cancelButtonProps={{style: {display: 'none'}}} keyboard={true}>
           <Input value={newFilename} onPressEnter={modalOkHandler} onChange={(name) => setNewFilename(name.target.value)} placeholder='New name' style={{width: '60%'}} />
         </Modal>
       ) :
@@ -83,8 +98,10 @@ export default function FileExplorer(props) {
       <div className='scrollable'>
         <div>
         <Menu id={contextMenuId}>
-          <Item id="rename" onClick={()=>{setIsModalOpen(true)}}>Rename</Item>
-          <Item id="delete" onClick={()=>{}}>Delete</Item>
+          <Item id="rename" onClick={()=>{setIsRenameModalOpen(true)}}>Rename</Item>
+          <Popconfirm title='Are you sure?' onConfirm={confirmDeleteHandler} onCancel={cancelDeletehandler} okText='Yes' cancelText='No'>
+            <Item id="delete">Delete</Item>
+          </Popconfirm>
         </Menu>
         </div>
         <div style={{marginLeft: 10, marginTop: 5}}>

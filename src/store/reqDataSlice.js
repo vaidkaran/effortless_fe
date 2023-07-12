@@ -58,6 +58,16 @@ const reqDataSlice = createSlice({
       state['selectedFileId'] = newFileId;
     },
 
+    deleteFile(state, action) {
+      const fileId = action.payload;
+      delete state[fileId];
+
+      if(state.selectedFileId === fileId) {
+        const files = Object.keys(state).filter(file => file !== 'selectedFileId');
+        state['selectedFileId'] = files[0];
+      }
+    },
+
     /*****************************************************************************************************
      * selectedFileId
      */
@@ -129,7 +139,6 @@ const reqDataSlice = createSlice({
       const resHeaders = action.payload;
       state[state.selectedFileId].resHeaders = resHeaders;
     },
-
 
     /*****************************************************************************************************
      * test
@@ -257,7 +266,7 @@ const reqDataSlice = createSlice({
 })
 
 
-export const { createNewFile, renameFile,
+export const { createNewFile, renameFile, deleteFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody, setResCode, setResHeaders,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
