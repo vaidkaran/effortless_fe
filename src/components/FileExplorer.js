@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
-import { Popconfirm, message, Modal, Input, Tree, Switch } from 'antd';
+import { Popconfirm, Tooltip, message, Modal, Input, Tree, Switch } from 'antd';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import {setSelectedFileId, renameFile, deleteFile} from '../store/reqDataSlice';
@@ -107,7 +107,11 @@ export default function FileExplorer(props) {
         <div style={{marginLeft: 10, marginTop: 5}}>
           Select: <Switch checked={checkable} onChange={setCheckable} />
           <br />
-          {showActionIcons ? <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/> : <></>}
+          {showActionIcons ? 
+            <Tooltip title='Run selected tests'>
+              <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/>
+            </Tooltip> :
+            <></>}
           <br />
         <Tree
           checkable={checkable}

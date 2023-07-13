@@ -3,7 +3,7 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import DockLayout from 'rc-dock'
-import { Modal, Input } from 'antd';
+import { Modal, Input, Tooltip } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -103,7 +103,9 @@ export default function App() {
               panelLock: {
                 panelExtra: () => (
                   <>
-                    <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                    <Tooltip title='New file'>
+                      <FileAddTwoTone onClick={showModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                    </Tooltip>
                   </>
                 )
               }
@@ -145,7 +147,9 @@ export default function App() {
               panelLock: {
                 panelExtra: () => (
                   <>
-                  <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([reqDataStateRef.current.selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  <Tooltip title='Run test'>
+                    <PlaySquareTwoTone onClick={()=>playTestsAndDisplayResults([reqDataStateRef.current.selectedFileId])} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                  </Tooltip>
                   </>
                 )
               }
