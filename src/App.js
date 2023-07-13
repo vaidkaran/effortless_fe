@@ -171,7 +171,7 @@ export default function App() {
           )
         } else if(isTestExecutionModalOpen) {
           return (
-            <Modal width={'60%'} maskClosable={false} title="Test Execution Results" open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
+            <Modal width={'60%'} maskClosable={false} title="Test Execution Results" footer={null} open={isTestExecutionModalOpen} onOk={testExecutionModalOk} onCancel={testExecutionModalCancel}>
               <TestExecutionViewer executionResults={testResultsToDisplay}/>
             </Modal>
           )

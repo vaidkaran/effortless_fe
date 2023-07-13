@@ -27,7 +27,6 @@ export default function UrlInput() {
       validateStatus: (status) => true,
     };
     const res = await axios.request(reqOpts);
-    console.log(res)
     dispatch(setResBody(res.data));
     dispatch(setResCode(res.status));
     dispatch(setResHeaders(res.headers));

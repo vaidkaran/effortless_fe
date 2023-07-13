@@ -115,7 +115,6 @@ export default function ResponseViewer() {
       children: resHeaders ? <Table pagination={{hideOnSinglePage: true}} columns={columns} dataSource={resHeaders}/> : <></>,
     },
   ];
-  console.log(resHeaders)
 
 
   return (
