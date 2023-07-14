@@ -1,17 +1,20 @@
 import '../App.css';
-import { Table, Tabs } from 'antd';
+import { FloatButton, Table, Tabs } from 'antd';
 import ReactJson from 'react-json-view';
 import { VerifiedIcon, VerifyIcon } from '../icons';
+// import { PiListChecksBold } from "react-icons/pi";
+import { BsCheckAll } from "react-icons/bs";
+import { VscCheckAll } from "react-icons/vsc";
 import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest } from '../store/reqDataSlice';
-import { useSelector } from 'react-redux';
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest, setAllAsVerified } from '../store/reqDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { getResBody } from '../store/reqDataSlice';
-import { NavLink } from 'react-bootstrap';
 
 export default function ResponseViewer() {
   const props = {};
 
+  const dispatch = useDispatch();
   const rjvReloadCounter = useSelector(state => state.rjvReloader.counter);
   const resBody = useSelector(getResBody);
 
@@ -71,6 +74,7 @@ export default function ResponseViewer() {
             shouldCollapse={shouldCollapse}
             key={rjvReloadCounter}
           /> 
+          <FloatButton onClick={()=>{dispatch(setAllAsVerified())}} tooltip='Select All' style={{backgroundColor: 'dodgerblue'}} icon={<VscCheckAll style={{color: 'blue'}}/>}/>
         </div>
       ) : (
         <></>
@@ -89,19 +93,6 @@ export default function ResponseViewer() {
       dataIndex: 'value',
     },
   ];
-
-  // const headersData = [
-  //   {
-  //     key: 1,
-  //     name: 'karan',
-  //     age: 34,
-  //   },
-  //   {
-  //     key: 2,
-  //     name: 'ankur',
-  //     age: 36,
-  //   }
-  // ];
 
   const tabItems = [
     {

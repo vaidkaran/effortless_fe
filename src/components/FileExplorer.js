@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import 'antd/dist/antd.min.css';
 import { Popconfirm, Tooltip, message, Modal, Input, Tree, Switch } from 'antd';
 import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +9,6 @@ import {getTestBool} from '../store/reqDataSelectors';
 import { Menu, Item, useContextMenu} from 'react-contexify';
 import 'react-contexify/ReactContexify.css';
 const contextMenuId = 'filesContextMenu';
-
 
 
 export default function FileExplorer(props) {

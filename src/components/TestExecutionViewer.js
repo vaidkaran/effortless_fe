@@ -51,21 +51,15 @@ export default function TestExecutionViewer({executionResults}) {
     },
   ]
 
-  const getTableData = (params) => {
-    
-  }
-
-
+  const items = Object.keys(formattedExecutionResults).map((testname) => ({
+    key: counter+= 1,
+    label: testname,
+    children: <Table pagination={false} scroll={{y: 250}} columns={columns} dataSource={formattedExecutionResults[testname]}/>
+  }));
 
   return (
     <div style={{height: '500px', overflowY: 'auto'}}>
-      <Collapse>
-      {Object.keys(formattedExecutionResults).map(testname => 
-        <Panel header={testname} key={counter+=1}>
-            <Table pagination={false} scroll={{y: 250}} columns={columns} dataSource={formattedExecutionResults[testname]}/>
-        </Panel>
-      )}
-      </Collapse>
+      <Collapse items={items}/>
     </div>
   );
 };

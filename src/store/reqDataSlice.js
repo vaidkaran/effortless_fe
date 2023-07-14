@@ -258,11 +258,30 @@ const reqDataSlice = createSlice({
       state[state.selectedFileId].resBody = initialState.default.resBody;
       state[state.selectedFileId].parentPaths = initialState.default.parentPaths;
       state[state.selectedFileId].variablePaths = initialState.default.variablePaths;
-    }
+    },
+    setAllAsVerified(state, action) {
+      // set all parents as verified
+      const {selectedFileId} = state;
+
+      const {parentPaths} = state[selectedFileId];
+      Object.keys(parentPaths).forEach((path) => {
+        parentPaths[path].verified = true;
+        parentPaths[path].explicit = true;
+        parentPaths[path].setState({verified: true})
+      })
+
+      // set all variables as verified
+      const {variablePaths} = state[selectedFileId];
+      Object.keys(variablePaths).forEach((path) => {
+        variablePaths[path].verified = true;
+        variablePaths[path].setState({ verified: true });
+      });
+
+      // set as test if not already
+      reqDataSlice.caseReducers.setTest(state, {payload: true})
+      reqDataSlice.caseReducers.setTestname(state, {payload: selectedFileId})
+    },
   },
-  // extraReducers: {
-  //   'reqData/'
-  // }
 })
 
 
@@ -270,6 +289,7 @@ export const { createNewFile, renameFile, deleteFile,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody, setResCode, setResHeaders,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
+  setAllAsVerified,
   resetResAndPaths,
   setTest, setTestname, setUnsetAsTest,
 } = reqDataSlice.actions;

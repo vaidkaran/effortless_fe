@@ -1,6 +1,7 @@
 // import "rc-dock/dist/rc-dock-dark.css"; // dark theme
 import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'antd/dist/reset.css';
 
 import DockLayout from 'rc-dock'
 import { Modal, Input, Tooltip } from 'antd';
