@@ -10,6 +10,7 @@
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
     "chai": "^4.3.6",
+    "http-proxy-middleware": "^2.0.6",
     "lodash": "^4.17.21",
     "rc-dock": "^3.2.11",
     "react": "17.0.0",

@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
   getMethod, getUrl, getHeaders, getReqBody, setResHeaders } from '../store/reqDataSlice';
+import { proxyUrl } from '../proxyConfig';
 
 
 export default function UrlInput() {
   const dispatch = useDispatch();
-  // const {setResBody, selectedFileId} = useContext(GlobalContext);
   const {Option} = Select;
   const [methodOpen, setMethodOpen] = useState(false);
   const method = useSelector(getMethod);
@@ -20,8 +20,8 @@ export default function UrlInput() {
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
     const reqOpts = {
-      url,
-      headers: formattedHeaders,
+      url: proxyUrl,
+      headers: {...formattedHeaders, target: url},
       method,
       data: reqBody,
       validateStatus: (status) => true,

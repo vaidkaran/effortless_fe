@@ -10,6 +10,7 @@ const getInitFileData = (opts) => {
     testname: '',
     method: 'GET',
     url: 'https://jsonplaceholder.typicode.com/users/1',
+    // url: 'http://localhost:8080/test',
     headers: [{name: 'Content-Type', value: 'application/json'}],
     queryParams: [],
     reqBody: '',
