@@ -1,3 +1,4 @@
+import DockLayout from 'rc-dock'
 import { Tooltip, Button } from 'antd';
 import {FileAddTwoTone, PlaySquareTwoTone} from '@ant-design/icons';
 import FileExplorer from '../components/FileExplorer';
@@ -9,31 +10,10 @@ import QueryParams from "../components/QueryParams";
 import ResponseTitle from "../components/ResponseTitle";
 
 export default function getDefaultLayout ({showEnvModal, showFileModal, playTestsAndDisplayResults, reqDataStateRef}) {
-  return {
+  const reqLayout = {
     dockbox: {
       mode: 'horizontal',
       children: [
-        {
-          mode: 'horizontal',
-          size: 200,
-          children: [
-            {
-              group: 'locked',
-              tabs: [
-                {id: 'fileExplorer', maximizable: false, minWidth: 200, title: 'FileExplorer', content: <FileExplorer playTestsAndDisplayResults={playTestsAndDisplayResults}/>},
-              ],
-              panelLock: {
-                panelExtra: () => (
-                  <>
-                    <Tooltip title='New file'>
-                      <FileAddTwoTone onClick={showFileModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
-                    </Tooltip>
-                  </>
-                )
-              }
-            }
-          ]
-        },
         {
           mode: 'vertical',
           size: 1000,
@@ -43,7 +23,7 @@ export default function getDefaultLayout ({showEnvModal, showFileModal, playTest
               group: 'locked',
               mode: 'horizontal',
               tabs: [
-                {id: 'request', size: 10, title: 'Request', content: <UrlInput/>},
+                {id: 'url', size: 10, title: 'Url', content: <UrlInput/>},
               ],
               panelLock: {
                 panelExtra: () => (
@@ -85,6 +65,72 @@ export default function getDefaultLayout ({showEnvModal, showFileModal, playTest
             }
           ]
         }
+      ]
+    }
+  };
+
+  return {
+    dockbox: {
+      mode: 'horizontal',
+      children: [
+        {
+          mode: 'horizontal',
+          size: 200,
+          children: [
+            {
+              group: 'locked',
+              tabs: [
+                {id: 'fileExplorer', content: <FileExplorer/>, maximizable: false, minWidth: 200, title: 'FileExplorer'},
+              ],
+              panelLock: {
+                panelExtra: () => (
+                  <>
+                    <Tooltip title='New file'>
+                      <FileAddTwoTone onClick={showFileModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+                    </Tooltip>
+                  </>
+                )
+              }
+            }
+          ]
+        },
+        {
+          mode: 'horizontal',
+          size: 2000,
+          children: [
+            {
+              group: 'locked',
+              tabs: [
+                {
+                  id: 'request', 
+                  maximizable: false, 
+                  minWidth: 200, 
+                  title: 'Request', 
+                  content: <DockLayout
+                    defaultLayout={reqLayout}
+                    groups={{locked: { floatable: false, tabLocked: true}}}
+                    style={{
+                      position: "absolute",
+                      left: 10,
+                      top: 10,
+                      right: 10,
+                      bottom: 10,
+                    }}
+                  />
+                },
+              ],
+              panelLock: {
+                panelExtra: () => (
+                  <>
+                    <Tooltip title='New file'>
+                      <Button onClick={showEnvModal} type='primary' ghost size="small" style={{margin: 2}}>Add Request</Button>
+                    </Tooltip>
+                  </>
+                )
+              }
+            }
+          ]
+        },
       ]
     }
   };

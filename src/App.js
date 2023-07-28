@@ -4,12 +4,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/reset.css';
 
 import DockLayout from 'rc-dock'
-import { Modal, Input, Button } from 'antd';
+import { Modal, Input } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import TestExecutionViewer from "./components/TestExecutionViewer";
-import JsonEditor from "./components/JsonEditor";
 import EnvEditorModal from "./components/EnvEditorModal";
 
 import playTest from "./utils/playTest";
@@ -86,6 +85,7 @@ export default function App() {
 
   const defaultLayout = getDefaultLayout({showFileModal, playTestsAndDisplayResults, reqDataStateRef, showEnvModal});
 
+
   return (
     <div>
       <Modal maskClosable={false} keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
@@ -97,10 +97,6 @@ export default function App() {
       </Modal>
 
       <EnvEditorModal showEnvModal={showEnvModal} closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
-
-      {/* <Modal width={'60%'} bodyStyle={{height: 500}} title="Env" open={isIsEnvModalOpen} okText='Save' onOk={envModalSaveHandler} onCancel={envModalCloseHandler}>
-        <EnvEditor/>
-      </Modal> */}
 
       <DockLayout
         defaultLayout={defaultLayout}
