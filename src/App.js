@@ -1,10 +1,7 @@
-// import "rc-dock/dist/rc-dock-dark.css"; // dark theme
-import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/reset.css';
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import DockLayout from 'rc-dock'
 import { Divider, Modal, Input } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
