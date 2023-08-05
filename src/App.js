@@ -3,8 +3,9 @@ import "rc-dock/dist/rc-dock.css"; // light theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/reset.css';
 
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DockLayout from 'rc-dock'
-import { Modal, Input } from 'antd';
+import { Divider, Modal, Input } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,7 +16,10 @@ import playTest from "./utils/playTest";
 
 import {createNewFile} from '../src/store/reqDataSlice';
 import {addFileToFileExplorer} from '../src/store/fileExplorerDataSlice';
-import getDefaultLayout from "./utils/getDefaultLayout";
+import FileExplorer from "./components/FileExplorer";
+import UrlInput from "./components/UrlInput";
+import ResponseViewer from "./components/ResponseViewer";
+import ReqBodyHeadersQuery from "./components/ReqBodyHeadersQuery";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -83,11 +87,8 @@ export default function App() {
     setIsEnvModalOpen(false);
   }
 
-  const defaultLayout = getDefaultLayout({showFileModal, playTestsAndDisplayResults, reqDataStateRef, showEnvModal});
-
-
   return (
-    <div>
+    <div style={{height: '100vh'}}>
       <Modal maskClosable={false} keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
         <Input value={filename} onPressEnter={fileModalHandleOk} onChange={(filename) => setFilename(filename.target.value)} placeholder='Name filename' style={{width: '60%'}} />
       </Modal>
@@ -98,17 +99,28 @@ export default function App() {
 
       <EnvEditorModal showEnvModal={showEnvModal} closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
 
-      <DockLayout
-        defaultLayout={defaultLayout}
-        groups={{locked: { floatable: false, tabLocked: true}}}
-        style={{
-          position: "absolute",
-          left: 10,
-          top: 10,
-          right: 10,
-          bottom: 10,
-        }}
-      />
+      <PanelGroup direction="horizontal">
+        <Panel defaultSize={10} minSize={10}>
+          <FileExplorer showFileModal={showFileModal}/>
+        </Panel>
+        <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+        <Panel defaultSize={45} minSize={30}>
+          <PanelGroup direction="vertical">
+            <Panel defaultSize={10} minSize={10}>
+              <UrlInput/>
+            </Panel>
+            <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
+            <Panel defaultSize={90} minSize={20}>
+              <ReqBodyHeadersQuery showFileModal={showFileModal}/>
+            </Panel>
+          </PanelGroup>
+        </Panel>
+        <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+        <Panel defaultSize={45} minSize={20}>
+          <ResponseViewer/>
+        </Panel>
+      </PanelGroup>
+
     </div>
   )
 }

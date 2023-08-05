@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { Popconfirm, Tooltip, message, Modal, Input, Tree, Switch } from 'antd';
-import {FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
+import {FileAddTwoTone, FileOutlined, PlaySquareTwoTone} from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import {setSelectedFileId, renameFile, deleteFile} from '../store/reqDataSlice';
 import {reloadRjv} from '../store/rjvReloaderSlice';
@@ -103,14 +103,23 @@ export default function FileExplorer(props) {
         </Menu>
         </div>
         <div style={{marginLeft: 10, marginTop: 5}}>
-          Select: <Switch checked={checkable} onChange={setCheckable} />
-          <br />
-          {showActionIcons ? 
-            <Tooltip title='Run selected tests'>
-              <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/>
-            </Tooltip> :
-            <></>}
-          <br />
+          <view class={'.display{}'}>
+            <view >
+              Select: <Switch checked={checkable} onChange={setCheckable}/>
+            </view>
+            <view >
+              <Tooltip title='New file'>
+                <FileAddTwoTone onClick={props.showFileModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+              </Tooltip>
+            </view>
+          </view>
+            {/* <br /> */}
+            {showActionIcons ? 
+              <Tooltip title='Run selected tests'>
+                <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/>
+              </Tooltip> :
+              <></>}
+            <br />
         <Tree
           checkable={checkable}
           showLine={{showLeafIcon: <FileOutlined />}} // can show more icons by using showIcon prop and by passing icon to the icon prop; but it will reiside in text area

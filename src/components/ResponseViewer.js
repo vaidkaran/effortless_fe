@@ -83,7 +83,7 @@ export default function ResponseViewer() {
     </>
   );
 
-  const columns = [
+  const headerTableColumns = [
     {
       title: 'Header',
       dataIndex: 'header',
@@ -103,7 +103,7 @@ export default function ResponseViewer() {
     {
       key: '2',
       label: 'Headers',
-      children: resHeaders ? <Table pagination={{hideOnSinglePage: true}} columns={columns} dataSource={resHeaders}/> : <></>,
+      children: resHeaders ? <Table pagination={{hideOnSinglePage: true}} columns={headerTableColumns} dataSource={resHeaders}/> : <></>,
     },
   ];
 
