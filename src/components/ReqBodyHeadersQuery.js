@@ -26,7 +26,7 @@ export default function ReqBodyHeadersQuery({showFileModal}) {
 
 
   return (
-    <div className='scrollable' style={{paddingLeft: 10, paddingRight: 10}} >
+    <div className='scrollable' style={{height: '100vh', paddingLeft: 10, paddingRight: 10}} >
       <Tabs
         onChange={onChange}
         items={tabItems}

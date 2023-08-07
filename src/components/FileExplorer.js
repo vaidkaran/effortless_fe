@@ -103,23 +103,17 @@ export default function FileExplorer(props) {
         </Menu>
         </div>
         <div style={{marginLeft: 10, marginTop: 5}}>
-          <view class={'.display{}'}>
-            <view >
-              Select: <Switch checked={checkable} onChange={setCheckable}/>
-            </view>
-            <view >
-              <Tooltip title='New file'>
-                <FileAddTwoTone onClick={props.showFileModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
-              </Tooltip>
-            </view>
-          </view>
-            {/* <br /> */}
-            {showActionIcons ? 
-              <Tooltip title='Run selected tests'>
-                <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/>
-              </Tooltip> :
-              <></>}
-            <br />
+          Select: <Switch checked={checkable} onChange={setCheckable}/>
+          <Tooltip title='New file'>
+            <FileAddTwoTone onClick={props.showFileModal} style={{fontSize: '20px', padding: '5px', cursor: 'pointer'}} />
+          </Tooltip>
+          <br />
+          {showActionIcons ? 
+            <Tooltip title='Run selected tests'>
+              <PlaySquareTwoTone onClick={playMultipleTests} style={{fontSize: 25, cursor: 'pointer'}}/>
+            </Tooltip> :
+            <></>}
+          <br />
         <Tree
           checkable={checkable}
           showLine={{showLeafIcon: <FileOutlined />}} // can show more icons by using showIcon prop and by passing icon to the icon prop; but it will reiside in text area

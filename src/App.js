@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/reset.css';
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Divider, Modal, Input } from 'antd';
+import { Layout, Modal, Input, Menu } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,6 +17,9 @@ import FileExplorer from "./components/FileExplorer";
 import UrlInput from "./components/UrlInput";
 import ResponseViewer from "./components/ResponseViewer";
 import ReqBodyHeadersQuery from "./components/ReqBodyHeadersQuery";
+import { SiDotenv } from "react-icons/si";
+
+const { Sider, Content } = Layout;
 
 export default function App() {
   const dispatch = useDispatch();
@@ -37,6 +40,7 @@ export default function App() {
   }, [reqDataStateRef,fileExplorerData, dispatch]);
 
 
+  const [siderCollapsed, setSiderCollapsed] = useState(true);
   const [filename, setFilename] = useState('');
   const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
 
@@ -84,6 +88,17 @@ export default function App() {
     setIsEnvModalOpen(false);
   }
 
+  const siderMenuItems = [{
+    key: 'envVars',
+    icon: <SiDotenv size={20}/>,
+    label: 'Env Variables',
+  }];
+
+  const siderMenuOnClickHandler = ({key}) => {
+    console.log(key)
+    if(key === 'envVars') showEnvModal(true)
+  };
+
   return (
     <div style={{height: '100vh'}}>
       <Modal maskClosable={false} keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={isFileModalOpen} onOk={fileModalHandleOk} onCancel={fileModalHandleCancel}>
@@ -96,27 +111,37 @@ export default function App() {
 
       <EnvEditorModal showEnvModal={showEnvModal} closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
 
-      <PanelGroup direction="horizontal">
-        <Panel defaultSize={10} minSize={10}>
-          <FileExplorer showFileModal={showFileModal}/>
-        </Panel>
-        <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
-        <Panel defaultSize={45} minSize={30}>
-          <PanelGroup direction="vertical">
+      <Layout style={{minHeight: '100vh'}}>
+        <Sider collapsible collapsed={siderCollapsed} onCollapse={(value)=>setSiderCollapsed(value)} collapsedWidth={50} >
+          <Menu theme='dark' onClick={siderMenuOnClickHandler} items={siderMenuItems}/>
+        </Sider>
+        <Content style={{backgroundColor: 'white'}}>
+          <PanelGroup direction="horizontal">
             <Panel defaultSize={10} minSize={10}>
-              <UrlInput/>
+              <FileExplorer showFileModal={showFileModal}/>
             </Panel>
-            <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
-            <Panel defaultSize={90} minSize={20}>
-              <ReqBodyHeadersQuery showFileModal={showFileModal}/>
+            <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+            <Panel defaultSize={45} minSize={30}>
+              <PanelGroup direction="vertical">
+                <Panel defaultSize={10} minSize={10}>
+                  <UrlInput/>
+                </Panel>
+                <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
+                <Panel defaultSize={90} minSize={20}>
+                  <ReqBodyHeadersQuery showFileModal={showFileModal}/>
+                </Panel>
+              </PanelGroup>
+            </Panel>
+            <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+            <Panel defaultSize={45} minSize={20}>
+              <ResponseViewer/>
             </Panel>
           </PanelGroup>
-        </Panel>
-        <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
-        <Panel defaultSize={45} minSize={20}>
-          <ResponseViewer/>
-        </Panel>
-      </PanelGroup>
+
+        </Content>
+      </Layout>
+
+
 
     </div>
   )

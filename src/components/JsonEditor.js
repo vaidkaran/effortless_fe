@@ -13,6 +13,7 @@ export default React.memo(function JsonEditor() {
 
   return (
     <Editor
+      height='80vh'
       options={{suggestOnTriggerCharacters: false}}
       defaultLanguage="json"
       onChange={onChangeHandler}
