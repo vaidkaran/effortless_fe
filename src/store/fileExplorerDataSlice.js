@@ -15,21 +15,40 @@ const fileExplorerDataSlice = createSlice({
   name: 'fileExplorerData',
   initialState: [],
   reducers: {
-    addFileToFileExplorer(state, action) {
-      const filename = action.payload;
-      state.push({title: filename, key: filename, isLeaf: true});
+    addToFileExplorer(state, action) {
+      const {filename, key, parentFolder, folder} = action.payload;
+      const folderOpts = folder ? {isLeaf: false, selectable: false} : {};
+      if(!parentFolder) {
+        state.push({title: filename, key, isLeaf: true, ...folderOpts});
+        return;
+      }
+
+      const getParentObject = (s) => {
+        for(let i=0; i<s.length; i+=1) {
+          if(s[i].key === parentFolder) {
+            return s[i];
+          } else if(s[i].children) {
+            const ob = getParentObject(s[i].children);
+            if(ob) return ob;
+          }
+        }
+        return;
+      }
+      
+      const parentObject = getParentObject(state);
+      if (!parentObject.children) parentObject.children = [];
+      parentObject.children.push({title: filename, key, isLeaf: true, ...folderOpts})
     },
     renameFileInExplorer(state, action) {
-      const {key, newFilename} = action.payload
+      const {key, newFilename, newFilenameKey} = action.payload
 
       const index = getFileIndex(state, newFilename);
       if(index !== undefined) {
-        console.log('New filename already exists');
         return;
       }
 
       const i = getFileIndex(state, key);
-      state[i].key = newFilename;
+      state[i].key = newFilenameKey;
       state[i].title = newFilename;
     },
     deleteFileInExplorer(state, action) {
@@ -53,6 +72,7 @@ const fileExplorerDataSlice = createSlice({
         }
       }
     },
+
   },
   // extraReducers: (builder) => {
   //   builder
@@ -71,6 +91,6 @@ const fileExplorerDataSlice = createSlice({
 })
 
 
-export const { addFileToFileExplorer, renameFileInExplorer, deleteFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile } = fileExplorerDataSlice.actions;
+export const { addToFileExplorer, renameFileInExplorer, deleteFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile} = fileExplorerDataSlice.actions;
 
 export default fileExplorerDataSlice.reducer;

@@ -3,7 +3,7 @@ import JsonEditor from "../components/JsonEditor";
 import Headers from "../components/Headers";
 import QueryParams from "../components/QueryParams";
 
-export default function ReqBodyHeadersQuery({showFileModal}) {
+export default function ReqBodyHeadersQuery() {
   const onChange = () => {}
 
   const tabItems = [
