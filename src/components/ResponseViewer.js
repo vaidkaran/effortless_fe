@@ -9,7 +9,8 @@ import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
   initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest, setAllAsVerified } from '../store/reqDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { getResBody } from '../store/reqDataSlice';
+import { getResBody, getResHeaders } from '../store/reqDataSlice';
+import { useEffect } from 'react';
 
 export default function ResponseViewer() {
   const props = {};
@@ -17,17 +18,19 @@ export default function ResponseViewer() {
   const dispatch = useDispatch();
   const rjvReloadCounter = useSelector(state => state.rjvReloader.counter);
   const resBody = useSelector(getResBody);
+  const resHeaders = useSelector(getResHeaders);
 
-  const resHeaders = useSelector(state => {
-    let counter = 0;
-    const { selectedFileId } = state.reqData;
-    const headers = state.reqData[selectedFileId].resHeaders;
-    if(!headers) return;
-    return Object.keys(headers).map((name) => {
-      counter += 1;
-      return { key: counter, header: name, value: headers[name]};
-    })
-  });
+  // const resHeaders = useSelector(state => {
+  //   let counter = 0;
+  //   const { selectedFileId } = state.reqData;
+  //   const headers = state.reqData[selectedFileId].resHeaders;
+  //   console.log("🚀 ~ file: ResponseViewer.js:26 ~ resHeaders ~ headers:", headers)
+  //   if(!headers) return;
+  //   return Object.keys(headers).map((name) => {
+  //     counter += 1;
+  //     return { key: counter, header: name, value: headers[name]};
+  //   })
+  // });
 
   const pathSeparator = '.';
   props.pathSeparator = pathSeparator;

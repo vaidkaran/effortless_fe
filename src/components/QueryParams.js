@@ -1,26 +1,27 @@
 import { Input, Form, Space, Button } from 'antd';
 import {MinusCircleOutlined, PlusCircleTwoTone} from '@ant-design/icons';
-import {useRef} from 'react';
+import {useEffect} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setQueryParams, getQueryParams } from '../store/reqDataSlice';
 
 export default function QueryParams() {
   const dispatch = useDispatch();
-  const addRef = useRef();
   const queryParams = useSelector(getQueryParams)
   const [queryParamsFormInstance] = Form.useForm();
 
-  queryParamsFormInstance.setFieldsValue({queryParams: queryParams})
+
+  useEffect(() => {
+    queryParamsFormInstance.setFieldsValue({queryParams: queryParams})
+  }, [queryParamsFormInstance, queryParams])
 
   const onValuesChange = (changedValues, allValues) => {
     dispatch(setQueryParams(allValues.queryParams));
   }
 
   return (
-  <Form form={queryParamsFormInstance} onValuesChange={onValuesChange} style={{padding: 10}} name="dynamic_form_nest_item" autoComplete="off">
+  <Form form={queryParamsFormInstance} onValuesChange={onValuesChange} style={{padding: 10}} name="queryParamsForm" autoComplete="off">
     <Form.List name='queryParams'>
       {(fields, { add, remove }) => {
-        addRef.current = add;
         return <>
           {fields.map(({ key, name, ...restField }) => (
             <Space
