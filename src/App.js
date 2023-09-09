@@ -159,7 +159,7 @@ export default function App() {
         <TestExecutionViewer executionResults={testResultsToDisplay}/>
       </Modal>
 
-      <EnvEditorModal showEnvModal={showEnvModal} closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
+      <EnvEditorModal closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
 
       <Layout style={{minHeight: '100vh'}}>
         <Sider collapsible collapsed={siderCollapsed} onCollapse={(value)=>setSiderCollapsed(value)} collapsedWidth={50} >

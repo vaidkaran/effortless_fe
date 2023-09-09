@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
   getMethod, getUrl, getHeaders, getReqBody, setResHeaders } from '../store/reqDataSlice';
+import { getEnvVarsAutoCompleteArray, getEnvVarsJson } from '../store/envDataSlice';
 import { proxyUrl } from '../proxyConfig';
-// import { Menu, Item, useContextMenu} from 'react-contexify';
-const contextMenuId = 'envVarMenu';
+import { getResolvedString } from '../utils';
 
 
 export default function UrlInput() {
@@ -18,6 +18,8 @@ export default function UrlInput() {
   const url = useSelector(getUrl);
   const headers = useSelector(getHeaders);
   const reqBody = useSelector(getReqBody);
+  const envVarsList = useSelector(getEnvVarsAutoCompleteArray);
+  const envVarsJson = useSelector(getEnvVarsJson);
   const [autoCompOptions, setAutoCompOptions] = useState([]);
 
   const onRequestSend = async () => {
@@ -25,7 +27,7 @@ export default function UrlInput() {
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
     const reqOpts = {
       url: proxyUrl,
-      headers: {...formattedHeaders, target: url},
+      headers: {...formattedHeaders, target: getResolvedString(url, envVarsJson)},
       method,
       data: reqBody,
       validateStatus: (status) => true,
@@ -36,39 +38,14 @@ export default function UrlInput() {
     dispatch(setResHeaders(res.headers));
   }
 
-  // const updateUrl = (event) => {
-  //   const {value} = event.target;
-  //   if(value.match(/(?<!{){{$/)) {
-  //   }
-  //   dispatch(setUrl(value));
-  //   dispatch(resetResAndPaths());
-  // }
-
   const updateMethod = (method) => {
     dispatch(setMethod(method));
     setMethodOpen(false);
   }
 
-  const envVars = [
-    {
-      label: <>
-        <span style={{color: 'blue'}}> {'{{x}}'} </span> &nbsp;
-        <span style={{fontStyle: 'italic'}}> https://jsonplaceholder.typicode.com </span>
-      </>,
-      value: 'x'
-    },
-    {
-      value: 'y'
-    },
-    {
-      label: <p style={{color: 'blue', fontStyle: 'italic', fontWeight: 'bold'}}>hello</p>,
-      value: 'z'
-    }
-  ]
-
   const onChange = (value) => {
     if(value.match(/(?<!{){{$/)) {
-      setAutoCompOptions(envVars);
+      setAutoCompOptions(envVarsList);
     } else {
       setAutoCompOptions([]);
     }
@@ -85,13 +62,6 @@ export default function UrlInput() {
 
   return (
     <>
-    {/* <div className='scrollable'>
-      <Menu id={contextMenuId}>
-        <Item id="rename" onClick={()=>{console.log('yeeeeeeeeeeeeeeeee')}}>Rename</Item>
-        <Item id="delete">Delete</Item>
-      </Menu>
-    </div> */}
-
     <Space direction='horizontal' style={{padding: 10}}>
         <Select 
           open={methodOpen} 
@@ -106,9 +76,7 @@ export default function UrlInput() {
           <Option value='delete'>DELETE</Option>
           <Option value='head'>HEAD</Option>
         </Select>
-      {/* <Dropdown menu={menuItems}> */}
         <AutoComplete onSelect={onSelect} options={autoCompOptions} value={url} onChange={onChange} placeholder='URL' style={{width: 500}} />
-      {/* </Dropdown> */}
         <Button type='primary' onClick={onRequestSend}>Send</Button>
     </Space>
     </>

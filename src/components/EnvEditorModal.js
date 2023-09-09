@@ -1,13 +1,18 @@
 import Editor from "@monaco-editor/react";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Modal, message } from 'antd';
 import { useDispatch, useSelector } from "react-redux";
-import { getEnvVars, setEnvVars } from "../store/envDataSlice";
+import { getEnvVarsString, setEnvVarsString } from "../store/envDataSlice";
 
-export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
+export default function EnvEditorModal({closeEnvModal, open}) {
   const dispatch = useDispatch();
   const isContentValidRef = useRef(true);
-  const jsonString = useSelector(getEnvVars);
+  const envVarsString = useSelector(getEnvVarsString);
+  const [jsonString, setJsonString] = useState('');
+
+  useEffect(() => {
+    setJsonString(envVarsString)
+  }, [open, envVarsString])
 
 
   const envModalCloseHandler = () => {
@@ -16,8 +21,7 @@ export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
 
   const envModalSaveHandler = () => {
     try {
-      const json = JSON.parse(jsonString);
-      console.log(json)
+      dispatch(setEnvVarsString(jsonString));
       closeEnvModal();
     } catch(err) {
       message.error('Invalid JSON')
@@ -33,7 +37,7 @@ export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
   }
 
   const onChangeHandler = (value) => {
-    dispatch(setEnvVars(value));
+    setJsonString(value);
   }
 
   return (

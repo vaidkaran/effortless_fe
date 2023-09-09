@@ -14,5 +14,21 @@ module.exports = {
       selectedReqId,
       selectedReq: state[selectedFileId].requests[selectedReqId],
     };
+  },
+
+  // resolves {{vars}} with their values from the json provided
+  getResolvedString: (string, json) => {
+    // match characters between {{ and }}
+    // https://stackoverflow.com/questions/6109882/regex-match-all-characters-between-two-strings
+    // added an extra ? to make it ungreedy
+    let resolvedString = string;
+    const matches = string.match(/(?<={{)(.+?)(?=}})/g);
+    
+    matches.forEach(e => {
+      if(json[e]) {
+        resolvedString = string.replaceAll(/{{(.+?)}}/g, json[e]);
+      }
+    });
+    return resolvedString;
   }
 }
