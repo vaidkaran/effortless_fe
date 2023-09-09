@@ -20,18 +20,6 @@ export default function ResponseViewer() {
   const resBody = useSelector(getResBody);
   const resHeaders = useSelector(getResHeaders);
 
-  // const resHeaders = useSelector(state => {
-  //   let counter = 0;
-  //   const { selectedFileId } = state.reqData;
-  //   const headers = state.reqData[selectedFileId].resHeaders;
-  //   console.log("🚀 ~ file: ResponseViewer.js:26 ~ resHeaders ~ headers:", headers)
-  //   if(!headers) return;
-  //   return Object.keys(headers).map((name) => {
-  //     counter += 1;
-  //     return { key: counter, header: name, value: headers[name]};
-  //   })
-  // });
-
   const pathSeparator = '.';
   props.pathSeparator = pathSeparator;
 
