@@ -1,11 +1,13 @@
 import Editor from "@monaco-editor/react";
 import React, { useRef, useState } from 'react';
 import { Modal, message } from 'antd';
+import { useDispatch, useSelector } from "react-redux";
+import { getEnvVars, setEnvVars } from "../store/envDataSlice";
 
-// export default React.memo(function EnvEditor() {
 export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
-  const [jsonValue, setJsonValue] = useState('');
+  const dispatch = useDispatch();
   const isContentValidRef = useRef(true);
+  const jsonString = useSelector(getEnvVars);
 
 
   const envModalCloseHandler = () => {
@@ -14,7 +16,7 @@ export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
 
   const envModalSaveHandler = () => {
     try {
-      const json = JSON.parse(jsonValue);
+      const json = JSON.parse(jsonString);
       console.log(json)
       closeEnvModal();
     } catch(err) {
@@ -30,13 +32,17 @@ export default function EnvEditorModal({showEnvModal, closeEnvModal, open}) {
     }
   }
 
+  const onChangeHandler = (value) => {
+    dispatch(setEnvVars(value));
+  }
+
   return (
     <Modal width={'60%'} bodyStyle={{height: 500}} title="Env" open={open} okText='Save' onOk={envModalSaveHandler} onCancel={envModalCloseHandler}>
       <Editor
         options={{suggestOnTriggerCharacters: false}}
         defaultLanguage="json"
-        onChange={(value) => setJsonValue(value)}
-        value={jsonValue}
+        onChange={onChangeHandler}
+        value={jsonString}
         onValidate={handleEditorValidation}
       />
     </Modal>
