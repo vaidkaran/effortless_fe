@@ -2,15 +2,14 @@ import '../App.css';
 import { FloatButton, Table, Tabs } from 'antd';
 import ReactJson from 'react-json-view';
 import { VerifiedIcon, VerifyIcon } from '../icons';
-// import { PiListChecksBold } from "react-icons/pi";
-import { BsCheckAll } from "react-icons/bs";
 import { VscCheckAll } from "react-icons/vsc";
+import { SaveOutlined, SaveFilled } from '@ant-design/icons';
 import store from '../store/store';
 import { initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest, setAllAsVerified } from '../store/reqDataSlice';
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setUnsetAsTest, setAllAsVerified,
+  setVariableAsSaved, setVariableAsUnsaved } from '../store/reqDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getResBody, getResHeaders } from '../store/reqDataSlice';
-import { useEffect } from 'react';
 
 export default function ResponseViewer() {
   const props = {};
@@ -29,8 +28,13 @@ export default function ResponseViewer() {
 
   props.initVariablePaths = initVariablePaths;
   props.setVariableAsVerified = setVariableAsVerified;
+  props.setVariableAsSaved = setVariableAsSaved;
+  props.setVariableAsUnsaved = setVariableAsUnsaved;
   props.setVariableAsUnverified = setVariableAsUnverified;
   props.setUnsetAsTest = setUnsetAsTest;
+
+  props.SaveIcon = SaveOutlined;
+  props.SavedIcon = SaveFilled;
 
   const shouldCollapse = ({src, namespace, type}) => {
     if (type==='object' && Object.keys(src).length > 20) {
@@ -57,6 +61,7 @@ export default function ResponseViewer() {
             src={resBody} 
             theme='light' 
             enableVerifyIcon
+            enableVarSaveIcon={true}
             quotesOnKeys={false}
             enableClipboard={false}
             name={'root'}

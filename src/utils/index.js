@@ -21,14 +21,17 @@ module.exports = {
     // match characters between {{ and }}
     // https://stackoverflow.com/questions/6109882/regex-match-all-characters-between-two-strings
     // added an extra ? to make it ungreedy
-    let resolvedString = string;
     const matches = string.match(/(?<={{)(.+?)(?=}})/g);
     
-    matches.forEach(e => {
-      if(json[e]) {
-        resolvedString = string.replaceAll(/{{(.+?)}}/g, json[e]);
-      }
-    });
-    return resolvedString;
+    if(matches) {
+      let resolvedString = string;
+      matches.forEach(e => {
+        if(json[e]) {
+          resolvedString = string.replaceAll(/{{(.+?)}}/g, json[e]);
+        }
+      });
+      return resolvedString;
+    }
+    return string;
   }
 }

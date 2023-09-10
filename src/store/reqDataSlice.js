@@ -174,8 +174,8 @@ const reqDataSlice = createSlice({
     },
 
     setUnsetAsTest(state, action) {
-      const {selectedFileId} = state;
-      const verifiedParentPaths = pathUtils.getVerifiedParentPaths(state[selectedFileId].parentPaths);
+      const {selectedFileId, selectedReq} = getSelectedFileAndReq(state);
+      const verifiedParentPaths = pathUtils.getVerifiedParentPaths(selectedReq.parentPaths);
 
       if(verifiedParentPaths.includes('root')) {
         reqDataSlice.caseReducers.setTest(state, {payload: true})
@@ -229,7 +229,7 @@ const reqDataSlice = createSlice({
       const {path, parentPath, variable, setState} = action.payload;
       const {selectedFileId, selectedReqId, selectedReq} = getSelectedFileAndReq(state);
       if(!selectedReq.variablePaths[path]) { // path is not present already
-        state[selectedFileId].requests[selectedReqId].variablePaths[path] = {verified: false, parentPath, variable, setState}
+        state[selectedFileId].requests[selectedReqId].variablePaths[path] = {saved: false, verified: false, parentPath, variable, setState}
       } else { // remounting - so path already present
         state[selectedFileId].requests[selectedReqId].variablePaths[path].setState = setState; // set the new state to avoid error "can't perform state update on unmounted component"
         state[selectedFileId].requests[selectedReqId].variablePaths[path].setState({verified: selectedReq.variablePaths[path].verified}); // reset the previous state
@@ -280,6 +280,18 @@ const reqDataSlice = createSlice({
       const {verified, explicit } = selectedReq.parentPaths[selectedReq.variablePaths[path].parentPath]
       if(verified && !explicit) reqDataSlice.caseReducers.setParentAsUnverified(state, {payload: { path: selectedReq.variablePaths[path].parentPath}});
     },
+    setVariableAsSaved(state, action) {
+      const {selectedReq} = getSelectedFileAndReq(state);
+      const {path} = action.payload;
+      selectedReq.variablePaths[path].saved = true;
+      selectedReq.variablePaths[path].setState({ saved: true });
+    },
+    setVariableAsUnsaved(state, action) {
+      const {selectedReq} = getSelectedFileAndReq(state);
+      const {path} = action.payload;
+      selectedReq.variablePaths[path].saved = false;
+      selectedReq.variablePaths[path].setState({ saved: false });
+    },
     resetResAndPaths(state, action) {
       const {selectedFileId, selectedReqId} = getSelectedFileAndReq(state);
       state[selectedFileId].requests[selectedReqId].resBody = defaultReqData.resBody;
@@ -288,7 +300,7 @@ const reqDataSlice = createSlice({
     },
     setAllAsVerified(state, action) {
       // set all parents as verified
-      const {selectedFileId, selectedReqId, selectedReq} = getSelectedFileAndReq(state);
+      const {selectedFileId, selectedReq} = getSelectedFileAndReq(state);
 
       const {parentPaths} = selectedReq;
       Object.keys(parentPaths).forEach((path) => {
@@ -316,7 +328,8 @@ export const { createNewFile, renameFile, deleteFile,
   createNewReq, setSelectedReqId,
   setMethod, setHeaders, setQueryParams, setUrl, setReqBody, setResBody, setResCode, setResHeaders,
   initParentPaths, setParentAsVerified, setParentAsUnverified,
-  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setSelectedFileId,
+  initVariablePaths, setVariableAsVerified, setVariableAsUnverified, setVariableAsSaved, setVariableAsUnsaved,
+  setSelectedFileId,
   setAllAsVerified,
   resetResAndPaths,
   setTest, setTestname, setUnsetAsTest,
