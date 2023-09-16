@@ -7,6 +7,7 @@ import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
 import { getEnvVarsAutoCompleteArray, getEnvVarsJson } from '../store/envDataSlice';
 import { proxyUrl } from '../proxyConfig';
 import { getResolvedString } from '../utils';
+import { flatten } from 'flat';
 
 
 export default function UrlInput() {
@@ -23,13 +24,16 @@ export default function UrlInput() {
   const [autoCompOptions, setAutoCompOptions] = useState([]);
 
   const onRequestSend = async () => {
+    const envJsonFlattened = flatten(envVarsJson)
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
+    const resolvedReqBodyString = reqBody ? getResolvedString(JSON.stringify(reqBody), { envJsonFlattened }) : reqBody;
+    const resolvedReqBodyJson = JSON.parse(resolvedReqBodyString);
     const reqOpts = {
       url: proxyUrl,
-      headers: {...formattedHeaders, target: getResolvedString(url, envVarsJson)},
+      headers: {...formattedHeaders, target: getResolvedString(url, { envJsonFlattened })},
       method,
-      data: reqBody,
+      data: resolvedReqBodyJson,
       validateStatus: (status) => true,
     };
     const res = await axios.request(reqOpts);

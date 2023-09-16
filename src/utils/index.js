@@ -17,17 +17,20 @@ module.exports = {
   },
 
   // resolves {{vars}} with their values from the json provided
-  getResolvedString: (string, json) => {
+  getResolvedString: (string, opts={}) => {
+    const json = opts.envJsonFlattened ? opts.envJsonFlattened : {};
     // match characters between {{ and }}
     // https://stackoverflow.com/questions/6109882/regex-match-all-characters-between-two-strings
     // added an extra ? to make it ungreedy
     const matches = string.match(/(?<={{)(.+?)(?=}})/g);
+    console.log("🚀 ~ file: index.js:25 ~ matches:", matches)
     
     if(matches) {
       let resolvedString = string;
       matches.forEach(e => {
-        if(json[e]) {
-          resolvedString = string.replaceAll(/{{(.+?)}}/g, json[e]);
+        const variablePath = e.match(/env\.(.+)/)[1];
+        if(json[variablePath]) {
+          resolvedString = string.replaceAll(/{{(.+?)}}/g, json[variablePath]);
         }
       });
       return resolvedString;
@@ -35,3 +38,16 @@ module.exports = {
     return string;
   }
 }
+
+
+/*
+{
+  "dev": {
+      "name": "karan",
+      "url": "https://jsonplaceholder.typicode.com"
+  },
+  "qa": {
+      "name": "ankur"
+  }
+}
+*/

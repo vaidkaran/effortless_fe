@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray } from './envDataSelectors';
+import { getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray, getEnvVarsEditorAutoSuggestArray } from './envDataSelectors';
 
 const envDataSlice = createSlice({
   name: 'envData',
@@ -15,7 +15,7 @@ const envDataSlice = createSlice({
 export const {setEnvVarsString} = envDataSlice.actions;
 
 // selectors;
-export {getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray};
+export {getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray, getEnvVarsEditorAutoSuggestArray};
 
 export default envDataSlice.reducer;
 
