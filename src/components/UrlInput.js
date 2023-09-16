@@ -28,7 +28,8 @@ export default function UrlInput() {
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
     const resolvedReqBodyString = reqBody ? getResolvedString(JSON.stringify(reqBody), { envJsonFlattened }) : reqBody;
-    const resolvedReqBodyJson = JSON.parse(resolvedReqBodyString);
+    let resolvedReqBodyJson;
+    if(resolvedReqBodyString) resolvedReqBodyJson = JSON.parse(resolvedReqBodyString);
     const reqOpts = {
       url: proxyUrl,
       headers: {...formattedHeaders, target: getResolvedString(url, { envJsonFlattened })},

@@ -23,7 +23,6 @@ module.exports = {
     // https://stackoverflow.com/questions/6109882/regex-match-all-characters-between-two-strings
     // added an extra ? to make it ungreedy
     const matches = string.match(/(?<={{)(.+?)(?=}})/g);
-    console.log("🚀 ~ file: index.js:25 ~ matches:", matches)
     
     if(matches) {
       let resolvedString = string;
