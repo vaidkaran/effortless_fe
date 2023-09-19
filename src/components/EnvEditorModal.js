@@ -9,22 +9,10 @@ export default function EnvEditorModal({closeEnvModal, open}) {
   const isContentValidRef = useRef(true);
   const envVarsString = useSelector(getEnvVarsString);
   const [jsonString, setJsonString] = useState('');
-  const completionItems = useSelector(getEnvVarsEditorAutoSuggestArray);
 
   useEffect(() => {
     setJsonString(envVarsString)
   }, [open, envVarsString])
-
-  // const onMountHandler = (editor, monaco) => {
-  //   monaco.languages.registerCompletionItemProvider("json", {
-  //     provideCompletionItems: () => ({suggestions: completionItems})
-  //     // provideCompletionItems: function (model, position) {
-  //     //   return {
-  //     //     suggestions: [{label: '1', insertText: '1'}, {label: '2', insertText: '2'}]
-  //     //   };
-  //     // },
-  //   })
-  // }
 
 
   const envModalCloseHandler = () => {
@@ -61,7 +49,6 @@ export default function EnvEditorModal({closeEnvModal, open}) {
         onChange={onChangeHandler}
         value={jsonString}
         onValidate={handleEditorValidation}
-        // onMount={onMountHandler}
       />
     </Modal>
   );

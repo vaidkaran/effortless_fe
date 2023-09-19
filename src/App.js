@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import TestExecutionViewer from "./components/TestExecutionViewer";
 import EnvEditorModal from "./components/EnvEditorModal";
+import TestVarsModal from "./components/TestVarsModal";
 
 import playTest from "./utils/playTest";
 
@@ -16,6 +17,7 @@ import {addToFileExplorer} from '../src/store/fileExplorerDataSlice';
 import FileExplorer from "./components/FileExplorer";
 import ReqTabs from "./components/ReqTabs";
 import { SiDotenv } from "react-icons/si";
+import { HiVariable } from "react-icons/hi";
 import { getKeyString } from './utils';
 
 const { Sider, Content } = Layout;
@@ -39,21 +41,13 @@ export default function App() {
     reqDataStateRef.current = reqDataStateCurrentValue;
   }, [reqDataStateCurrentValue]);
 
-  // useEffect(() => {
-  //   if(fileExplorerData.length < 1) {
-  //     const filename = 'default';
-  //     const key = getKeyString(filename);
-  //     dispatch(createNewFile(key));
-  //     dispatch(addToFileExplorer({key, filename}));
-  //   }
-  // }, [reqDataStateRef,fileExplorerData, dispatch]);
-
 
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
 
   const [isTestExecutionModalOpen, setIsTestExecutionModalOpen] = useState(false);
   const [isEnvModalOpen, setIsEnvModalOpen] = useState(false);
+  const [isTestVarModalOpen, setIsTestVarModalOpen] = useState(false);
 
 
   const testExecutionModalCancel = () => setIsTestExecutionModalOpen(false);
@@ -76,81 +70,30 @@ export default function App() {
     }
   }
 
-  const showEnvModal = () => {
-    setIsEnvModalOpen(true);
-  }
-  const closeEnvModal = () => {
-    setIsEnvModalOpen(false);
-  }
+  const showEnvModal = () => setIsEnvModalOpen(true);
+  const closeEnvModal = () => setIsEnvModalOpen(false);
 
-  const siderMenuItems = [{
-    key: 'envVars',
-    icon: <SiDotenv size={20}/>,
-    label: 'Env Variables',
-  }];
+  const showTestVarModal = () => setIsTestVarModalOpen(true);
+  const closeTestVarModal = () => setIsTestVarModalOpen(false);
+
+
+  const siderMenuItems = [
+    {
+      key: 'envVars',
+      icon: <SiDotenv size={20}/>,
+      label: 'Env Variables',
+    },
+    {
+      key: 'testVars',
+      icon: <HiVariable size={20}/>,
+      label: 'Test Variables',
+    },
+  ];
 
   const siderMenuOnClickHandler = ({key}) => {
     if(key === 'envVars') showEnvModal(true)
+    if(key === 'testVars') showTestVarModal(true)
   };
-
-  
-
-
-
-
-  // const initialItems = [
-  //   {
-  //     label: 'Tab 1',
-  //     children: reqLayout,
-  //     key: '1',
-  //   },
-  // ];
-
-
-  // const [activeKey, setActiveKey] = useState(initialItems[0].key);
-  // const [items, setItems] = useState(initialItems);
-  // const newTabIndex = useRef(0);
-  // const onChange = (newActiveKey) => {
-  //   setActiveKey(newActiveKey);
-  // };
-  // const add = () => {
-  //   const newActiveKey = `newTab${newTabIndex.current++}`;
-  //   const newPanes = [...items];
-  //   newPanes.push({
-  //     label: 'New Tab',
-  //     children: 'Content of new Tab',
-  //     key: newActiveKey,
-  //   });
-  //   setItems(newPanes);
-  //   setActiveKey(newActiveKey);
-  // };
-  // const remove = (targetKey) => {
-  //   let newActiveKey = activeKey;
-  //   let lastIndex = -1;
-  //   items.forEach((item, i) => {
-  //     if (item.key === targetKey) {
-  //       lastIndex = i - 1;
-  //     }
-  //   });
-  //   const newPanes = items.filter((item) => item.key !== targetKey);
-  //   if (newPanes.length && newActiveKey === targetKey) {
-  //     if (lastIndex >= 0) {
-  //       newActiveKey = newPanes[lastIndex].key;
-  //     } else {
-  //       newActiveKey = newPanes[0].key;
-  //     }
-  //   }
-  //   setItems(newPanes);
-  //   setActiveKey(newActiveKey);
-  // };
-  // const onEdit = (targetKey, action) => {
-  //   if (action === 'add') {
-  //     add();
-  //   } else {
-  //     remove(targetKey);
-  //   }
-  // };
-
 
 
   return (
@@ -160,6 +103,7 @@ export default function App() {
       </Modal>
 
       <EnvEditorModal closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
+      <TestVarsModal closeTestVarModal={closeTestVarModal} open={isTestVarModalOpen}/>
 
       <Layout style={{minHeight: '100vh'}}>
         <Sider collapsible collapsed={siderCollapsed} onCollapse={(value)=>setSiderCollapsed(value)} collapsedWidth={50} >
@@ -174,32 +118,8 @@ export default function App() {
 
             <Panel defaultSize={90} minSize={60}>
               <ReqTabs/>
-              {/* <Tabs
-                type="editable-card"
-                onChange={onChange}
-                activeKey={activeKey}
-                onEdit={onEdit}
-                items={items}
-              /> */}
             </Panel>
-
-            {/* <Panel defaultSize={45} minSize={30}>
-              <PanelGroup direction="vertical">
-                <Panel defaultSize={10} minSize={10}>
-                  <UrlInput/>
-                </Panel>
-                <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
-                <Panel defaultSize={90} minSize={20}>
-                  <ReqBodyHeadersQuery/>
-                </Panel>
-              </PanelGroup>
-            </Panel>
-            <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
-            <Panel defaultSize={45} minSize={20}>
-              <ResponseViewer/>
-            </Panel> */}
           </PanelGroup>
-
         </Content>
       </Layout>
 
