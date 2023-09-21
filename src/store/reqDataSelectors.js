@@ -1,4 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit';
+import { omit } from 'lodash';
 import { getSelectedFileAndReq } from '../utils';
 
 const getVerifiedParentPaths = createSelector(
@@ -21,6 +22,24 @@ const getVerifiedVariablePaths = createSelector(
     }
   ],
   (variablePaths) => Object.keys(variablePaths).filter((path) => variablePaths[path].verified)
+);
+
+const getSavedTestVars = createSelector(
+  [
+    (state) => {
+      const { requests } = state.reqData[state.reqData.selectedFileId];
+      return omit(requests, ['selectedReqId'])
+    }
+  ],
+  (requests) => {
+    const data = [];
+    for (const [reqId, reqData] of Object.entries(requests)) {
+      const {variablePaths, label} = reqData;
+      const savedTestVars = Object.keys(variablePaths).filter((path) => variablePaths[path].saved)
+      data.push({reqId, label, savedTestVars})
+    }
+    return data;
+  }
 );
 
 const getSelectedReqId = createSelector(
@@ -75,7 +94,7 @@ const getTestBool = getCreateSelectorFor('test');
 
 
 export {
-  getVerifiedParentPaths, getVerifiedVariablePaths,
+  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars,
   getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode, getTestBool
 }

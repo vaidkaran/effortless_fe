@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { getVerifiedParentPaths, getVerifiedVariablePaths, getSelectedReqId,
+import { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode } from './reqDataSelectors';
 import * as pathUtils from '../utils/paths';
 import { getSelectedFileAndReq } from '../utils';
@@ -232,7 +232,7 @@ const reqDataSlice = createSlice({
         state[selectedFileId].requests[selectedReqId].variablePaths[path] = {saved: false, verified: false, parentPath, variable, setState}
       } else { // remounting - so path already present
         state[selectedFileId].requests[selectedReqId].variablePaths[path].setState = setState; // set the new state to avoid error "can't perform state update on unmounted component"
-        state[selectedFileId].requests[selectedReqId].variablePaths[path].setState({verified: selectedReq.variablePaths[path].verified}); // reset the previous state
+        state[selectedFileId].requests[selectedReqId].variablePaths[path].setState({verified: selectedReq.variablePaths[path].verified, saved: selectedReq.variablePaths[path].saved}); // reset the previous state
       }
     },
     setVariableAsVerified(state, action) {
@@ -336,7 +336,7 @@ export const { createNewFile, renameFile, deleteFile,
 } = reqDataSlice.actions;
 
 // selectors
-export { getVerifiedParentPaths, getVerifiedVariablePaths, getSelectedReqId,
+export { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode };
 
 export default reqDataSlice.reducer;
