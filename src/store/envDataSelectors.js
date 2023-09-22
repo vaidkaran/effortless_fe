@@ -19,7 +19,7 @@ const getEnvVarsAutoCompleteArray = createSelector(
     for (const [key, value] of Object.entries(flattenedJson)) {
       arr.push({
         label: <>
-          <span style={{color: 'blue'}}> {`{{${key}}}`} </span> &nbsp;
+          <span style={{color: 'green'}}> {`{{${key}}}`} </span> &nbsp;
           <span style={{fontStyle: 'italic'}}> {value} </span>
         </>,
         value: key

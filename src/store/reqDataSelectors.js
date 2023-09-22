@@ -42,6 +42,26 @@ const getSavedTestVars = createSelector(
   }
 );
 
+const getSavedTestVarsAutoCompleteArray = createSelector(
+  [
+    getSavedTestVars,
+  ],
+  (testVarsData) => {
+    const arr = [];
+    testVarsData.forEach(({reqId, label, savedTestVars}) => {
+      savedTestVars.forEach((testVar) => {
+        arr.push({
+          label: <>
+            <span style={{color: 'blue'}}> {`{{${label}.${testVar}}}`} </span> &nbsp;
+          </>,
+          value: testVar
+        })
+      });
+    })
+    return arr;
+  }
+);
+
 const getSelectedReqId = createSelector(
   [
     (state) => {
@@ -94,7 +114,7 @@ const getTestBool = getCreateSelectorFor('test');
 
 
 export {
-  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars,
+  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray,
   getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode, getTestBool
 }

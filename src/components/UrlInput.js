@@ -3,7 +3,7 @@ import { AutoComplete, Menu, Dropdown, Button, Input, Select, Space} from 'antd'
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
-  getMethod, getUrl, getHeaders, getReqBody, setResHeaders } from '../store/reqDataSlice';
+  getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVarsAutoCompleteArray } from '../store/reqDataSlice';
 import { getEnvVarsAutoCompleteArray, getEnvVarsJson } from '../store/envDataSlice';
 import { proxyUrl } from '../proxyConfig';
 import { getResolvedString } from '../utils';
@@ -11,7 +11,6 @@ import { flatten } from 'flat';
 
 
 export default function UrlInput() {
-  // const { show } = useContextMenu({id: contextMenuId});
   const dispatch = useDispatch();
   const {Option} = Select;
   const [methodOpen, setMethodOpen] = useState(false);
@@ -20,6 +19,7 @@ export default function UrlInput() {
   const headers = useSelector(getHeaders);
   const reqBody = useSelector(getReqBody);
   const envVarsList = useSelector(getEnvVarsAutoCompleteArray);
+  const testVarsList = useSelector(getSavedTestVarsAutoCompleteArray);
   const envVarsJson = useSelector(getEnvVarsJson);
   const [autoCompOptions, setAutoCompOptions] = useState([]);
 
@@ -50,7 +50,7 @@ export default function UrlInput() {
 
   const onChange = (value) => {
     if(value.match(/(?<!{){{$/)) {
-      setAutoCompOptions(envVarsList);
+      setAutoCompOptions([...envVarsList, ...testVarsList]);
     } else {
       setAutoCompOptions([]);
     }
