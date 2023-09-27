@@ -3,7 +3,7 @@ import { AutoComplete, Menu, Dropdown, Button, Input, Select, Space} from 'antd'
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
-  getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVarsAutoCompleteArray } from '../store/reqDataSlice';
+  getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVars, getSavedTestVarsAutoCompleteArray } from '../store/reqDataSlice';
 import { getEnvVarsAutoCompleteArray, getEnvVarsJson } from '../store/envDataSlice';
 import { proxyUrl } from '../proxyConfig';
 import { getResolvedString } from '../utils';
@@ -20,6 +20,7 @@ export default function UrlInput() {
   const reqBody = useSelector(getReqBody);
   const envVarsList = useSelector(getEnvVarsAutoCompleteArray);
   const testVarsList = useSelector(getSavedTestVarsAutoCompleteArray);
+  const savedTestVars = useSelector(getSavedTestVars);
   const envVarsJson = useSelector(getEnvVarsJson);
   const [autoCompOptions, setAutoCompOptions] = useState([]);
 
@@ -27,16 +28,19 @@ export default function UrlInput() {
     const envJsonFlattened = flatten(envVarsJson)
     const formattedHeaders = {};
     headers.forEach(item => (formattedHeaders[item.name] = item.value) );
-    const resolvedReqBodyString = reqBody ? getResolvedString(JSON.stringify(reqBody), { envJsonFlattened }) : reqBody;
+    const resolvedReqBodyString = reqBody.trim() !== "" ?
+      getResolvedString(JSON.stringify(reqBody), { envJsonFlattened, savedTestVars }) :
+      reqBody;
     let resolvedReqBodyJson;
     if(resolvedReqBodyString) resolvedReqBodyJson = JSON.parse(resolvedReqBodyString);
     const reqOpts = {
       url: proxyUrl,
-      headers: {...formattedHeaders, target: getResolvedString(url, { envJsonFlattened })},
+      headers: {...formattedHeaders, target: getResolvedString(url, { envJsonFlattened, savedTestVars })},
       method,
       data: resolvedReqBodyJson,
       validateStatus: (status) => true,
     };
+    console.log(reqOpts)
     const res = await axios.request(reqOpts);
     dispatch(setResBody(res.data));
     dispatch(setResCode(res.status));

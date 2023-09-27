@@ -50,11 +50,12 @@ const getSavedTestVarsAutoCompleteArray = createSelector(
     const arr = [];
     testVarsData.forEach(({reqId, label, savedTestVars}) => {
       savedTestVars.forEach((testVar) => {
+        const testVarWithReqLabel= `${label}.${testVar}`;
         arr.push({
           label: <>
-            <span style={{color: 'blue'}}> {`{{${label}.${testVar}}}`} </span> &nbsp;
+            <span style={{color: 'blue'}}> {`{{${testVarWithReqLabel}}}`} </span> &nbsp;
           </>,
-          value: testVar
+          value: testVarWithReqLabel
         })
       });
     })
