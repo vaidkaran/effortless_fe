@@ -1,13 +1,13 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray, getEnvVarsEditorAutoSuggestArray } from './envDataSelectors';
+import { getDispose, getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArray, getEnvVarsEditorAutoSuggestArray } from './envDataSelectors';
 
 const envDataSlice = createSlice({
   name: 'envData',
-  initialState: { envVarsString: '{}' },
+  initialState: { envVarsString: '{}', dispose: null },
   reducers: {
     setEnvVarsString: (state, action) => {
       state.envVarsString = action.payload;
-    }
+    },
   },
 })
 

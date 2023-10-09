@@ -3,14 +3,14 @@ import JsonEditor from "../components/JsonEditor";
 import Headers from "../components/Headers";
 import QueryParams from "../components/QueryParams";
 
-export default function ReqBodyHeadersQuery() {
+export default function ReqBodyHeadersQuery({jsonEditorDisposeRef, jsonEditorRef}) {
   const onChange = () => {}
 
   const tabItems = [
     {
       key: '1',
       label: 'Body',
-      children: <JsonEditor/>,
+      children: <JsonEditor jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>,
     },
     {
       key: '2',

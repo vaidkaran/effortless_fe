@@ -23,6 +23,9 @@ import { getKeyString } from './utils';
 const { Sider, Content } = Layout;
 
 export default function App() {
+  // needed a global variable to keep dispose fn and invoke on each re-render
+  const jsonEditorDisposeRef = useRef(null);
+  const jsonEditorRef = useRef(null);
   const dispatch = useDispatch();
 
   const fileExplorerData = useSelector((state) => state.fileExplorerData);
@@ -117,7 +120,7 @@ export default function App() {
             <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
 
             <Panel defaultSize={90} minSize={60}>
-              <ReqTabs/>
+              <ReqTabs jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
             </Panel>
           </PanelGroup>
         </Content>

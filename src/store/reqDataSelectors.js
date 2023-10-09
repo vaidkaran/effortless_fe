@@ -63,6 +63,25 @@ const getSavedTestVarsAutoCompleteArray = createSelector(
   }
 );
 
+const getSavedTestVarsEditorAutoSuggestArray = createSelector(
+  [
+    getSavedTestVars,
+  ],
+  (testVarsData) => {
+    const arr = [];
+    testVarsData.forEach(({reqId, label, savedTestVars}) => {
+      savedTestVars.forEach((testVar) => {
+        const testVarWithReqLabel= `${label}.${testVar}`;
+        arr.push({
+          label: `{{${testVarWithReqLabel}}}`,
+          insertText: `{{${testVarWithReqLabel}}}`
+        })
+      });
+    })
+    return arr;
+  }
+);
+
 const getSelectedReqId = createSelector(
   [
     (state) => {
@@ -115,7 +134,7 @@ const getTestBool = getCreateSelectorFor('test');
 
 
 export {
-  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray,
+  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray,
   getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode, getTestBool
 }

@@ -1,5 +1,6 @@
 import {createSelector} from '@reduxjs/toolkit';
 import { flatten } from 'flat';
+import _ from 'lodash';
 
 const getEnvVarsString = createSelector(
   [
@@ -14,8 +15,10 @@ const getEnvVarsAutoCompleteArray = createSelector(
   ],
   (envData) => {
     const json = JSON.parse(envData.envVarsString);
-    const flattenedJson = flatten({ env: json })
     const arr = [];
+    if(_.isEmpty(json)) return arr;
+
+    const flattenedJson = flatten({ env: json })
     for (const [key, value] of Object.entries(flattenedJson)) {
       arr.push({
         label: <>
@@ -35,8 +38,9 @@ const getEnvVarsEditorAutoSuggestArray = createSelector(
   ],
   (envData) => {
     const json = JSON.parse(envData.envVarsString);
-    const flattenedJson = flatten({ env: json })
     const arr = [];
+    if(_.isEmpty(json)) return arr;
+    const flattenedJson = flatten({ env: json })
     for (const [key, value] of Object.entries(flattenedJson)) {
       arr.push({
         label: `{{${key}}}`,
@@ -54,4 +58,11 @@ const getEnvVarsJson = createSelector(
   (envData) => JSON.parse(envData.envVarsString)
 );
 
-export { getEnvVarsString, getEnvVarsAutoCompleteArray, getEnvVarsJson, getEnvVarsEditorAutoSuggestArray }
+const getDispose = createSelector(
+  [
+    (state) => state.envData
+  ],
+  (envData) => JSON.parse(envData.dispose)
+);
+
+export { getDispose, getEnvVarsString, getEnvVarsAutoCompleteArray, getEnvVarsJson, getEnvVarsEditorAutoSuggestArray }

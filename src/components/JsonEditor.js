@@ -1,28 +1,41 @@
 import Editor from "@monaco-editor/react";
 import React, {useRef, useEffect} from 'react';
+import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import {setReqBody} from '../store/reqDataSlice';
 import { getEnvVarsString, setEnvVarsString, getEnvVarsEditorAutoSuggestArray } from "../store/envDataSlice";
+import { getSavedTestVarsEditorAutoSuggestArray, getReqBody } from "../store/reqDataSlice";
+// import store from '../store/store';
 
-export default function JsonEditor() {
-  const reqData = useSelector((state) => state.reqData);
+export default function JsonEditor({jsonEditorDisposeRef, jsonEditorRef}) {
+  const reqBody = useSelector(getReqBody);
   const dispatch = useDispatch();
-  const completionItems = useSelector(getEnvVarsEditorAutoSuggestArray);
-  const editorRef = useRef(null);
+  // const editorRef = useRef(null);
+  const envVarsCompletionItems = useSelector(getEnvVarsEditorAutoSuggestArray);
+  const testVarsCompletionItems = useSelector(getSavedTestVarsEditorAutoSuggestArray);
 
-  const onChangeHandler = (value, event) => {
-    dispatch(setReqBody(value));
-  }
-  
   useEffect(() => {
-    if(editorRef.current) { // editorRef is set on editor mount which happens after useEffect
+    console.log('useEffect ran')
+    console.log("🚀 ~ file: JsonEditor.js:60 ~ JsonEditor ~ testVarsCompletionItems:", testVarsCompletionItems)
+    // console.log("🚀 ~ file: JsonEditor.js:60 ~ JsonEditor ~ envVarsCompletionItems:", envVarsCompletionItems)
+
+    // if(_.isEmpty(envVarsCompletionItems) && _.isEmpty(testVarsCompletionItems)) return;
+      console.log('----', testVarsCompletionItems)
+      const completionItems = [...envVarsCompletionItems, ...testVarsCompletionItems];
+
       const suggestions = (range) => (
         completionItems.map((item) => (
           {range, ...item}
         ))
       )
 
-      editorRef.current.languages.registerCompletionItemProvider("json", {
+      if (jsonEditorDisposeRef.current) {
+        console.log('disposing')
+        jsonEditorDisposeRef.current(); // invoke dispose fn
+      }
+
+    if(jsonEditorRef.current) { // editorRef is set on editor mount which happens after useEffect
+      const {dispose} = jsonEditorRef.current.languages.registerCompletionItemProvider("json", {
         provideCompletionItems: function (model, position) {
           var word = model.getWordUntilPosition(position);
           var range = {
@@ -36,11 +49,18 @@ export default function JsonEditor() {
           };
         },
       })
-    }
-  }, [completionItems])
+      console.log('dispose: ', dispose)
+      jsonEditorDisposeRef.current = dispose;
 
+    }
+  }, [jsonEditorRef, jsonEditorDisposeRef, envVarsCompletionItems, testVarsCompletionItems])
+
+  const onChangeHandler = (value, event) => {
+    dispatch(setReqBody(value));
+  }
+  
   const onMountHandler = (editor, monaco) => {
-    editorRef.current = monaco;
+    jsonEditorRef.current = monaco;
   }
 
   return (
@@ -50,7 +70,7 @@ export default function JsonEditor() {
       options={{suggestOnTriggerCharacters: false}}
       defaultLanguage="json"
       onChange={onChangeHandler}
-      value={reqData[reqData.selectedFileId].reqBody}
+      value={reqBody}
     />
   );
 }

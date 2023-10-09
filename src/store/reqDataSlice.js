@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSelectedReqId,
+import { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode } from './reqDataSelectors';
 import * as pathUtils from '../utils/paths';
 import { getSelectedFileAndReq } from '../utils';
@@ -25,7 +25,7 @@ const getInitFileData = (opts) => {
     requests: {
       selectedReqId: 1,
       1: {
-        label: 'Req 1',
+        label: 'Req1',
         ...defaultReqData,
       }
     }
@@ -336,7 +336,7 @@ export const { createNewFile, renameFile, deleteFile,
 } = reqDataSlice.actions;
 
 // selectors
-export { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSelectedReqId,
+export { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode };
 
 export default reqDataSlice.reducer;

@@ -8,7 +8,7 @@ import { createNewReq, getSelectedReqId, setSelectedReqId } from '../store/reqDa
 import { reloadRjv } from "../store/rjvReloaderSlice";
 const { Content } = Layout;
 
-export default function ReqTabs() {
+export default function ReqTabs({jsonEditorDisposeRef, jsonEditorRef}) {
   const reqLayout = (
     <Layout>
       <Content style={{backgroundColor: 'white'}}>
@@ -20,7 +20,7 @@ export default function ReqTabs() {
               </Panel>
               <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
               <Panel defaultSize={90} minSize={20}>
-                <ReqBodyHeadersQuery/>
+                <ReqBodyHeadersQuery jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
               </Panel>
             </PanelGroup>
           </Panel>
