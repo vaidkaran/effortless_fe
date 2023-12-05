@@ -159,7 +159,6 @@ const getHeaders = getCreateSelectorFor('headers');
 const getReqBody = getCreateSelectorFor('reqBody');
 const getResBody = getCreateSelectorFor('resBody');
 const getResCode = getCreateSelectorFor('resCode');
-// const getTestBool = getCreateSelectorFor('test');
 
 
 export {

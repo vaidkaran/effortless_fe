@@ -51,16 +51,6 @@ const getResolvedString = (string, opts={}) => {
           resolvedString = resolvedString.replaceAll(`{{${e}}}`, savedTestVarsWithValues[savedTestVar]);
         }
       })
-
-      // savedTestVarsWithValues.forEach(({reqId, label, savedTestVars}) => {
-      //   const regex = new RegExp(`${label}\.(.+)`); // starts with req label.
-      //   const testVarFound = e.match(regex);
-      //   const testVarPath = testVarFound && testVarFound[1];
-      //   if(savedTestVars.includes(testVarPath)) {
-      //     const flattenedResBody = flatten({ root: requests[reqId].resBody });
-      //     resolvedString = string.replaceAll(/{{(.+?)}}/g, flattenedResBody[testVarPath]);
-      //   }
-      // })
     });
     return resolvedString;
   }

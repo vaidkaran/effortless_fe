@@ -74,24 +74,12 @@ export default async function playTest(testFileId) {
   for(const [reqId, reqData] of Object.entries(testdata.requests)) {
     if (reqId === 'selectedReqId') continue;
     const {label, url, method, reqBody, headers, parentPaths, variablePaths} = reqData;
-    // testExecutionData[reqId] = { ...reqData };
 
     const savedTestVars = Object.keys(variablePaths)
       .filter((path) => variablePaths[path].saved)
 
-    // if (!isTest && savedTestVars.length === 0) return;
     // TODO: if there are no saved vars and no verified parent, then we can skip the iteration
-
-    // testExecutionData.allSavedTestVarDataArray.push({ reqId, label, savedTestVars });
-
-    // const formattedHeaders = {};
-    // headers.forEach(item => (formattedHeaders[item.name] = item.value) );
-    // const reqOpts = {
-    //   url,
-    //   headers: formattedHeaders,
-    //   method,
-    // };
-    // const res = await axios.request(reqOpts);
+    // if (!isTest && savedTestVars.length === 0) return;
 
     const res = await sendRequest({ url, headers, reqBody, method, envVarsString, savedTestVarsWithValues: testExecutionData.savedTestVarsWithValues})
     const flattenedResBody = flatten({ root: res.data })
@@ -122,39 +110,6 @@ export default async function playTest(testFileId) {
 
     testExecutionData[reqId] = { testResults, url, headers, reqBody, res, flattenedResBody, method, envVarsString, savedTestVars, testStatus}
   }
-  // return testExecutionData;
-  // TODO: Return this instead (and testname should be the filename, and then each request and it's results)
+  // TODO: cosider returning testStatus as well
   return { testname, testResults };
-  // or rather return testStatus as well
-  // return {testname, testStatus, testResults}
-
-  // if(!testdata.test) {
-  //   console.log(':::::WARNING::::: this not marked as a test');
-  //   return;
-  // }
-  // const {testname, url, method, headers, parentPaths, variablePaths} = testdata;
-  // const testResults = [];
-
-  // const formattedHeaders = {};
-  // headers.forEach(item => (formattedHeaders[item.name] = item.value) );
-  
-  // const reqOpts = {
-  //   url,
-  //   headers: formattedHeaders,
-  //   method,
-  // };
-
-  // const res = await axios.request(reqOpts);
-  // // TODO: Also need to verify type of parent and variable
-  // // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
-  // const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
-  // const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
-  // const verifiedVariablePaths = Object.keys(verifiedVariables);
-
-  // const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
-  // const status2 = verifyPathsPresence(res, verifiedVariablePaths, testResults)
-  // // TODO: if the presence of a path is false, then all it's children will be false too (no need to check)
-  // const status3 = verifyValues(res, verifiedVariables, testResults)
-  // const testStatus = status1 && status2 && status3;
-  // return {testname, testStatus, testResults}
 }

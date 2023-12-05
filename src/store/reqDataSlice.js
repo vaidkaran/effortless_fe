@@ -169,8 +169,7 @@ const reqDataSlice = createSlice({
      */
     setTest(state, action) {
       const testBoolean = action.payload;
-      const {selectedFileId, selectedReqId} = getSelectedFileAndReq(state);
-      // state[selectedFileId].requests[selectedReqId].test = testBoolean;
+      const {selectedFileId} = getSelectedFileAndReq(state);
       state[selectedFileId].test = testBoolean;
       reqDataSlice.caseReducers.setTestname(state, {payload: selectedFileId})
     },
@@ -193,8 +192,7 @@ const reqDataSlice = createSlice({
      */
     setTestname(state, action) {
       const testname = action.payload;
-      const {selectedFileId, selectedReqId} = getSelectedFileAndReq(state);
-      // state[selectedFileId].requests[selectedReqId].testname = testname;
+      const {selectedFileId} = getSelectedFileAndReq(state);
       state[selectedFileId].testname = testname;
     },
 

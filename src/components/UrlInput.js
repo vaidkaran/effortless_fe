@@ -1,13 +1,9 @@
-import axios from 'axios';
-import { AutoComplete, Menu, Dropdown, Button, Input, Select, Space} from 'antd';
+import { AutoComplete, Button, Select, Space} from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
   getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVarsWithValues, getSavedTestVarsAutoCompleteArray } from '../store/reqDataSlice';
 import { getEnvVarsAutoCompleteArray, getEnvVarsString } from '../store/envDataSlice';
-import { proxyUrl } from '../proxyConfig';
-import { getResolvedString } from '../utils';
-import { flatten } from 'flat';
 import sendRequest from '../utils/sendRequest';
 
 
