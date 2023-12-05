@@ -3,7 +3,7 @@ import { getDispose, getEnvVarsString, getEnvVarsJson, getEnvVarsAutoCompleteArr
 
 const envDataSlice = createSlice({
   name: 'envData',
-  initialState: { envVarsString: '{}', dispose: null },
+  initialState: { envVarsString: '{ "jsonPlaceholderUrl": "https://jsonplaceholder.typicode.com"}', dispose: null },
   reducers: {
     setEnvVarsString: (state, action) => {
       state.envVarsString = action.payload;

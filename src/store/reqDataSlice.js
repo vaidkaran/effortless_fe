@@ -9,7 +9,7 @@ const defaultReqData = {
   test:false,
   testname: '',
   method: 'GET',
-  url: 'https://jsonplaceholder.typicode.com/users/1',
+  url: '',
   headers: [{name: 'Content-Type', value: 'application/json'}],
   queryParams: [],
   reqBody: '',
