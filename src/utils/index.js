@@ -43,7 +43,7 @@ const getResolvedString = (string, opts={}) => {
       
       const envVarPath = envVarFound && envVarFound[1]; // starts with env.
       if(envJson[envVarPath]) {
-        resolvedString = resolvedString.replaceAll(/{{(.+?)}}/g, envJson[envVarPath]);
+        resolvedString = resolvedString.replaceAll(`{{env.${envVarPath}}}`, envJson[envVarPath]);
       }
 
       Object.keys(savedTestVarsWithValues).forEach((savedTestVar) => {
