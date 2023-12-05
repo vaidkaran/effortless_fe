@@ -1,6 +1,7 @@
 import {createSelector} from '@reduxjs/toolkit';
 import { omit } from 'lodash';
 import { getSelectedFileAndReq } from '../utils';
+import { flatten } from 'flat';
 
 const getVerifiedParentPaths = createSelector(
   [
@@ -39,6 +40,27 @@ const getSavedTestVars = createSelector(
       data.push({reqId, label, savedTestVars})
     }
     return data;
+  }
+);
+
+const getSavedTestVarsWithValues = createSelector(
+  [
+    (state) => {
+      return state.reqData[state.reqData.selectedFileId].requests
+    },
+    getSavedTestVars,
+  ],
+  (requests, testVarsData) => {
+    const savedTestVarsData = {};
+    testVarsData.forEach(({reqId, label, savedTestVars}) => {
+      const flattenedResBody = flatten({ root: requests[reqId].resBody });
+      savedTestVars.forEach((testVarPath) => {
+        if (flattenedResBody[testVarPath]) {
+          savedTestVarsData[`${label}.${testVarPath}`] = flattenedResBody[testVarPath];
+        }
+      });
+    })
+    return savedTestVarsData;
   }
 );
 
@@ -110,6 +132,13 @@ const getResHeaders = createSelector(
   }
 );
 
+const getTestBool = createSelector(
+  [
+    (state) => state.reqData
+  ],
+  (reqData) => reqData[reqData.selectedFileId].test
+)
+
 // not to be exported
 const getCreateSelectorFor = (reqDataField) => {
   return createSelector(
@@ -130,11 +159,11 @@ const getHeaders = getCreateSelectorFor('headers');
 const getReqBody = getCreateSelectorFor('reqBody');
 const getResBody = getCreateSelectorFor('resBody');
 const getResCode = getCreateSelectorFor('resCode');
-const getTestBool = getCreateSelectorFor('test');
+// const getTestBool = getCreateSelectorFor('test');
 
 
 export {
-  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray,
+  getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsWithValues, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray,
   getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode, getTestBool
 }

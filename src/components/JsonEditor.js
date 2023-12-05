@@ -15,12 +15,9 @@ export default function JsonEditor({jsonEditorDisposeRef, jsonEditorRef}) {
   const testVarsCompletionItems = useSelector(getSavedTestVarsEditorAutoSuggestArray);
 
   useEffect(() => {
-    console.log('useEffect ran')
-    console.log("🚀 ~ file: JsonEditor.js:60 ~ JsonEditor ~ testVarsCompletionItems:", testVarsCompletionItems)
     // console.log("🚀 ~ file: JsonEditor.js:60 ~ JsonEditor ~ envVarsCompletionItems:", envVarsCompletionItems)
 
     // if(_.isEmpty(envVarsCompletionItems) && _.isEmpty(testVarsCompletionItems)) return;
-      console.log('----', testVarsCompletionItems)
       const completionItems = [...envVarsCompletionItems, ...testVarsCompletionItems];
 
       const suggestions = (range) => (
@@ -30,7 +27,6 @@ export default function JsonEditor({jsonEditorDisposeRef, jsonEditorRef}) {
       )
 
       if (jsonEditorDisposeRef.current) {
-        console.log('disposing')
         jsonEditorDisposeRef.current(); // invoke dispose fn
       }
 
@@ -49,7 +45,6 @@ export default function JsonEditor({jsonEditorDisposeRef, jsonEditorRef}) {
           };
         },
       })
-      console.log('dispose: ', dispose)
       jsonEditorDisposeRef.current = dispose;
 
     }

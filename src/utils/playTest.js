@@ -2,6 +2,9 @@ import axios from 'axios';
 import { expect } from 'chai';
 import _ from 'lodash';
 import {getVerifiedParentPaths, getVerifiedVariablePathsWithValues} from './paths';
+import sendRequest from './sendRequest';
+import store from '../store/store';
+import { flatten } from 'flat';
 
 const pathSeparator = '.';
 
@@ -55,34 +58,103 @@ const verifyValues = (res, verifiedVariables, testResults) => {
   return testPassed;
 }
 
-export default async function playTest(testdata) {
-  if(!testdata.test) {
-    console.log(':::::WARNING::::: this not marked as a test');
-    return;
-  }
-  const {testname, url, method, headers, parentPaths, variablePaths} = testdata;
+export default async function playTest(testFileId) {
+  const state = store.getState();
+  const { envVarsString } = state.envData;
+  const { reqData, fileExplorerData } = state;
+  const testdata = reqData[testFileId];
+  const isTest = testdata.test;
+  const testname = _.find(fileExplorerData, {key: testFileId, isLeaf: true}).title;
+  const testExecutionData = {};
+  testExecutionData.savedTestVarsWithValues = {};
   const testResults = [];
 
-  const formattedHeaders = {};
-  headers.forEach(item => (formattedHeaders[item.name] = item.value) );
+  if(!isTest) return;
+
+  for(const [reqId, reqData] of Object.entries(testdata.requests)) {
+    if (reqId === 'selectedReqId') continue;
+    const {label, url, method, reqBody, headers, parentPaths, variablePaths} = reqData;
+    // testExecutionData[reqId] = { ...reqData };
+
+    const savedTestVars = Object.keys(variablePaths)
+      .filter((path) => variablePaths[path].saved)
+
+    // if (!isTest && savedTestVars.length === 0) return;
+    // TODO: if there are no saved vars and no verified parent, then we can skip the iteration
+
+    // testExecutionData.allSavedTestVarDataArray.push({ reqId, label, savedTestVars });
+
+    // const formattedHeaders = {};
+    // headers.forEach(item => (formattedHeaders[item.name] = item.value) );
+    // const reqOpts = {
+    //   url,
+    //   headers: formattedHeaders,
+    //   method,
+    // };
+    // const res = await axios.request(reqOpts);
+
+    const res = await sendRequest({ url, headers, reqBody, method, envVarsString, savedTestVarsWithValues: testExecutionData.savedTestVarsWithValues})
+    const flattenedResBody = flatten({ root: res.data })
+    const savedTestVarsWithValues = {};
+    for(const testVarPath of savedTestVars) {
+      if (flattenedResBody[testVarPath]) {
+        // TODO: this testvarpath should contain reqId.
+        savedTestVarsWithValues[`${label}.${testVarPath}`] = flattenedResBody[testVarPath];
+      } else {
+        console.log(`${testVarPath} not found in the resBody of ${reqId}. ResBody: `, res.data);
+        // TODO: we should fail the test here since the saved test var wasn't found in the response
+      }
+    }
+
+    _.merge(testExecutionData.savedTestVarsWithValues, savedTestVarsWithValues);
+
+    // TODO: Also need to verify type of parent and variable
+    // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
+    const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
+    const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
+    const verifiedVariablePaths = Object.keys(verifiedVariables);
+
+    const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
+    const status2 = verifyPathsPresence(res, verifiedVariablePaths, testResults)
+    // TODO: if the presence of a path is false, then all it's children will be false too (no need to check)
+    const status3 = verifyValues(res, verifiedVariables, testResults)
+    const testStatus = status1 && status2 && status3;
+
+    testExecutionData[reqId] = { testResults, url, headers, reqBody, res, flattenedResBody, method, envVarsString, savedTestVars, testStatus}
+  }
+  // return testExecutionData;
+  // TODO: Return this instead (and testname should be the filename, and then each request and it's results)
+  return { testname, testResults };
+  // or rather return testStatus as well
+  // return {testname, testStatus, testResults}
+
+  // if(!testdata.test) {
+  //   console.log(':::::WARNING::::: this not marked as a test');
+  //   return;
+  // }
+  // const {testname, url, method, headers, parentPaths, variablePaths} = testdata;
+  // const testResults = [];
+
+  // const formattedHeaders = {};
+  // headers.forEach(item => (formattedHeaders[item.name] = item.value) );
   
-  const reqOpts = {
-    url,
-    headers: formattedHeaders,
-    method,
-  };
+  // const reqOpts = {
+  //   url,
+  //   headers: formattedHeaders,
+  //   method,
+  // };
 
-  const res = await axios.request(reqOpts);
-  // TODO: Also need to verify type of parent and variable
-  // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
-  const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
-  const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
-  const verifiedVariablePaths = Object.keys(verifiedVariables);
+  // const res = await axios.request(reqOpts);
+  // // TODO: Also need to verify type of parent and variable
+  // // const verifiedParentPaths = Object.keys(parentPaths).filter((path) => parentPaths[path].verified);
+  // const verifiedParentPaths = getVerifiedParentPaths(parentPaths);
+  // const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
+  // const verifiedVariablePaths = Object.keys(verifiedVariables);
 
-  const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
-  const status2 = verifyPathsPresence(res, verifiedVariablePaths, testResults)
-  // TODO: if the presence of a path is false, then all it's children will be false too (no need to check)
-  const status3 = verifyValues(res, verifiedVariables, testResults)
-  const testStatus = status1 && status2 && status3;
-  return {testname, testStatus, testResults}
+  // const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
+  // const status2 = verifyPathsPresence(res, verifiedVariablePaths, testResults)
+  // // TODO: if the presence of a path is false, then all it's children will be false too (no need to check)
+  // const status3 = verifyValues(res, verifiedVariables, testResults)
+  // const testStatus = status1 && status2 && status3;
+  // return {testname, testStatus, testResults}
 }

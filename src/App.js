@@ -60,7 +60,7 @@ export default function App() {
   const playTestsAndDisplayResults = async (testFileIds) => {
     const executionResults = [];
     for(const testFileId of testFileIds) {
-      const resultData = await playTest(reqDataStateRef.current[testFileId]);
+      const resultData = await playTest(testFileId);
       if(resultData) {
         executionResults.push(resultData);
       } else {
@@ -115,7 +115,7 @@ export default function App() {
         <Content style={{backgroundColor: 'white'}}>
           <PanelGroup direction="horizontal">
             <Panel defaultSize={10} minSize={10}>
-              <FileExplorer/>
+              <FileExplorer playTestsAndDisplayResults={playTestsAndDisplayResults}/>
             </Panel>
             <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
 

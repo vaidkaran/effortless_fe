@@ -27,11 +27,11 @@ export default function TestExecutionViewer({executionResults}) {
         testData[path][verificationType] = getTag(passed);
       }
     })
-    console.log('--', testData)
+    console.log('testData:', testData)
     formattedExecutionResults[testname] = Object.keys(testData).map((obKey) => testData[obKey]);
   }
 
-  console.log(formattedExecutionResults)
+  console.log('formattedExecutionResults: ', formattedExecutionResults)
 
   const columns = [
     {

@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
+import { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVarsWithValues, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode } from './reqDataSelectors';
 import * as pathUtils from '../utils/paths';
 import { getSelectedFileAndReq } from '../utils';
@@ -170,7 +170,9 @@ const reqDataSlice = createSlice({
     setTest(state, action) {
       const testBoolean = action.payload;
       const {selectedFileId, selectedReqId} = getSelectedFileAndReq(state);
-      state[selectedFileId].requests[selectedReqId].test = testBoolean;
+      // state[selectedFileId].requests[selectedReqId].test = testBoolean;
+      state[selectedFileId].test = testBoolean;
+      reqDataSlice.caseReducers.setTestname(state, {payload: selectedFileId})
     },
 
     setUnsetAsTest(state, action) {
@@ -192,7 +194,8 @@ const reqDataSlice = createSlice({
     setTestname(state, action) {
       const testname = action.payload;
       const {selectedFileId, selectedReqId} = getSelectedFileAndReq(state);
-      state[selectedFileId].requests[selectedReqId].testname = testname;
+      // state[selectedFileId].requests[selectedReqId].testname = testname;
+      state[selectedFileId].testname = testname;
     },
 
     /*****************************************************************************************************
@@ -336,7 +339,7 @@ export const { createNewFile, renameFile, deleteFile,
 } = reqDataSlice.actions;
 
 // selectors
-export { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
+export { getVerifiedParentPaths, getVerifiedVariablePaths, getSavedTestVarsWithValues, getSavedTestVars, getSavedTestVarsAutoCompleteArray, getSavedTestVarsEditorAutoSuggestArray, getSelectedReqId,
   getMethod, getUrl, getQueryParams, getHeaders, getReqBody, getResBody, getResHeaders, getResCode };
 
 export default reqDataSlice.reducer;

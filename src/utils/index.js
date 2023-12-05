@@ -29,7 +29,7 @@ const getResolvedString = (string, opts={}) => {
   const {selectedFileId} = getSelectedFileAndReq(state.reqData);
   const requests = state.reqData[selectedFileId].requests;
   const envJson = opts.envJsonFlattened ? opts.envJsonFlattened : {};
-  const savedTestVars = opts.savedTestVars ? opts.savedTestVars : {};
+  const savedTestVarsWithValues = opts.savedTestVarsWithValues ? opts.savedTestVarsWithValues : {}
 
   // match characters between {{ and }}
   // https://stackoverflow.com/questions/6109882/regex-match-all-characters-between-two-strings
@@ -43,18 +43,24 @@ const getResolvedString = (string, opts={}) => {
       
       const envVarPath = envVarFound && envVarFound[1]; // starts with env.
       if(envJson[envVarPath]) {
-        resolvedString = string.replaceAll(/{{(.+?)}}/g, envJson[envVarPath]);
+        resolvedString = resolvedString.replaceAll(/{{(.+?)}}/g, envJson[envVarPath]);
       }
 
-      savedTestVars.forEach(({reqId, label, savedTestVars}) => {
-        const regex = new RegExp(`${label}\.(.+)`); // starts with req label.
-        const testVarFound = e.match(regex);
-        const testVarPath = testVarFound && testVarFound[1];
-        if(savedTestVars.includes(testVarPath)) {
-          const flattenedResBody = flatten({ root: requests[reqId].resBody });
-          resolvedString = string.replaceAll(/{{(.+?)}}/g, flattenedResBody[testVarPath]);
+      Object.keys(savedTestVarsWithValues).forEach((savedTestVar) => {
+        if(savedTestVar === e) {
+          resolvedString = resolvedString.replaceAll(`{{${e}}}`, savedTestVarsWithValues[savedTestVar]);
         }
       })
+
+      // savedTestVarsWithValues.forEach(({reqId, label, savedTestVars}) => {
+      //   const regex = new RegExp(`${label}\.(.+)`); // starts with req label.
+      //   const testVarFound = e.match(regex);
+      //   const testVarPath = testVarFound && testVarFound[1];
+      //   if(savedTestVars.includes(testVarPath)) {
+      //     const flattenedResBody = flatten({ root: requests[reqId].resBody });
+      //     resolvedString = string.replaceAll(/{{(.+?)}}/g, flattenedResBody[testVarPath]);
+      //   }
+      // })
     });
     return resolvedString;
   }
