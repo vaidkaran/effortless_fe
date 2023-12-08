@@ -57,6 +57,10 @@ export default function FileExplorer(props) {
     props.playTestsAndDisplayResults(checkedTestIds)
   }
 
+  const playSingleTest = () => {
+    props.playTestsAndDisplayResults([nodeInContext.key])
+  }
+
   const renameModalOkHandler = () => {
     const newFilenameKey = getKeyString(newFilename);
     dispatch(renameFileInExplorer({key: nodeInContext.key, newFilename, newFilenameKey}))
@@ -139,6 +143,7 @@ export default function FileExplorer(props) {
       <div className='scrollable'>
         <div>
         <Menu id={contextMenuId}>
+          <Item id="run" onClick={playSingleTest}>Run Test</Item>
           <Item id="rename" onClick={()=>{setIsRenameModalOpen(true)}}>Rename</Item>
           <Popconfirm title='Are you sure?' onConfirm={confirmDeleteHandler} onCancel={cancelDeletehandler} okText='Yes' cancelText='No'>
             <Item id="delete">Delete</Item>
