@@ -14,8 +14,8 @@ export default function TestExecutionViewer({executionResults}) {
   let counter=0;
   let keyCounter = 0;
   const formattedExecutionResults = {};
-  const testData = {};
   for(const {testname, testResults} of executionResults) {
+    const testData = {};
     // eslint-disable-next-line no-loop-func
     testResults.forEach((singleVerificationResult) => {
       const {verificationType, passed, path, errorDetails} = singleVerificationResult;
@@ -27,7 +27,6 @@ export default function TestExecutionViewer({executionResults}) {
         testData[path][verificationType] = getTag(passed);
       }
     })
-    console.log('testData:', testData)
     formattedExecutionResults[testname] = Object.keys(testData).map((obKey) => testData[obKey]);
   }
 
