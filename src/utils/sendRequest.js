@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { proxyUrl } from '../proxyConfig';
 import { getResolvedString } from './index';
 import { flatten } from 'flat';
 
@@ -14,8 +13,8 @@ export default async function sendRequest({ url, headers, reqBody, method, envVa
   let resolvedReqBodyJson;
   if(resolvedReqBodyString) resolvedReqBodyJson = JSON.parse(resolvedReqBodyString);
   const reqOpts = {
-    url: proxyUrl,
-    headers: {...formattedHeaders, target: getResolvedString(url, { envJsonFlattened, savedTestVarsWithValues })},
+    url: getResolvedString(url, { envJsonFlattened, savedTestVarsWithValues }),
+    headers: formattedHeaders,
     method,
     data: resolvedReqBodyJson,
     validateStatus: (status) => true,
