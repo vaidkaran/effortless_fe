@@ -2,7 +2,7 @@ import { AutoComplete, Button, Select, Space} from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { setMethod, setUrl, setResBody, setResCode, resetResAndPaths,
-  getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVarsWithValues, getSavedTestVarsAutoCompleteArray } from '../store/reqDataSlice';
+  getMethod, getUrl, getHeaders, getReqBody, setResHeaders, getSavedTestVarsWithValues, getSavedTestVarsAutoCompleteArray, getQueryParams } from '../store/reqDataSlice';
 import { getEnvVarsAutoCompleteArray, getEnvVarsString } from '../store/envDataSlice';
 import sendRequest from '../utils/sendRequest';
 
@@ -14,6 +14,7 @@ export default function UrlInput() {
   const method = useSelector(getMethod);
   const url = useSelector(getUrl);
   const headers = useSelector(getHeaders);
+  const queryParams = useSelector(getQueryParams);
   const reqBody = useSelector(getReqBody);
   const envVarsList = useSelector(getEnvVarsAutoCompleteArray);
   const testVarsList = useSelector(getSavedTestVarsAutoCompleteArray);
@@ -22,7 +23,7 @@ export default function UrlInput() {
   const [autoCompOptions, setAutoCompOptions] = useState([]);
 
   const onRequestSend = async () => {
-    const res = await sendRequest({ url, headers, reqBody, method, envVarsString, savedTestVarsWithValues})
+    const res = await sendRequest({ url, headers, queryParams, reqBody, method, envVarsString, savedTestVarsWithValues})
 
     dispatch(setResBody(res.data));
     dispatch(setResCode(res.status));

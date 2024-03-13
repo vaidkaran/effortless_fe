@@ -73,7 +73,7 @@ export default async function playTest(testFileId) {
   for(const [reqId, reqData] of Object.entries(testdata.requests)) {
     const testResults = [];
     if (reqId === 'selectedReqId') continue;
-    const {label, url, method, reqBody, headers, parentPaths, variablePaths} = reqData;
+    const {label, url, method, reqBody, headers, queryParams, parentPaths, variablePaths} = reqData;
 
     const savedTestVars = Object.keys(variablePaths)
       .filter((path) => variablePaths[path].saved)
@@ -81,7 +81,7 @@ export default async function playTest(testFileId) {
     // TODO: if there are no saved vars and no verified parent, then we can skip the iteration
     // if (!isTest && savedTestVars.length === 0) return;
 
-    const res = await sendRequest({ url, headers, reqBody, method, envVarsString, savedTestVarsWithValues: testExecutionData.savedTestVarsWithValues})
+    const res = await sendRequest({ url, headers, queryParams, reqBody, method, envVarsString, savedTestVarsWithValues: testExecutionData.savedTestVarsWithValues})
     const flattenedResBody = flatten({ root: res.data })
     const savedTestVarsWithValues = {};
     for(const testVarPath of savedTestVars) {
