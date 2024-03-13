@@ -23,8 +23,8 @@ const defaultReqData = {
 const getInitFileData = (opts) => {
   return {
     requests: {
-      selectedReqId: 1,
-      1: {
+      selectedReqId: 'req1',
+      req1: {
         label: 'Req1',
         ...defaultReqData,
       }
@@ -66,8 +66,9 @@ const reqDataSlice = createSlice({
      */
     createNewReq(state, action) {
       const {selectedFileId} = state;
-      const key = Object.keys(state[selectedFileId].requests).length;
-      const label = `Req${key}`;
+      const reqNumber = Object.keys(state[selectedFileId].requests).length;
+      const key = `req${reqNumber}`
+      const label = `Req${reqNumber}`;
       state[selectedFileId].requests[key] = { label, ...defaultReqData };
       state[selectedFileId].requests.selectedReqId = key;
     },

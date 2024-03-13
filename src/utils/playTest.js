@@ -67,11 +67,11 @@ export default async function playTest(testFileId) {
   const testname = _.find(fileExplorerData, {key: testFileId, isLeaf: true}).title;
   const testExecutionData = {};
   testExecutionData.savedTestVarsWithValues = {};
-  const testResults = [];
 
   if(!isTest) return;
 
   for(const [reqId, reqData] of Object.entries(testdata.requests)) {
+    const testResults = [];
     if (reqId === 'selectedReqId') continue;
     const {label, url, method, reqBody, headers, parentPaths, variablePaths} = reqData;
 
@@ -111,5 +111,5 @@ export default async function playTest(testFileId) {
     testExecutionData[reqId] = { testResults, url, headers, reqBody, res, flattenedResBody, method, envVarsString, savedTestVars, testStatus}
   }
   // TODO: cosider returning testStatus as well
-  return { testname, testResults };
+  return { testname, testExecutionData };
 }
