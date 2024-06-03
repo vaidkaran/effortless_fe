@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/reset.css';
 
+import signInWithGoogle from './utils/signInWithGoogle';
+
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Layout, Modal, Tabs, Menu } from 'antd';
 import {useEffect, useState, useRef} from 'react';
@@ -44,6 +46,7 @@ export default function App() {
     reqDataStateRef.current = reqDataStateCurrentValue;
   }, [reqDataStateCurrentValue]);
 
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const [testResultsToDisplay, setTestResultsToDisplay] = useState('');
@@ -63,8 +66,6 @@ export default function App() {
       const resultData = await playTest(testFileId);
       if(resultData) {
         executionResults.push(resultData);
-      } else {
-        alert(`Can't run ${testFileId}. Not marked as test`)
       }
     }
     if(executionResults.length > 0) {
@@ -108,26 +109,25 @@ export default function App() {
       <EnvEditorModal closeEnvModal={closeEnvModal} open={isEnvModalOpen}/>
       <TestVarsModal closeTestVarModal={closeTestVarModal} open={isTestVarModalOpen}/>
 
-      <Layout style={{minHeight: '100vh'}}>
-        <Sider collapsible collapsed={siderCollapsed} onCollapse={(value)=>setSiderCollapsed(value)} collapsedWidth={50} >
-          <Menu theme='dark' onClick={siderMenuOnClickHandler} items={siderMenuItems}/>
-        </Sider>
-        <Content style={{backgroundColor: 'white'}}>
-          <PanelGroup direction="horizontal">
-            <Panel defaultSize={10} minSize={10}>
-              <FileExplorer playTestsAndDisplayResults={playTestsAndDisplayResults}/>
-            </Panel>
-            <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+      {/*isLoggedIn ?*/
+        <Layout style={{minHeight: '100vh'}}>
+          <Sider collapsible collapsed={siderCollapsed} onCollapse={(value)=>setSiderCollapsed(value)} collapsedWidth={50} >
+            <Menu theme='dark' onClick={siderMenuOnClickHandler} items={siderMenuItems}/>
+          </Sider>
+          <Content style={{backgroundColor: 'white'}}>
+            <PanelGroup direction="horizontal">
+              <Panel defaultSize={10} minSize={10}>
+                <FileExplorer playTestsAndDisplayResults={playTestsAndDisplayResults}/>
+              </Panel>
+              <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
 
-            <Panel defaultSize={90} minSize={60}>
-              <ReqTabs jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
-            </Panel>
-          </PanelGroup>
-        </Content>
-      </Layout>
-
-
-
+              <Panel defaultSize={90} minSize={60}>
+                <ReqTabs jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
+              </Panel>
+            </PanelGroup>
+          </Content>
+        </Layout>
+      /*: <button onClick={signInWithGoogle}>Google SignIn</button>*/}
     </div>
   )
 }

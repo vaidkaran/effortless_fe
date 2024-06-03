@@ -2,6 +2,7 @@ import {createSlice, current} from '@reduxjs/toolkit';
 import {setUnsetAsTest} from './reqDataSlice';
 import {VerifiedIcon} from '../icons';
 import { KeyOutlined } from '@ant-design/icons';
+import { getFileItem } from '../utils';
 
 const getFileIndex = (state, key) => {
   for (let i=0; i<state.length; i+=1) {
@@ -58,11 +59,29 @@ const fileExplorerDataSlice = createSlice({
     },
     showSavedIconOnFile(state, action) {
       const selectedFileId = action.payload;
-      for (let i=0; i<state.length; i+=1) {
-        if (state[i].key === selectedFileId) {
-          state[i].switcherIcon = <VerifiedIcon/>
-        }
-      }
+      const selectedFileItem = getFileItem(state, selectedFileId);
+      selectedFileItem.switcherIcon = <VerifiedIcon/>
+
+      // TODO: handle for children
+      // const addSwitcherIcon = (fileExpArray) => {
+      //   for (let i=0; i<fileExpArray.length; i+=1) {
+      //     if (!fileExpArray[i].isLeaf && fileExpArray[i]?.children.length) {
+      //       addSwitcherIcon(fileExpArray[i].children)
+      //     } else if (fileExpArray[i].key === selectedFileId) {
+      //       fileExpArray[i].switcherIcon = <VerifiedIcon/>
+      //       return;
+      //     }
+      //   }
+      // }
+
+      
+      // addSwitcherIcon(state)
+
+      // for (let i=0; i<state.length; i+=1) {
+      //   if (state[i].key === selectedFileId) {
+      //     state[i].switcherIcon = <VerifiedIcon/>
+      //   }
+      // }
     },
     showUnsavedIconOnFile(state, action) {
       const selectedFileId = action.payload;

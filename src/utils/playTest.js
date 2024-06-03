@@ -2,30 +2,33 @@ import axios from 'axios';
 import { expect } from 'chai';
 import _ from 'lodash';
 import {getVerifiedParentPaths, getVerifiedVariablePathsWithValues} from './paths';
-import sendRequest from './sendRequest';
 import store from '../store/store';
 import { flatten } from 'flat';
+import { getFileItem } from '../utils';
 
-const pathSeparator = '.';
+import { sendRequest, assertValueInRes, assertPathPresenceInRes, sortPaths } from 'effortless_test_utils';
+// const pathSeparator = '.';
 
-const getValue = (res, path) => {
-  let data = res.data;
-  const items = path.split(pathSeparator).slice(1); // remove root
+// const getValue = (resBody, path) => {
+//   let data = _.cloneDeep(resBody);
+//   const items = path.split(pathSeparator).slice(1); // remove root
 
-  for(let i=0; i<items.length; i+=1) {
-    data = data[items[i]];
-  }
-  return data;
-}
+//   for(let i=0; i<items.length; i+=1) {
+//     data = data[items[i]];
+//   }
+//   return data;
+// }
 
-const verifyPathsPresence = (res, pathsToVerify, testResults) => {
+const verifyPathsPresence = (resBody, pathsToVerify, testResults) => {
   let testPassed = true;
-  pathsToVerify = _.sortBy(pathsToVerify, [(path) => path.split(pathSeparator).length])
+  // pathsToVerify = _.sortBy(pathsToVerify, [(path) => path.split(pathSeparator).length])
+  pathsToVerify = sortPaths(pathsToVerify);
   for(let i=0; i<pathsToVerify.length; i+=1) {
     const testResult = {verificationType: 'existence'};
     try {
       testResult.path = pathsToVerify[i];
-      expect(getValue(res, pathsToVerify[i])).to.not.equal(undefined); // assert for presence (null values allowed)
+      // expect(getValue(resBody, pathsToVerify[i])).to.not.equal(undefined); // assert for presence (null values allowed)
+      assertPathPresenceInRes(resBody, pathsToVerify[i]); // throws if fails
       testResult.passed = true;
     } catch(err) {
       testPassed = false;
@@ -38,14 +41,14 @@ const verifyPathsPresence = (res, pathsToVerify, testResults) => {
   return testPassed;
 }
 
-const verifyValues = (res, verifiedVariables, testResults) => {
+const verifyValues = (resBody, verifiedVariables, testResults) => {
   let testPassed = true;
   Object.keys(verifiedVariables).forEach((variablePath) => {
     const testResult = {verificationType: 'value'};
     try {
       testResult.path = variablePath;
-      getValue(res, variablePath)
-      expect(getValue(res, variablePath)).to.equal(verifiedVariables[variablePath].value);
+      // expect(getValue(resBody, variablePath)).to.equal(verifiedVariables[variablePath].value);
+      assertValueInRes(resBody, variablePath, verifiedVariables[variablePath].value); // throws if fails
       testResult.passed = true;
     } catch(err) {
       testPassed = false;
@@ -62,13 +65,20 @@ export default async function playTest(testFileId) {
   const state = store.getState();
   const { envVarsString } = state.envData;
   const { reqData, fileExplorerData } = state;
+  const fileData = getFileItem(fileExplorerData, testFileId)
+  if (!fileData) return; // return if a directory is found
+  const testname = fileData.title
   const testdata = reqData[testFileId];
   const isTest = testdata.test;
-  const testname = _.find(fileExplorerData, {key: testFileId, isLeaf: true}).title;
+  // const testname = _.find(fileExplorerData, {key: testFileId, isLeaf: true}).title;
   const testExecutionData = {};
   testExecutionData.savedTestVarsWithValues = {};
 
-  if(!isTest) return;
+  if(!isTest) {
+    alert(`Can't run ${testFileId}. Not marked as test`);
+    return;
+  }
+  console.log('td.req ', testdata.requests)
 
   for(const [reqId, reqData] of Object.entries(testdata.requests)) {
     const testResults = [];
@@ -102,10 +112,10 @@ export default async function playTest(testFileId) {
     const verifiedVariables = getVerifiedVariablePathsWithValues(variablePaths);
     const verifiedVariablePaths = Object.keys(verifiedVariables);
 
-    const status1 = verifyPathsPresence(res, verifiedParentPaths, testResults);
-    const status2 = verifyPathsPresence(res, verifiedVariablePaths, testResults)
+    const status1 = verifyPathsPresence(res.data, verifiedParentPaths, testResults);
+    const status2 = verifyPathsPresence(res.data, verifiedVariablePaths, testResults)
     // TODO: if the presence of a path is false, then all it's children will be false too (no need to check)
-    const status3 = verifyValues(res, verifiedVariables, testResults)
+    const status3 = verifyValues(res.data, verifiedVariables, testResults)
     const testStatus = status1 && status2 && status3;
 
     testExecutionData[reqId] = { testResults, url, headers, reqBody, res, flattenedResBody, method, envVarsString, savedTestVars, testStatus}
