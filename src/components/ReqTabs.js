@@ -10,27 +10,25 @@ const { Content } = Layout;
 
 export default function ReqTabs({jsonEditorDisposeRef, jsonEditorRef}) {
   const reqLayout = (
-    <Layout>
-      <Content style={{backgroundColor: 'white'}}>
-        <PanelGroup direction="horizontal" style={{minHeight: '100vh'}}>
-          <Panel defaultSize={50} minSize={30}>
-            <PanelGroup direction="vertical">
-              <Panel defaultSize={10} minSize={10}>
-                <UrlInput/>
-              </Panel>
-              <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
-              <Panel defaultSize={90} minSize={20}>
-                <ReqBodyHeadersQuery jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
-              </Panel>
-            </PanelGroup>
-          </Panel>
-          <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
-          <Panel defaultSize={50} minSize={20}>
-            <ResponseViewer/>
-          </Panel>
-        </PanelGroup>
-      </Content>
-    </Layout>
+    <div>
+      <PanelGroup direction="horizontal" style={{minHeight: '100vh', position: 'absolute'}}>
+        <Panel defaultSize={50} minSize={30}>
+          <PanelGroup direction="vertical">
+            <Panel defaultSize={10} minSize={10}>
+              <UrlInput/>
+            </Panel>
+            <PanelResizeHandle style={{height: 5, backgroundColor: 'grey', marginTop: 10, marginBottom: 10}}/>
+            <Panel defaultSize={90} minSize={20}>
+              <ReqBodyHeadersQuery jsonEditorDisposeRef={jsonEditorDisposeRef} jsonEditorRef={jsonEditorRef}/>
+            </Panel>
+          </PanelGroup>
+        </Panel>
+        <PanelResizeHandle style={{width: 5, backgroundColor: 'grey', marginLeft: 10, marginRight: 10}}/>
+        <Panel defaultSize={50} minSize={20}>
+          <ResponseViewer/>
+        </Panel>
+      </PanelGroup>
+    </div>
   )
   const dispatch = useDispatch();
   const rjvReloadCounter = useSelector(state => state.rjvReloader.counter);
