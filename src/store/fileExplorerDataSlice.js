@@ -54,34 +54,24 @@ const fileExplorerDataSlice = createSlice({
     },
     deleteFileInExplorer(state, action) {
       const key = action.payload;
-      const i = getFileIndex(state, key);
-      state.splice(i, 1);
+      // state is the file explorer array
+      // key is the fileId
+      const deleteFile = (fileExpArray, fileId) => {
+        for (let i=0; i<fileExpArray.length; i+=1) {
+          if (fileExpArray[i].key === fileId) {
+            fileExpArray.splice(i, 1);
+          } else if (!fileExpArray[i].isLeaf && fileExpArray[i]?.children.length) {
+            deleteFile(fileExpArray[i].children, fileId);
+          }
+        }
+      }
+      deleteFile(state, key);
     },
     showSavedIconOnFile(state, action) {
       const selectedFileId = action.payload;
       const selectedFileItem = getFileItem(state, selectedFileId);
       selectedFileItem.switcherIcon = <VerifiedIcon/>
 
-      // TODO: handle for children
-      // const addSwitcherIcon = (fileExpArray) => {
-      //   for (let i=0; i<fileExpArray.length; i+=1) {
-      //     if (!fileExpArray[i].isLeaf && fileExpArray[i]?.children.length) {
-      //       addSwitcherIcon(fileExpArray[i].children)
-      //     } else if (fileExpArray[i].key === selectedFileId) {
-      //       fileExpArray[i].switcherIcon = <VerifiedIcon/>
-      //       return;
-      //     }
-      //   }
-      // }
-
-      
-      // addSwitcherIcon(state)
-
-      // for (let i=0; i<state.length; i+=1) {
-      //   if (state[i].key === selectedFileId) {
-      //     state[i].switcherIcon = <VerifiedIcon/>
-      //   }
-      // }
     },
     showUnsavedIconOnFile(state, action) {
       const selectedFileId = action.payload;
@@ -110,6 +100,6 @@ const fileExplorerDataSlice = createSlice({
 })
 
 
-export const { addToFileExplorer, renameFileInExplorer, deleteFileInExplorer, deleteFile, showSavedIconOnFile, showUnsavedIconOnFile} = fileExplorerDataSlice.actions;
+export const { addToFileExplorer, renameFileInExplorer, deleteFileInExplorer, showSavedIconOnFile, showUnsavedIconOnFile} = fileExplorerDataSlice.actions;
 
 export default fileExplorerDataSlice.reducer;

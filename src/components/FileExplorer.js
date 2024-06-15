@@ -9,7 +9,7 @@ import {reloadRjv} from '../store/rjvReloaderSlice';
 import {showSavedIconOnFile, renameFileInExplorer, deleteFileInExplorer, showUnsavedIconOnFile} from '../store/fileExplorerDataSlice';
 import {getTestBool} from '../store/reqDataSelectors';
 import { Menu, Item, useContextMenu} from 'react-contexify';
-import { getKeyString } from '../utils';
+import { getKeyString, getFileItem, getAllChildrenFileIds } from '../utils';
 import 'react-contexify/ReactContexify.css';
 const contextMenuId = 'filesContextMenu';
 
@@ -86,8 +86,14 @@ export default function FileExplorer(props) {
       message.error('There must be 1 file atleast. You could rename it or create a new one before deleting it')
       return;
     }
+    let fileIdsToDelete;
+    const fileItem = getFileItem(fileExplorerData, nodeInContext.key);
+
+    if (!fileItem.isLeaf) fileIdsToDelete = getAllChildrenFileIds(fileItem);
+    else fileIdsToDelete = [nodeInContext.key];
+
+    fileIdsToDelete.forEach(key => dispatch(deleteFile(key)))
     dispatch(deleteFileInExplorer(nodeInContext.key));
-    dispatch(deleteFile(nodeInContext.key))
     setNodeInContext();
     message.success('Deleted successfully')
   }

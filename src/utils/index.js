@@ -26,12 +26,29 @@ const getSelectedFileAndReq = (state) => {
 // expectes state.fileExpArray as the first argument
 const getFileItem = (fileExpArray, fileId) => {
   for (let i=0; i<fileExpArray.length; i+=1) {
-    if (!fileExpArray[i].isLeaf && fileExpArray[i]?.children.length) {
-      return getFileItem(fileExpArray[i].children, fileId);
-    } else if (fileExpArray[i].key === fileId) {
+    if (fileExpArray[i].key === fileId) {
       return fileExpArray[i];
+    } else if (!fileExpArray[i].isLeaf && fileExpArray[i]?.children.length) {
+      return getFileItem(fileExpArray[i].children, fileId);
     }
   }
+}
+
+const getAllChildrenFileIds = (dirItem) => {
+  if(!dirItem.isLeaf && dirItem.children.length === 0) {
+    console.log('Item passed to getAllChildrenFieldIds is not a dir');
+    return;
+  }
+  const fileIds = [];
+
+  function getAllFileIds(dirItem) {
+    dirItem.children.forEach(item => {
+      if (item.isLeaf) fileIds.push(item.key);
+      else getAllFileIds(item);
+    });
+  }
+  getAllFileIds(dirItem);
+  return fileIds;
 }
 
 // resolves {{vars}} with their values from the json provided
@@ -65,7 +82,7 @@ const getFileItem = (fileExpArray, fileId) => {
 //   return string;
 // }
 
-export { injectStore, getKeyString, getSelectedFileAndReq, getFileItem };
+export { injectStore, getKeyString, getSelectedFileAndReq, getFileItem, getAllChildrenFileIds };
 
 
 /*
