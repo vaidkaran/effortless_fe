@@ -4,7 +4,7 @@ import 'antd/dist/reset.css';
 import signInWithGoogle from './utils/signInWithGoogle';
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Layout, Modal, Tabs, Menu } from 'antd';
+import { Layout, Modal, message, Menu } from 'antd';
 import {useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,6 +20,10 @@ import FileExplorer from "./components/FileExplorer";
 import ReqTabs from "./components/ReqTabs";
 import { SiDotenv } from "react-icons/si";
 import { HiVariable } from "react-icons/hi";
+import { FaSave } from "react-icons/fa";
+import axios from 'axios';
+import store from './store/store';
+
 import { getKeyString } from './utils';
 
 const { Sider, Content } = Layout;
@@ -81,22 +85,40 @@ export default function App() {
   const closeTestVarModal = () => setIsTestVarModalOpen(false);
 
 
+  const uploadData = async () => {
+    const data = store.getState();
+    try {
+      const res = await axios.post('http://localhost:8080/users', data);
+      message.success('Saved successfully')
+      console.log('Res from upload:', res)
+    } catch(err) {
+      message.error('Could not save');
+      console.error('Save/upload failed:', err)
+    }
+  }
+
   const siderMenuItems = [
     {
       key: 'envVars',
-      icon: <SiDotenv size={20}/>,
+      icon: <SiDotenv size={20} color='white'/>,
       label: 'Env Variables',
     },
     {
       key: 'testVars',
-      icon: <HiVariable size={20}/>,
+      icon: <HiVariable size={20} color='white'/>,
       label: 'Test Variables',
+    },
+    {
+      key: 'save',
+      icon: <FaSave size={20} color='white' />,
+      label: 'Save',
     },
   ];
 
   const siderMenuOnClickHandler = ({key}) => {
     if(key === 'envVars') showEnvModal(true)
     if(key === 'testVars') showTestVarModal(true)
+    if(key === 'save') uploadData()
   };
 
 

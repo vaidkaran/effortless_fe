@@ -28,7 +28,7 @@ export default function TestVarsModal({closeTestVarModal, open}) {
 
 
   return (
-    <Modal width={'60%'} bodyStyle={{height: 500}} title="Test Context Variables from Responses"  keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={open} onCancel={closeTestVarModal} onOk={closeTestVarModal}>
+    <Modal width={'60%'} styles={{body: {height: 500}}} title="Test Context Variables from Responses"  keyboard={true} cancelButtonProps={{style: {display: 'none'}}} open={open} onCancel={closeTestVarModal} onOk={closeTestVarModal}>
       <div className='scrollable'>
         <Collapse items={items}/>
       </div>

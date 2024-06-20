@@ -42,7 +42,7 @@ export default function EnvEditorModal({closeEnvModal, open}) {
   }
 
   return (
-    <Modal width={'60%'} bodyStyle={{height: 500}} title="Env" open={open} okText='Save' onOk={envModalSaveHandler} onCancel={envModalCloseHandler}>
+    <Modal width={'60%'} styles={{body: {height: 500}}} title="Env" open={open} okText='Save' onOk={envModalSaveHandler} onCancel={envModalCloseHandler}>
       <Editor
         options={{suggestOnTriggerCharacters: false, InsertAsSnippet: 'heyy'}}
         defaultLanguage="json"
